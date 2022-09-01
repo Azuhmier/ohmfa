@@ -1,9 +1,21 @@
+# vim
 *.swp
 *.swo
+*.swl
+*.swn
 *.un~
+
+# ctags
 tags
+
+# Macos stuff
 .DS_Store
+
+# vscode
 .vscode/*
+
+# python
+__pycache__/
 
 # User-specific stuff
 .idea/**/workspace.xml
