@@ -64,7 +64,7 @@ if PrintTokenList :
     for token in tokens : # verbose
         #print("j-14s %s" % (token['name'], token['match']))
         pos = "LN:%-4s (%-3s %-3s) z_txt:%-6s    " % (token['LineNumber'], token['z_line'],token['e_line'],token['z_txt'])
-        print("%-25s %-20s %-25s %s" % (pos, token['name'], token['type'], token['match']))
+        print("%-25s %-25s %-20s %s" % (pos, token['type'], token['name'], token['match']))
 
 
 #----------- Z_TXT TEST ------------ #
