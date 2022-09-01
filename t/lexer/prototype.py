@@ -15,11 +15,11 @@ from lib.lexer import lexer
 
 
 #----------- OPTIONS ------------ #
-PrintTokenList     = True
-LexerVerbose       = True
+PrintTokenList     = False
+LexerVerbose       = False
 z_txt_test         = True
 ze_line_test       = True
-OutputTokesnAsJson = True
+OutputTokesnAsJson = False
 TOKENS_OUPUT_PATH  = "~/Desktop/tokens.json"
 MFILE_PATH         = "../mfiles/hmofa.txt"
 LEXER_CONFIG_PATH  = "../inputs/json/hmofa.json"
