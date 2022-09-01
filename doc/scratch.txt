@@ -1,0 +1,449 @@
+!!WARNING: This is not offical documentation! Concepts and ideas in this file
+can and will be routinly changed, wrong, or nonsensical.
+
+===============================
+== TERMS ==
+txt buffer, z, e
+span, s, s1, s2
+lexical analysis
+regular expression
+context free grammar
+token
+group
+order
+
+===============================
+== Lexer ==
+
+    pnter    x.x.x.x.x.x
+
+      0          1          2
+    [ [a a2 a*], [b b2 b*], [c c2 c*] ]
+           0.0        0.1        0.2
+    a* = [ [d d2 d*], [e e2 e*], [f f2 f*] ]
+           1.0        1.1        1.2
+    b* = [ [g g2 g*], [h h2 h*], [i i2 i*] ]
+           1.0        1.1        1.2
+    c* = [ [j j2 j*], [k k2 k*], [k k2 k*] ]
+
+           1.1.0      1.1.1      1.1.2
+    h* = [ [l l2 l*], [m m2 m*], [n n2 n*] ]
+
+    tt[pnter_str] ^= 1
+    tt[pnter_str] == 1
+    tt[pnter_str] == 0
+
+
+    if tt[pnter_str] == 1 && token[2] is not None:
+        pnt = 0
+        pnter.append(pnt)
+        token[2][pnt]
+    else:
+        pnt =+1
+
+    0     0/1
+    0.0   0/1
+
+    DB_UID
+    Parse_UID
+    Lex_UID
+
+    tt [nested_array, user_specified]
+
+    token tracker
+
+        Only two types of tokens can have children:
+
+        1) Seperator: r[0] is 'None' and r[1] is not 'None'. children are reset
+                      upon match
+
+        2) Container: r[0] and r[1] are not 'None'. Children are enabled and
+                      disabled upon first patter and seccond patter match
+                      respectivly.
+
+        EX:
+
+
+                1 2            3         4
+                1 2  3 4  5 6  7  8 9    A
+                1    2    3   2   3   2 1   0
+          [mp]  [A B [C D [E F] G [H I] ] C ] [lp]
+
+    pnt []
+
+    pointer
+
+        The
+
+        EX:
+
+
+
+    pntr []
+
+    pointer
+
+        The
+
+        EX:
+
+
+    head []
+
+        The
+
+        EX:
+
+
+    prep []
+
+    preprocesser
+
+        The
+
+
+    postp []
+
+    post processer
+
+        The
+
+
+    pm []
+
+    point mask
+
+       The
+
+
+
+
+== User_Input Parser ==
+
+    lvl        [int, 0]
+
+               current lvl of last encounter 'name'.
+
+
+    diff       [int, 0]
+
+               current difference between the current 'lvl' and previous 'lvl'.
+               A 'diff' > 1 throws an error.
+
+
+    _pot [hash,{}]
+
+    passive option tracker
+
+
+               hash of all passive options names. Each key leads to another
+               hash of keys corresponding to a specfic 'lvl' and one key 'a'
+               corresponding to an array of pnters to 'lvl' keys in the parent
+               hash. If the passive option (po) is matched, the value at the
+               key corresponding to current 'lvl' in  _pot["po_name"] is
+               appended to key 'a' in _pot["po_name"]'. If the key corresponding
+               to the current 'lvl' does not exist in '_pot["po_name"]' then the
+               key and the corresponding default value or made. Upon
+               termination of the 'po' block the array in 'a' key is popped'.
+
+                   EX:
+                       {
+                           'ED' : {
+                                'a' : [],
+                                '1' : ED_1,
+                           },
+                           'SC' : {
+                               'a' : [sc_2, sc_4],
+                               '2' : sc_2,
+                               '4' : sc_4,
+                           },
+                        }
+
+
+    lvl_block   [array, [None,None]]
+
+                range from a lvl directly succeeding a lvl incrment to the
+                first level of the same value that precedes a level deincrement
+                of the same value.
+
+                    EX:
+                        lvl_block = [lvl@(diff = 1), lvl@(diff = -1)] = [x, y] = [2.0, 2.2]
+
+                        1.0
+                          2.0     x
+                            3.0
+                          2.1
+                          2.2     y
+                            3.1
+                              4.0
+                        1.1
+
+                If block ends during an active passive option (po) at the
+                current lvl, an error is thrown. At every 'diff' < 0, a check
+                must be done to ensure that there were no active 'po's on the
+                prior 'lvl'
+
+
+    edt [nested_array, [None, [], []]]
+
+    enable/disable tracker
+
+           Upon match, the edt[0] at the current lvl is set to the matched
+           character ('-' or '~'), making it active.  If the match was made in
+           an active 'sc' or 'ed' block at the current 'lvl', then an error is
+           thrown. Next, the 'enablers' appeneded to 'edt[lvl][1]' by
+           evaluating the previous name. If the token was in a 'sc' block, then
+           all of the 'names' in that block are appended, else just the
+           previous 'name' is appended. The 'ed' block terminates either at the
+           next 'name' in the current 'lvl' or at the end of a 'sc' block on
+           the same 'lvl'. The prior case fails if the 'name' is currently in a
+           'sc' block and then the 'ed' block only terminates with the latter.
+           Upon termination of the 'ed', the prevous name on the same lvl is
+           evaluated for 'enableds' in much the same vein as with the
+           'enablers': if the previous name on the same lvl was in a 'ed'
+           block, then all the 'names' in the 'ed' blcok are appended to
+           'edt[2]', else just the prevous name on the same level is appended.
+           For every enabler, the 'enableds' are appended to their 'ed[1]'. For
+           every 'enableds', their 'ed[0]' will be set to false. If 'ed[0]' ==
+           '~', then additionally for every enabled's, the enablers are
+           appended to 'ed[2]'
+
+
+    sct [nested_array, [0, []]]
+
+    switch case tracker
+
+           If sct[0] is True, then it is active. Upon match, the sct[0] at the
+           current lvl is set to True, making it active. If the match was made
+           in an active 'sc' block at the current 'lvl', then an error is
+           thrown. Until the 'sc' block terminates, every 'name' encountered on
+           the same 'lvl' will be appended to 'sc[1]' and their corresponding
+           'sc[0]' will be set to true. Upon termination of the 'sc' block.
+           Every 'name' in 'sc[1]' will be added to the corresponding 'sc[1]'
+           for every 'name' in 'sc[1]'.
+
+- ED
+    = starts at '-' or '~'
+    - cannot start in SC or ED block
+    - must directly preced a name or SC block begin '<' at the same lvl
+    - name cannot have diff > 0 while in ED block
+    EX:
+
+       X
+       -
+       *
+
+- SC
+   - starts at '<', ends at '>'
+   - cannot start or end in SCT block of the same lvl
+   - '<' must directly precede a name of the same level
+   - name connot have diff > 0 while in SC block
+   EX:
+
+       <
+       X
+       *
+       >
+
+- name
+  - can only decend one at a time
+
+  - block break
+  - repeat
+  - exlusion
+
+block = (x)...(lvl+1)
+
+<
+
+>
+
+
+- TESTING:
+    - # of tokens (...)
+    - # of names (random from tokens, lvl)
+    - # of (-/~) (cnt, lvl)
+    - # of (</>) (cnt, lvl)
+
+- positive diff must be equal to one for 'name' (diff > 1)
+- can't match '<' or '>' consecutivly on the same level (ed block)
+- no tokens higher than lvl can come between the >/< at level (diff < 0 in sc block)
+- '-/~' must have a ptok at current level before levles higher than ptok, vice versa (...)
+    ex:
+        right ()
+            a / >
+            -
+            b / <
+        wrong (ed block bengin in sc block at same lvl)
+            <
+            a / >
+            -
+            b / <
+            >
+        wrong (current lvl not equal to ed block)
+                a / >
+            c / < / >
+                -
+                b / <
+        wrong (diff > 0, without enabled)
+            a / >
+            -
+              C / < / >
+            B / <
+        WRONG (silent, no enablers)
+            A / >
+              C
+              -
+            -
+            B / <
+        WRONG (current lvl not equal to ed block)
+            A / >
+              -
+              C
+            -
+            B
+        RIGHT ()
+            A / >
+              C
+            -
+            B / <
+        RIGHT ()
+            A / >
+            <
+              C
+            >
+            -
+            B / <
+        RIGHT ()
+            A / >
+            -
+            <
+              C
+            >
+            -
+            B / <
+        RIGHT ()
+            A / >
+            -
+            <
+              C
+            >
+            B / <
+        RIGHT ()
+            A / >
+            <
+              C
+            >
+            -
+            B / <
+- </> '<' must preced a token at lvl; > must come after a token at lvl (diff != 0 after sc block begin; current lvl is not equal to sct block)
+    EX:
+        WRONG ()
+            <
+            A
+            <
+            B
+            >
+        WRONG ()
+            <
+            A
+            >
+            B
+            >
+        RIGHT ()
+            <
+            A
+            B
+            >
+        RIGHT ()
+            <
+            A
+            >
+
+
+
+===============================
+== Algorithm ==
+
+                                                                       *pntr
+[name pat1 pat2 priority,  enabled, [enable], [disable], switch_case_flag, [switch_case:UIDs], [cnt,max], [cnt,max], [cnt,max], container_flag]
+
+x1,x2,x3 ... ,xn-1, xn
+tt[x1][-1][x2][-1][x3]  ... [xn-1][-1][xn]
+
+
+Ex:
+    \nby noanchoviesplease '(aka: Mr. Anchovie, fish man, `no )() plox`)(collaborator, lang:C++, hates anchovies?)\n
+    z
+
+        [..., [ '\n\s*[bB]y\b', '\\n', *pnt], ...]
+
+    \nby noanchoviesplease '(aka: Mr. Anchovie, fish man, `no )() plox`)(collaborator, lang:C++, hates anchovies?)\n
+    s   s
+        z
+        [..., [ '\n\s*[bB]y\b', '\\n', *pnt], ...]
+        *pnt= [ `[^`]+, '`', ['(', ')', *pnt] ]
+        *pnt= [ [';', '', *pnt], [',', '', *pnt] ]
+        *pnt= [ '[A-Za-z0-9-_ ]+:[ :]*', ['`','`',*pnt], '[?*!]+', '[^ ]+']
+        *pnt= ['[^`]']
+
+
+
+
+    \nby noanchoviesplease '(aka: Mr. Anchovie, fish man, `no )() plox`)(collaborator, lang:C++, hates anchovies?)\n
+
+    5(1 1)* [bB]y\b \\n
+    5.1(1: 1:) [^`]+
+    5.2(:1 1:)! `+
+    5.3(: 1 1)*! ( )
+    5.3.1(: 1:)* ;
+    5.3.2(: 1:)* ,
+    5.3.1:2.1(:1 1) [0-9A-Za-z_- ]+:[: ]+*
+    5.3.1:2.2(:1 1: 1:)*! ` `
+    5.3.1:2.1.1(1: 1:)$ [^`]+
+    5.3.1:2.2(1: 1:)!  [0-9A-Za-z_-]+
+    5.3.1:2.3(: 1:)! [?*!]+
+
+tabstop = None
+toks = {}
+tts = []
+active = [,[key, lvl]]; pop, append
+lvl = [plvl, clvl]; pop, lvl[0], lvl[1]
+ptok = {.lvl}
+_pot = {,key: {,lvl:[en,]}
+
+name -lvl(!a) +lvl(diff==1) +key             lvl[1]==lvl[0](sc if *sc)) $ed(*ed and !*sc)) -
+<    -lvl(!a) +lvl(diff==1) +key(!*sc)       -                          -                  -                -
+>    -lvl(!a) +lvl(diff==1) +key(*sc)        -                          $ed(*ed)           $sc
+-    -lvl(!a) +lvl(diff==1) +key(!*sc, !*ed) lvl[1]==lvl[0](a)          -                  -
+
+                    # -
+                    # <
+                    # >
+                    # diff > 0
+                    # diff < 0
+                    # diff == 0
+-?
+~?
+
+
+[]
+['a']
+['\n']
+['a','\n']
+['a','\n','b']
+['\n','b']
+
+match            (n,m)
+zero-width match (n,m=n)
+
+    lexer.txt[m:]
+
+
+
+lexer.txt (z,e)
+
+lexer.tb
+
+
+"""

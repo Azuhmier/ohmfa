@@ -1,0 +1,1716 @@
+{
+    "0": {
+        "enabled": true,
+        "uid": "0",
+        "name": "line-comment",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            null
+        ],
+        "pat1": "~",
+        "pat2": null
+    },
+    "0.0": {
+        "enabled": true,
+        "uid": "0.0",
+        "name": "entire_line",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": ".*",
+        "pat2": null
+    },
+    "1": {
+        "enabled": true,
+        "uid": "1",
+        "name": "boundry-section",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            1,
+            null
+        ],
+        "pat1": "\u2014[\u2014 ]*$",
+        "pat2": null
+    },
+    "2": {
+        "enabled": true,
+        "uid": "2",
+        "name": "line-section",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": 1,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            0,
+            null
+        ],
+        "pat1": "%",
+        "pat2": null
+    },
+    "2.0": {
+        "enabled": true,
+        "uid": "2.0",
+        "name": "drsr-section",
+        "ed_enbl": [
+            "2.1"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "%+",
+        "pat2": null
+    },
+    "2.1": {
+        "enabled": false,
+        "uid": "2.1",
+        "name": "part-section",
+        "ed_enbl": [
+            "2.2"
+        ],
+        "ed_dsbl": [
+            "2.0"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[^ %]+",
+        "pat2": null
+    },
+    "2.2": {
+        "enabled": false,
+        "uid": "2.2",
+        "name": "drsr-section",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "2.1"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "%+",
+        "pat2": null
+    },
+    "3": {
+        "enabled": true,
+        "uid": "3",
+        "name": "boundry-section",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            1,
+            null
+        ],
+        "pat1": "\u2014[\u2014 ]*$",
+        "pat2": null
+    },
+    "4": {
+        "enabled": true,
+        "uid": "4",
+        "name": "boundry-author",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            1,
+            null
+        ],
+        "pat1": "-[- ]*$",
+        "pat2": null
+    },
+    "5": {
+        "enabled": true,
+        "uid": "5",
+        "name": "line-author",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            0,
+            null
+        ],
+        "pat1": "[bB]y\\s",
+        "pat2": null
+    },
+    "5.0": {
+        "enabled": true,
+        "uid": "5.0",
+        "name": "part-author",
+        "ed_enbl": [
+            "5.2"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [
+            "5.0",
+            "5.1"
+        ],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            null
+        ],
+        "pat1": "[^ &`]+",
+        "pat2": null
+    },
+    "5.1": {
+        "enabled": true,
+        "uid": "5.1",
+        "name": "div-author_collab",
+        "ed_enbl": [
+            "5.2"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [
+            "5.0",
+            "5.1"
+        ],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            0,
+            null
+        ],
+        "pat1": "&",
+        "pat2": null
+    },
+    "5.2": {
+        "enabled": false,
+        "uid": "5.2",
+        "name": "div-attribute",
+        "ed_enbl": [
+            "5.3"
+        ],
+        "ed_dsbl": [
+            "5.1",
+            "5.2"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "`",
+        "pat2": null
+    },
+    "5.3": {
+        "enabled": false,
+        "uid": "5.3",
+        "name": "container-attributes",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "5.2"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            2,
+            1,
+            0
+        ],
+        "pat1": "\\(",
+        "pat2": "\\)"
+    },
+    "5.3.0": {
+        "enabled": false,
+        "uid": "5.3.0",
+        "name": "delim-tag",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": true,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            null
+        ],
+        "pat1": null,
+        "pat2": "[,;]"
+    },
+    "5.3.0.0": {
+        "enabled": true,
+        "uid": "5.3.0.0",
+        "name": "label",
+        "ed_enbl": [
+            "5.3.0.1",
+            "5.3.0.2",
+            "5.3.0.3"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^;,:?*!`]+(?=:)",
+        "pat2": null
+    },
+    "5.3.0.1": {
+        "enabled": false,
+        "uid": "5.3.0.1",
+        "name": "div-label",
+        "ed_enbl": [
+            "5.3.0.2",
+            "5.3.0.3"
+        ],
+        "ed_dsbl": [
+            "5.3.0.0"
+        ],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": ":",
+        "pat2": null
+    },
+    "5.3.0.2": {
+        "enabled": false,
+        "uid": "5.3.0.2",
+        "name": "container-literal",
+        "ed_enbl": [
+            "5.3.0.4"
+        ],
+        "ed_dsbl": [
+            "5.3.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "5.3.0.2",
+            "5.3.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "`",
+        "pat2": "`"
+    },
+    "5.3.0.2.0": {
+        "enabled": false,
+        "uid": "5.3.0.2.0",
+        "name": "literal",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^`]+",
+        "pat2": null
+    },
+    "5.3.0.3": {
+        "enabled": false,
+        "uid": "5.3.0.3",
+        "name": "part-attribute",
+        "ed_enbl": [
+            "5.3.0.4"
+        ],
+        "ed_dsbl": [
+            "5.3.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "5.3.0.2",
+            "5.3.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[^ ?*!:;,]+",
+        "pat2": null
+    },
+    "5.3.0.4": {
+        "enabled": false,
+        "uid": "5.3.0.4",
+        "name": "tag_flag",
+        "ed_enbl": [
+            "5.3.0.2",
+            "5.3.0.3"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[?*!]",
+        "pat2": null
+    },
+    "6": {
+        "enabled": true,
+        "uid": "6",
+        "name": "line-series",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": 1,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            0,
+            null
+        ],
+        "pat1": "=",
+        "pat2": null
+    },
+    "6.0": {
+        "enabled": true,
+        "uid": "6.0",
+        "name": "container-series",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "=+\\/+",
+        "pat2": "\\/+=+"
+    },
+    "6.0.0": {
+        "enabled": true,
+        "uid": "6.0.0",
+        "name": "part-series",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[^ /=]+",
+        "pat2": null
+    },
+    "7": {
+        "enabled": true,
+        "uid": "7",
+        "name": "line-title",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            0,
+            null
+        ],
+        "pat1": ">",
+        "pat2": null
+    },
+    "7.0": {
+        "enabled": true,
+        "uid": "7.0",
+        "name": "part-title",
+        "ed_enbl": [
+            "7.1"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[^ `]+",
+        "pat2": null
+    },
+    "7.1": {
+        "enabled": false,
+        "uid": "7.1",
+        "name": "div-attribute",
+        "ed_enbl": [
+            "7.2"
+        ],
+        "ed_dsbl": [
+            "7.0"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "`",
+        "pat2": null
+    },
+    "7.2": {
+        "enabled": false,
+        "uid": "7.2",
+        "name": "container-attributes",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "7.1"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            2,
+            1,
+            0
+        ],
+        "pat1": "\\(",
+        "pat2": "\\)"
+    },
+    "7.2.0": {
+        "enabled": true,
+        "uid": "7.2.0",
+        "name": "delim-tag",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": true,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            null
+        ],
+        "pat1": null,
+        "pat2": "[,;]"
+    },
+    "7.2.0.0": {
+        "enabled": true,
+        "uid": "7.2.0.0",
+        "name": "label",
+        "ed_enbl": [
+            "7.2.0.1",
+            "7.2.0.2",
+            "7.2.0.3"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^;,:?*!`]+(?=:)",
+        "pat2": null
+    },
+    "7.2.0.1": {
+        "enabled": false,
+        "uid": "7.2.0.1",
+        "name": "div-label",
+        "ed_enbl": [
+            "7.2.0.2",
+            "7.2.0.3"
+        ],
+        "ed_dsbl": [
+            "7.2.0.0"
+        ],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": ":",
+        "pat2": null
+    },
+    "7.2.0.2": {
+        "enabled": false,
+        "uid": "7.2.0.2",
+        "name": "container-literal",
+        "ed_enbl": [
+            "7.2.0.4"
+        ],
+        "ed_dsbl": [
+            "7.2.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "7.2.0.2",
+            "7.2.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "`",
+        "pat2": "`"
+    },
+    "7.2.0.2.0": {
+        "enabled": true,
+        "uid": "7.2.0.2.0",
+        "name": "literal",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^`]+",
+        "pat2": null
+    },
+    "7.2.0.3": {
+        "enabled": false,
+        "uid": "7.2.0.3",
+        "name": "part-attribute",
+        "ed_enbl": [
+            "7.2.0.4"
+        ],
+        "ed_dsbl": [
+            "7.2.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "7.2.0.2",
+            "7.2.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[^ ?*!:;,]+",
+        "pat2": null
+    },
+    "7.2.0.4": {
+        "enabled": false,
+        "uid": "7.2.0.4",
+        "name": "tag_flag",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "7.2.0.2",
+            "7.2.0.3"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[?*!]",
+        "pat2": null
+    },
+    "8": {
+        "enabled": true,
+        "uid": "8",
+        "name": "line-tags",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": 1,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            0,
+            null
+        ],
+        "pat1": "\\[",
+        "pat2": null
+    },
+    "8.0": {
+        "enabled": true,
+        "uid": "8.0",
+        "name": "container-tags",
+        "ed_enbl": [
+            "8.1"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            2,
+            1,
+            0
+        ],
+        "pat1": "\\[",
+        "pat2": "\\]"
+    },
+    "8.0.0": {
+        "enabled": true,
+        "uid": "8.0.0",
+        "name": "delim-tag",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": true,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            null
+        ],
+        "pat1": null,
+        "pat2": "[,;]"
+    },
+    "8.0.0.0": {
+        "enabled": true,
+        "uid": "8.0.0.0",
+        "name": "label",
+        "ed_enbl": [
+            "8.0.0.1",
+            "8.0.0.2",
+            "8.0.0.3"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^;,:?*!`]+(?=:)",
+        "pat2": null
+    },
+    "8.0.0.1": {
+        "enabled": false,
+        "uid": "8.0.0.1",
+        "name": "div-label",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "8.0.0.0"
+        ],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": ":",
+        "pat2": null
+    },
+    "8.0.0.2": {
+        "enabled": false,
+        "uid": "8.0.0.2",
+        "name": "container-literal",
+        "ed_enbl": [
+            "8.0.0.4"
+        ],
+        "ed_dsbl": [
+            "8.0.0.0",
+            "8.0.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "8.0.0.2",
+            "8.0.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "`",
+        "pat2": "`"
+    },
+    "8.0.0.2.0": {
+        "enabled": true,
+        "uid": "8.0.0.2.0",
+        "name": "literal",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^`]+",
+        "pat2": null
+    },
+    "8.0.0.3": {
+        "enabled": false,
+        "uid": "8.0.0.3",
+        "name": "part-tag",
+        "ed_enbl": [
+            "8.0.0.4"
+        ],
+        "ed_dsbl": [
+            "8.0.0.0",
+            "8.0.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "8.0.0.2",
+            "8.0.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+
+        "pat1": "[^ ?*!:;,]+",
+        "pat2": null
+    },
+    "8.0.0.4": {
+        "enabled": false,
+        "uid": "8.0.0.4",
+        "name": "tag_flag",
+        "ed_enbl": [],
+        "ed_dsbl": [
+          "8.0.0.3"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[?*!]",
+        "pat2": null
+    },
+    "8.1": {
+        "enabled": false,
+        "uid": "8.1",
+        "name": "tagline_flag",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "8.0"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[^ ]",
+        "pat2": null
+    },
+    "9": {
+        "enabled": true,
+        "uid": "9",
+        "name": "line-url",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": true,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            null
+        ],
+        "pat1": "http",
+        "pat2": null
+    },
+    "9.0": {
+        "enabled": true,
+        "uid": "9.0",
+        "name": "url",
+        "ed_enbl": [
+            "9.1"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "http[^\\s]+",
+        "pat2": null
+    },
+    "9.1": {
+        "enabled": false,
+        "uid": "9.1",
+        "name": "div-attribute",
+        "ed_enbl": [
+            "9.2"
+        ],
+        "ed_dsbl": [
+            "9.0"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "`",
+        "pat2": null
+    },
+    "9.2": {
+        "enabled": false,
+        "uid": "9.2",
+        "name": "container-attributes",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "9.1"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            2,
+            1,
+            0
+        ],
+        "pat1": "\\(",
+        "pat2": "\\)"
+    },
+    "9.2.0": {
+        "enabled": true,
+        "uid": "9.2.0",
+        "name": "delim-tag",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": true,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            null
+        ],
+        "pat1": null,
+        "pat2": "[,;]"
+    },
+    "9.2.0.0": {
+        "enabled": true,
+        "uid": "9.2.0.0",
+        "name": "label",
+        "ed_enbl": [
+            "9.2.0.1",
+            "9.2.0.2",
+            "9.2.0.3"
+        ],
+        "ed_dsbl": [],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^;,:?*!`]+(?=:)",
+        "pat2": null
+    },
+    "9.2.0.1": {
+        "enabled": false,
+        "uid": "9.2.0.1",
+        "name": "div-label",
+        "ed_enbl": [
+            "9.2.0.2",
+            "9.2.0.3"
+        ],
+        "ed_dsbl": [
+            "9.2.0.0"
+        ],
+        "ed_optnl": true,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": ":",
+        "pat2": null
+    },
+    "9.2.0.2": {
+        "enabled": false,
+        "uid": "9.2.0.2",
+        "name": "container-literal",
+        "ed_enbl": [
+            "9.2.0.4"
+        ],
+        "ed_dsbl": [
+            "9.2.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "9.2.0.2",
+            "9.2.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "`",
+        "pat2": "`"
+    },
+    "9.2.0.2.0": {
+        "enabled": true,
+        "uid": "9.2.0.2.0",
+        "name": "literal",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": "[^`]+",
+        "pat2": null
+    },
+    "9.2.0.3": {
+        "enabled": false,
+        "uid": "9.2.0.3",
+        "name": "part-attribute",
+        "ed_enbl": [
+            "9.2.0.4"
+        ],
+        "ed_dsbl": [
+            "9.2.0.1"
+        ],
+        "ed_optnl": false,
+        "sc": [
+            "9.2.0.2",
+            "9.2.0.3"
+        ],
+        "sc_en": true,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[^ *?!:;,]+",
+        "pat2": null
+    },
+    "9.2.0.4": {
+        "enabled": false,
+        "uid": "9.2.0.4",
+        "name": "tag_flag",
+        "ed_enbl": [],
+        "ed_dsbl": [
+            "9.2.0.2",
+            "9.2.0.3"
+        ],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            null,
+            0
+        ],
+        "pat1": "[?*!]",
+        "pat2": null
+    },
+    "10": {
+        "enabled": true,
+        "uid": "10",
+        "name": "line-description",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": true,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            null,
+            0,
+            null
+        ],
+        "pat1": "#",
+        "pat2": null
+    },
+    "10.0": {
+        "enabled": true,
+        "uid": "10.0",
+        "name": "entire_line",
+        "ed_enbl": [],
+        "ed_dsbl": [],
+        "ed_optnl": false,
+        "sc": [],
+        "sc_en": false,
+        "f_prty": false,
+        "f_eolt": false,
+        "f_grdy": false,
+        "f_give": false,
+        "f_c": false,
+        "cnt": [
+            0,
+            0,
+            0
+        ],
+        "max": [
+            1,
+            null,
+            null
+        ],
+        "pat1": ".*",
+        "pat2": null
+    }
+}
