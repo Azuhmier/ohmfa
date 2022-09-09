@@ -18,8 +18,8 @@ class lexer :
             'type'            : None,
             'match'           : None,
             'line_number'     : None,
-            'z_line'   : None,
-            'e_line'   : None,
+            'z_line'          : None,
+            'e_line'          : None,
             'z_data'          : None,
         }
 
@@ -54,7 +54,7 @@ class lexer :
         self.z_data              =0
         self.line_buffer         =''
         self.line_number         =1
-        self.z_line       =0
+        self.z_line              =0
         self.size_of_line_buffer =0
 
         #----------- FLAGS ------------ #
@@ -121,7 +121,7 @@ class lexer :
             z_line_spaces  =spaces_match.span()[0]
             e_line_spaces  =spaces_match.span()[1]
             self.z_line    =e_line_spaces
-            self.z_data          +=(e_line_spaces - z_line_spaces)
+            self.z_data    +=(e_line_spaces - z_line_spaces)
 
 
 
@@ -131,7 +131,7 @@ class lexer :
         newline_match =self.re_newline.match(self.data, self.z_data)
         if newline_match :
             self.line_number   +=1
-            self.z_line  =0
+            self.z_line         =0
             self.z_data        +=1
             next_line_buffer_match =self.re_newline.search(self.data, self.z_data)
             if next_line_buffer_match:
@@ -167,14 +167,14 @@ class lexer :
         if not self.f_EOL :
             self.token['match']         =token_match.group()
             self.token['line_number']   =self.line_number
-            self.token['z_line'] =self.z_line
-            self.token['e_line'] =token_match.span()[1]
+            self.token['z_line']         =self.z_line
+            self.token['e_line']        =token_match.span()[1]
             self.token['z_data']        =self.z_data
         else :
             self.token['match']         =token_match.group()
             self.token['line_number']   =self.line_number
-            self.token['z_line'] =0
-            self.token['e_line'] =0
+            self.token['z_line']        =0
+            self.token['e_line']        =0
             self.token['z_data']        =(self.z_data - self.z_line - 1)
 
         self.__ed()
@@ -195,7 +195,7 @@ class lexer :
         controller_uid  =self.token['controller_uid']
         controller      =self.token_controllers[controller_uid]
         pntr            =self.__controller_uid2pntr(controller_uid)
-        new_token_match = None
+        new_token_match =None
 
         if (not self.f_EOL) and (len(pntr) > 1) :
             e_line     =token_match.span()[1]
@@ -229,7 +229,7 @@ class lexer :
                         print(token_match)
                         sys.exit('Error')
                     else :
-                        token_match = new_token_match
+                        token_match =new_token_match
                 else :
                    parent_controller_uid =self.__pntr2controller_uid(pntr)
                    error_msg =("ERROR: token %s consumed the entire match of token %s")
