@@ -19,7 +19,7 @@ PrintTokenList     = False
 LexerVerbose       = False
 z_txt_test         = True
 ze_line_test       = True
-OutputTokesnAsJson = False
+OutputTokesnAsJson = True
 TOKENS_OUPUT_PATH  = "~/Desktop/tokens.json"
 MFILE_PATH         = "../mfiles/hmofa.txt"
 LEXER_CONFIG_PATH  = "../inputs/json/hmofa.json"
@@ -50,11 +50,11 @@ LexerConfig = import_json(LEXER_CONFIG_PATH)
 
 #----------- INITIATE LEXER AND GET TOKENS ------------ #
 mylexer = lexer(txt, LexerConfig, LexerVerbose)
-token   = {'EOF': False}
+token   = {'controller_uid': 'A'}
 tokens  = []
 
-while not token['EOF'] :
-    token = mylexer.getToken()
+while token['controller_uid'] != '-1' :
+    token = mylexer.get_token()
     tokens.append(token)
 
 
@@ -63,8 +63,8 @@ if PrintTokenList :
     print("--------- TOKEN LIST ---------") # verbose
     for token in tokens : # verbose
         #print("j-14s %s" % (token['name'], token['match']))
-        pos = "LN:%-4s (%-3s %-3s) z_txt:%-6s    " % (token['LineNumber'], token['z_line'],token['e_line'],token['z_txt'])
-        print("%-25s %-25s %-20s %s" % (pos, token['type'], token['name'], token['match']))
+        pos = "LN:%-4s (%-3s %-3s) z_txt:%-6s    " % (token['line_number'], token['z_line'],token['e_line'],token['z_data'])
+        print("%-25s %-25s %-20s %s" % (pos, token['type'], token['controller_name'], token['match']))
 
 
 #----------- Z_TXT TEST ------------ #
@@ -73,8 +73,8 @@ if z_txt_test :
     print("...z_txt_test......",end='')
     for token in tokens : # verbose
         if token['match'] is not None :
-            z_txt = token['z_txt']
-            e_txt =  token['z_txt'] + token['e_line'] - token['z_line']
+            z_txt = token['z_data']
+            e_txt =  token['z_data'] + token['e_line'] - token['z_line']
             if token['e_line'] > 0 :
                 str2 = txt[z_txt:e_txt]
                 if not token['match'] == txt[z_txt:e_txt] :
@@ -92,7 +92,7 @@ if ze_line_test :
     lines = txt.splitlines()
     for token in tokens : # verbose
         if token['match'] is not None :
-            lineNum = token['LineNumber']
+            lineNum = token['line_number']
             e_line  = token['e_line']
             z_line  = token['z_line']
 
