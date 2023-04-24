@@ -1,0 +1,263 @@
+#============================================================
+#
+#        FILE: parser.txt
+#
+#       USAGE: less ./parser.txt
+#
+#  DESCRIPTION: Ohmfa Lexer Documentation
+#
+#       AUTHOR: Azuhmier (aka taganon), azuhmier@gmail.com
+# ORGANIZATION: ---
+#      VERSION: 1.0
+#      Created: Mon 04/24/23 07:30:03
+#============================================================
+
+list = {delim element}
+\0 = zero-width whitespace
+\s = whitespace
+
+
+
+
+Errors
+Unclosed Container () -> ())
+Excesive Spaces
+EOL
+Max
+Consecitive Match Max
+Global Max
+Local Max
+Leftovers
+
+
+ESCAPES
+
+DELIM
+if      [^& ]+
+elseif  &
+elseif  ''
+else excpetion
+
+CONTAINERS
+\([^\)\( ]+\)
+[^\)\(]+
+[^\)\( ]+
+
+[]()
+
+`
+;
+,
+:
+:::
+\
+&
+;;
+(; :::(,:))
+
+
+KEYS
+ESCAPE
+LITERAL
+key:<
+
+TAGLINE   :{\0 [ {; {, key:tag}} ]}{\0 flag}
+AUTHORLINE: By {& author} `{\0 ( {; {, key:attr}} )}
+
+    if [bB]y\s+(.+)
+        if ([^`]+)(`([^`]+))?
+                1:
+                    if   [ &]*([^& ]+.*)
+                        if ([^& ]+)&*
+                            if ([^ ]+)
+                            elseif \s+ -->
+                            else excpetion
+                        else excpetion
+                    else excpetion
+                2:
+                    if \(([^\)\(]*)\)
+                        if ([^:::]+):::([^:::]+)
+                            1:
+                                if ([^ ]+)
+                                elseif \s+ --> 1
+                                else excpetion
+                            2:
+                                if ^[ ;]*([^; ]+.*)
+                                    if ([^;]*);*
+                                        if ^[ ,]*([^, ]+.*)
+                                            if ([^,]*),*
+                                                if ([^:]+):([^:]+)
+                                                    1:
+                                                        if ([^ ]+)
+                                                        elseif \s+ --> 1
+                                                        else excpetion
+                                                    2:
+                                                        elsif \*([^\* ]+)
+                                                            if ([^ ]+)
+                                                            elseif \s+ --> 2
+                                                            else excpetion
+                                                        elsif ([^ ]+)
+                                                        elseif \s+ --> 2
+                                                        else excpetion
+                                                 elsif \*+([^\* ]+)
+                                                        elsif ([^ ]+)
+                                                        elseif \s+ -->
+                                                        else excpetion
+                                                 elsif ([^ ]+)
+                                                 elseif \s+ -->
+                                                 else excpetion
+                                            elseif \s+ -->
+                                            else excpetion
+                                        else excpetion
+                                    else excpetion
+                                else excpetion
+                        elsif ^[ ;]*([^; ]+.*)
+                            if ([^;]*);*
+                                if ^[ ,]*([^, ]+.*)
+                                    if ([^,]*),*
+                                        if ([^:]+):([^:]+)
+                                            1:
+                                                if ([^ ]+)
+                                                elseif \s+ --> 1
+                                                else excpetion
+                                            2:
+                                                elsif \*([^\* ]+)
+                                                    if ([^ ]+)
+                                                    elseif \s+ --> 2
+                                                    else excpetion
+                                                elsif ([^ ]+)
+                                                elseif \s+ --> 2
+                                                else excpetion
+                                         elsif \*+([^\* ]+)
+                                             elsif ([^ ]+)
+                                             elseif \s+ -->
+                                             else excpetion
+                                         elsif ([^ ]+)
+                                         elseif \s+ -->
+                                         else excpetion
+                                    elseif \s+ -->
+                                    else excpetion
+                                else excpetion
+                            else excpetion
+                        else excpetion
+                    elseif \s+ -->
+                    else excpetion
+        else excpetion
+
+
+
+DESCRIPTIVE SEPERATOR {^c}c{^c}
+- leading/trailing
+
+    INCLUSIVE {^c}c{^c}+c{^c}+ & +{^c}cc{^c}c{^c}+
+
+        if ([^c]+)c([^c]+)
+            1:
+              if {A}
+            2:
+              if {B}
+        elseif {A|B|C}
+
+    EXCLUSIVE {^c}c{^c}-c{^c}- &  -{^c}cc{^c}c{^c}-
+
+
+        if ([^c]+)c([^c]+)
+            1:
+              if {A}
+            2:
+              if {B}
+        elseif {^c}
+            if {A|B|C}
+
+    EXACT  -{^c}c{^c}c{^c}- &  -{^c}cc{^c}c{^c}-
+
+
+        if ([^c]+)c([^c]+)$
+            1:
+              if {A}
+            2:
+              if {B}
+        elseif {A|B|C}
+
+
+
+DELIMITER c{^c}
+
+    GENERAL {^c} & c{^c} & c{^c}c & c
+        if ^[ c]*([^c ].*)*
+            if ([^c]*)c*
+                if{A|C}
+        elseif {A|D}
+
+
+
+CONTAINER c1{^c1c2}c2
+
+  INCLUSIVE +{^c1c2}+-c1c1{^c1c2}c2- & -c1c1{^c1c2}c2- &  c1{^c1c2}c2-c2- &  +{^c1c2}+c1{^c1c2}c2
+      if c1([^c1c2]*)c2
+      elseif {^c1c2}
+
+  EXCLUSIVE +{^c1c2}+-c1c1{^c1c2}c2- & -c1c1{^c1c2}c2- &  c1{^c1c2}c2-c2- & +{^c1c2}+c1{^c1c2}c2
+      if ^c1([^c1c2]*)c2
+      elseif {^c1c2}
+
+  EXCLUSIVE2 +{^c1c2}+-c1c1{^c1c2}c2- & -c1c1{^c1c2}c2- &  -c1{^c1c2}c2c2- & +{^c1c2}+c1{^c1c2}c2
+      if c1([^c1c2]*)c2$
+      elseif {^c1c2}
+
+
+
+MARKER c{^c}
+
+    PASSIVE +{^c}c{^c}+ & +c{^c}c{^c}+ & +{^c}+c+ & {^c}c{^c}c
+        if c([^c ]+)
+          if {A|C}
+        elsif {A|B}
+
+    INCLUSIVE +{^c}+c{^c} & c{^c}c{^c} & +{^c}+-c- & +{^c}+c{^c}-c-
+        if c([^c ]+)
+          if {A|C}
+        elsif (^c)
+          if {A|B}
+
+
+    EXCLUSIVE +{^c}+c{^c} & -c{^c}c{^c}- & +{^c}+-c- & +{^c}+-c{^c}c-
+        if c([^c ]+)$
+          if {A|C}
+        elsif (^c)
+          if {A|B}
+
+    EXCLUSIVE2 +{^c}+c{^c} & c{^c}c{^c} & +{^c}+-c- & +{^c}+c{^c}-c-
+        if ^c([^c ]+)
+          if {A|C}
+        elsif (^c)
+          if {A|B}
+
+    EXACT -{^c}+c{^c}- & -c{^c}c{^c}- & -{^c}c- & -{^c}c{^c}c-
+        if ^c([^c ]+)$
+          if {A|C}
+        elsif (^c)
+          if {A|B}
+
+
+
+WORD {^c}
+
+      GENERAL
+        if ([^c]+)
+
+
+
+
+words
+skip_whitespaces = 0/1/2
+till_empty/skip
+next/decend/acsend
+exception
+
+(())()
+(()())
+
+
+
+

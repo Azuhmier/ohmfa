@@ -1,0 +1,14 @@
+#============================================================
+#
+#        FILE: input.txt
+#
+#       USAGE: less ./input.txt
+#
+#  DESCRIPTION: OHMFA Input Documentation
+#
+#       AUTHOR: Azuhmier (aka taganon), azuhmier@gmail.com
+# ORGANIZATION: ---
+#      VERSION: 1.0
+#      Created: Mon 04/24/23 08:08:10
+#============================================================
+

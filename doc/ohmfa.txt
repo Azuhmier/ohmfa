@@ -1,0 +1,39 @@
+#============================================================
+#
+#        FILE: ohmfa.txt
+#
+#       USAGE: less ./ohmfa.txt
+#
+#  DESCRIPTION: Overview of OHMFA
+#
+#       AUTHOR: Azuhmier (aka taganon), azuhmier@gmail.com
+# ORGANIZATION: ---
+#      VERSION: 1.0
+#      Created: Mon 04/24/23 07:55:22
+#============================================================
+
+Creation of sql database from masterbin text file follows the following processes:
+
+    [input]                    masterbin
+    [lexing]                   parse tree
+    [parsing]                  node tree
+    [nodifying]                resolved node tree
+    [multi-parental resolving] resolved node tree
+    [sql conversion]           proto-db
+    [tablelization]            db
+
+
+alias
+group
+key
+label
+node
+note
+tag
+
+column
+foreign key
+id
+key
+key table
+use table
