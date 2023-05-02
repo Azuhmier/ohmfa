@@ -1,4 +1,3 @@
-!! This Read Me and the information in it is outdated and will be updaated soon!
 # OHMFA  (WIP!!!!!!!!!)
 Omni Hashing Masterbin File Application
 
