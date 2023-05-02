@@ -1,122 +1,409 @@
+mod prepare;
+mod lexer;
+
 use std::fs::{File};
 use std::io::{BufRead, BufReader};
-use std::path::Path;
 use std::time::{Instant};
 
-#[derive(Debug, PartialEq)]
-enum LineEnding {
-    Unix,
-    Dos,
-    Unknown
-}
 
-fn file_to_vec<P: AsRef<Path>, E>(filename: P) -> Result<(Vec<String>, LineEnding), E> {
-    let file_in = File::open(&filename);
-    let reader = BufReader::new(file_in);
+
+fn file_to_vec(filename: &str) -> std::io::Result<Vec<String>> {
     let mut lines_out = Vec::new();
-    let mut last_char = None;
-    let mut line_ending = LineEnding::Unknown;
+    let file_in = File::open(filename).unwrap();
 
-    for line_result in reader.lines() {
-        let line = line_result?;
-        if let Some(c) = line.chars().last() {
-            last_char = Some(c);
-            if line_ending == LineEnding::Unknown {
-                if c == '\n' {
-                    line_ending = LineEnding::Unix;
-                } else if c == '\r' {
-                    line_ending = LineEnding::Dos;
-                }
-            }
-        }
-        lines_out.push(line);
+    let reader = BufReader::new(file_in);
+    for line in reader.lines() {
+        lines_out.push(line?);
     }
 
-    // Determine newline at EOF
-    if last_char == Some('\n') {
-        println!("Newline at EOF");
-    } else {
-        println!("No newline at EOF");
-    }
-
-    // Print line ending type
-    match line_ending {
-        LineEnding::Unknown => println!("No line endings detected"),
-        LineEnding::Unix => println!("UTF-8 is Unix"),
-        LineEnding::Dos => println!("UTF-8 is DOS"),
-    }
-
-    Ok((lines_out, line_ending))
+    Ok(lines_out)
 }
 
-fn extract_whitespace(line: String) -> (String, u32, u32) {
-    let mut cleaned_line: String = line.trim().to_owned();
-    let mut leading_spaces = 0;
-    let mut trailing_spaces = 0;
 
-    if line.trim().is_empty() {
-        leading_spaces += line.len() as u32;
-
-        ("\n".to_owned(), leading_spaces, trailing_spaces)
-    } else {
-        let first_char = cleaned_line.chars().next().unwrap();
-        let last_char = cleaned_line.chars().last().unwrap();
-
-        for curr_char in line.chars() {
-            if first_char != curr_char && curr_char.is_whitespace() {
-                leading_spaces += 1;
-            } else {
-                break;
-            }
-        }
-
-        for curr_char in line.chars().rev() {
-            if last_char != curr_char && curr_char.is_whitespace() {
-                trailing_spaces += 1;
-            } else {
-                break;
-            }
-        }
-
-        cleaned_line.push('\n');
-
-        (cleaned_line, leading_spaces, trailing_spaces)
-    }
-}
 
 fn main() -> std::io::Result<()> {
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 {
         let filename = &args[1];
+        let startt = Instant::now();
         let lines = file_to_vec(filename)?;
 
-        let mut results: Vec<(String, u32,  u32)> = vec![];
-
-        let start = Instant::now();
-
+        let mut prepared_lines: Vec<String> = vec![];
         for line in lines {
-            results.push(extract_whitespace(line));
+            let prepared_line = prepare::prepare(line);
+            prepared_lines.push(prepared_line.to_owned());
         }
 
-        let mut trimmed_lines: Vec<String> = vec![];
+        let mut lexer  = lexer::Lexer::new(&prepared_lines);
+        while let Some(token) = lexer.next() {
+            //println!("{:?}",&token);
+            match &token {
+                lexer::Tokens::LeftBracket(z,_e,_ln)     => {
+                    println!("===============================");
+                    println!("NODE: GROUP");
+                    if *z == 5 as usize  {
+                        //println!("{:?}",&string);
+                        println!("RAW: [");
+                    }
+                    else {
+                        println!("RAW: [");
+                    }
+                },
+                lexer::Tokens::RightBracket(_z,_e,_ln)    => {
+                        println!("===============================");
+                        println!("ACTION: END GROUP");
+                        println!("RAW: ]");
+                },
+                lexer::Tokens::Colon(_z,_e,_ln)           => {
+                        println!("WRONGO :");
+                },
+                lexer::Tokens::Comma(_z,_e,_ln)           => {
+                        println!("===============================");
+                        println!("NODE: CONTAINER_2");
+                        println!("RAW: ,");
+                },
+                lexer::Tokens::SemiColon(_z,_e,_ln)       => {
+                        println!("===============================");
+                        println!("NODE: CONTAINER_1");
+                        println!("RAW: ;");
+                },
+                lexer::Tokens::Equal(_z,_e,_ln)           => {
+                        println!("WRONGO =");
+                },
+                lexer::Tokens::Amp(_z,_e,_ln)             => {
+                        println!("WRONGO &");
+                },
+                lexer::Tokens::Word(string, z,_e,ln)    => {
+                    if *z == 0 as usize  {
+                        if string.chars().all(|x| x.is_alphanumeric()) {
+                            if string == "AUTHOR" {
+                                println!("===============================");
+                                let mut collab = Vec::<String>::new();
+                                println!("NODE: {}", &string);
+                                loop {
+                                    if let Some(token) = lexer.peek() {
+                                        match &token {
+                                            lexer::Tokens::Literal(next_string, _z,_e,next_ln) => {
 
-        println!("\n[Tuple]");
-        for result in results {
-            println!("{:?}", result);
-            trimmed_lines.push(result.0);
+                                                if next_ln > ln {
+                                                    break;
+                                                }
+                                                else {
+                                                    lexer.next();
+                                                    collab.push(next_string.to_owned());
+                                                }
+                                            }
+                                            lexer::Tokens::Amp(_z,_e,next_ln) => {
+                                                if next_ln > ln {
+                                                    break;
+                                                }
+                                                else {
+                                                    lexer.next();
+                                                    println!("TAKE: &");
+                                                }
+                                            }
+                                            lexer::Tokens::LeftBracket(_z,_e,_next_ln)     => {
+                                                break;
+                                            }
+                                            _ => {
+                                                break;
+                                            }
+                                        };
+                                    }
+                                    else {
+                                        break;
+                                        //ERROR
+                                    }
+                                }
+                                if collab.len() > 1 {
+                                    println!("VAL: {:?}", &collab[0]);
+                                    println!("COLLAB: {:?}", &collab);
+                                }
+                                else {
+                                    println!("VAL: {:?}", &collab[0]);
+                                }
+                            }
+                            else {
+                                println!("===============================");
+                                println!("NODE: {}", &string);
+                                if let Some(token) = lexer.peek() {
+                                    match &token {
+                                        lexer::Tokens::Literal(next_string, _z,_e,next_ln) => {
+
+                                            if next_ln > ln {
+                                                break;
+                                            }
+                                            else {
+                                                let _next_token = lexer.next();
+                                                println!("VAL: {}",&next_string);
+                                            }
+                                        }
+                                        _ => {
+                                            //ERROR;
+                                        }
+                                    };
+                                }
+                                else {
+                                    break;
+                                    //ERROR
+                                }
+                            }
+
+                        }
+                        else {
+                        }
+                    }
+                    //ATTRS
+                    else {
+                        println!("===============================");
+                        let mut word = String::from("");
+                        let mut is_tag : u32 = 1;
+                        let mut is_collab: u32 = 0;
+                        let mut collab = Vec::<String>::new();
+                        word.push_str(string);
+                        loop {
+                            if let Some(token) = lexer.peek() {
+                                match &token {
+                                    lexer::Tokens::Word(next_string, _z,_e,next_ln) => {
+                                        if next_ln > ln {
+                                            break;
+                                        }
+                                        else {
+                                            lexer.next();
+                                            word.push_str(&" ".to_string());
+                                            word.push_str(&next_string);
+                                        }
+                                    }
+                                    lexer::Tokens::RightBracket(_z,_e,next_ln)     => {
+                                        if next_ln > ln {
+                                            break;
+                                        }
+                                        else {
+                                            println!("PEEK: ]");
+                                            break;
+                                        }
+                                    }
+                                    lexer::Tokens::LeftBracket(_z,_e,next_ln)     => {
+                                        if next_ln > ln {
+                                            break;
+                                        }
+                                        else {
+                                            println!("PEEK: [");
+                                            break;
+                                        }
+                                    }
+                                    lexer::Tokens::SemiColon(_z,_e,next_ln)     => {
+                                        if next_ln > ln {
+                                            break;
+                                        }
+                                        else {
+                                            //println!("{:?}",&string);
+                                            println!("PEEK: ;");
+                                            break;
+                                        }
+                                    }
+                                    lexer::Tokens::Comma(_z,_e,next_ln)     => {
+                                        if next_ln > ln {
+                                            break;
+                                        }
+                                        else {
+                                            //println!("{:?}",&string);
+                                            println!("PEEK: ,");
+                                            break;
+                                        }
+                                    }
+                                    lexer::Tokens::Colon(_z,_e,next_ln)     => {
+                                        if next_ln > ln {
+                                            break;
+                                        }
+                                        else {
+                                            lexer.next();
+                                            if word == "collab".to_string() {
+                                                is_collab = 1;
+                                                loop {
+                                                    if let Some(token) = lexer.peek() {
+                                                        match &token {
+                                                            lexer::Tokens::Literal(next_string, _z,_e,next_ln) => {
+
+                                                                if next_ln > ln {
+                                                                    break;
+                                                                }
+                                                                else {
+                                                                    lexer.next();
+                                                                    collab.push(next_string.to_owned());
+                                                                }
+                                                            }
+                                                            lexer::Tokens::Amp(_z,_e,next_ln) => {
+                                                                if next_ln > ln {
+                                                                    break;
+                                                                }
+                                                                else {
+                                                                    lexer.next();
+                                                                    println!("TAKE: &");
+                                                                }
+                                                            }
+                                                            lexer::Tokens::Word(next_string, _z,_e,next_ln) => {
+                                                                if next_ln > ln {
+                                                                    break;
+                                                                }
+                                                                else {
+                                                                    println!("WRONGO: {:?}", &next_string);
+                                                                    //ERROR
+                                                                }
+                                                            }
+                                                            lexer::Tokens::RightBracket(_z,_e,next_ln)     => {
+                                                                if next_ln > ln {
+                                                                    break;
+                                                                }
+                                                                else {
+                                                                    println!("PEEK: ]");
+                                                                    break;
+                                                                }
+                                                            }
+                                                            lexer::Tokens::LeftBracket(_z,_e,next_ln)     => {
+                                                                if next_ln > ln {
+                                                                    break;
+                                                                }
+                                                                else {
+                                                                    println!("PEEK: [");
+                                                                    break;
+                                                                }
+                                                            }
+                                                            lexer::Tokens::SemiColon(_z,_e,next_ln)     => {
+                                                                if next_ln > ln {
+                                                                    break;
+                                                                }
+                                                                else {
+                                                                    //println!("{:?}",&string);
+                                                                    println!("PEEK: ;");
+                                                                    break;
+                                                                }
+                                                            }
+                                                            lexer::Tokens::Comma(_z,_e,next_ln)     => {
+                                                                if next_ln > ln {
+                                                                    break;
+                                                                }
+                                                                else {
+                                                                    //println!("{:?}",&string);
+                                                                    println!("PEEK: ,");
+                                                                    break;
+                                                                }
+                                                            }
+                                                            _ => {
+                                                                break;
+                                                            }
+
+                                                        }
+                                                    }
+                                                    else {
+                                                        break;
+                                                    }
+                                                }
+
+                                            }
+                                            else {
+                                                is_tag = 0;
+                                            }
+                                            break;
+
+                                        }
+                                    }
+                                    _ => {
+                                        break;
+                                    }
+                                };
+                            }
+                            else {
+                                break;
+                                //ERROR
+                            }
+                        }
+                        if is_collab == 1 {
+                                println!("ACTION: COLLAB");
+                                println!("COLLAB {:?}", collab);
+                        }
+                        else {
+                            if is_tag == 1 {
+                                println!("NODE: TAG");
+                            }
+                            else {
+                                println!("NODE: KEY");
+                                println!("TAKE: :");
+                            }
+                            println!("VAL: {:?}",word);
+                        }
+
+                    }
+                },
+                lexer::Tokens::Literal(string, _z,_e,ln) => {
+                    println!("===============================");
+                    let mut is_attr : u32 = 1;
+                    if let Some(token) = lexer.peek() {
+                        match &token {
+                            lexer::Tokens::RightBracket(_z,_e,next_ln)     => {
+                                if next_ln > ln {
+                                }
+                                else {
+                                    println!("PEEK: ]");
+                                }
+                            }
+                            lexer::Tokens::LeftBracket(_z,_e,next_ln)     => {
+                                if next_ln > ln {
+                                }
+                                else {
+                                    println!("PEEK: [");
+                                }
+                            }
+                            lexer::Tokens::SemiColon(_z,_e,next_ln)     => {
+                                if next_ln > ln {
+                                }
+                                else {
+                                    //println!("{:?}",&string);
+                                    println!("PEEK: ;");
+                                }
+                            }
+                            lexer::Tokens::Comma(_z,_e,next_ln)     => {
+                                if next_ln > ln {
+                                }
+                                else {
+                                    //println!("{:?}",&string);
+                                    println!("PEEK: ,");
+                                }
+                            }
+                            lexer::Tokens::Equal(_z,_e,next_ln)     => {
+                                if next_ln > ln {
+                                }
+                                else {
+                                    lexer.next();
+                                    is_attr = 0;
+                                }
+                            }
+                            _ => {
+                            }
+                        };
+                    }
+                    else {
+                        //ERROR
+                    }
+                    if is_attr == 1 {
+                        println!("NODE: ATTR");
+                    }
+                    else {
+                        println!("NODE: LABEL");
+                        println!("TAKE: =");
+                    }
+                    println!("VAL: {:?}",&string);
+                },
+            };
         }
 
-        println!("\n[Trimmed File]:");
-        for line in trimmed_lines {
-            print!("{}", line);
-        }
-        println!("---");
 
-        let elapsed = start.elapsed();
 
+        let elapsed = startt.elapsed();
         println!("\nelapsed time: {:.2?}\n", elapsed);
 
         Ok(())
+
     } else {
         println!("Usage: {} <input>", args[0]);
         Err(std::io::Error::new(std::io::ErrorKind::Other, "Usage: <input>"))

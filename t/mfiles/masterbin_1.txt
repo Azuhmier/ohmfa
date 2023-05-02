@@ -1,32 +1,10 @@
-
-    
-
-
-    
-   ~/HMoFA/ Library
-~-> Contact: azuhmier@gmail.com (Questions or Suggestions?) <-
-   ~-> Last updated at #2065 ( Mon 07/04/22 13:06:42 ECT ) <-
- ~
-   ~== **LINKS**
-~- [Masterbin](https://rentry.org/hmofa)
-~- [Tag Catalog](https://rentry.org/hmofa2) (Tags and Descriptions)
-~- [Outerbin](https://rentry.org/hmofa3) (Stories From outside /HMoFA/)
-~- [/HMoFA/ Games](https://docs.google.com/document/d/1HZSVPdzcNr17vmXQTdLLI2nvdg-X1ltmtW1NQvDqvgw) (Maintainer: fwappriciator@gmail.com)
-~- [/HMoFA/ Masterdump of Doujinshi](https://docs.google.com/document/d/12v1kzQnaeCRVIiXISNxXXFZiCfvuwUcFESL0DIVo9nE) (Maintainer: fwappriciator@gmail.com)
-~- [Resource Bin](https://rentry.org/hmofa4)
-~- [Furchan Thread](https://furchan.net/fg/res/4225.html)
-~- ["Source Code"](https://github.com/Azuhmier/hmofa) (WIP)
-~
-~== **TABLE OF CONTENTS**
-~[TOC2]
-~
 ——————————————————————————————————————————————————————————————————————————————————
 %%%%% masterbin %%%%%
 ——————————————————————————————————————————————————————————————————————————————————
 by (You).
 
 >/HMOFA/ Colab story `(Edit Code: "Ana")
-[][]
+[tag1][]
 https://rentry.co/pynpz
 
 >/HMOFA/ Collab Story #2 `(Edit Code: "Belfast)
@@ -42,7 +20,7 @@ https://rentry.co/hkwmv
 by RockEatingAnon
 
 >Permanent Vacation
-[][]
+[][key1:*literal1*=word word]
 https://www.sofurry.com/view/1867605
 https://www.sofurry.com/view/1869261
 
@@ -51,7 +29,7 @@ https://www.sofurry.com/view/1869261
 by Doberanon
 
 >A Trip to the Park
-[][]
+[][collab: *author1* & *author2* & *author3*]
 https://rentry.org/6vxmm
 
 >Non-Stop (You).
@@ -71,7 +49,7 @@ https://archiveofourown.org/works/39592245
 by Gold_Eagle
 
 >Tertia Optio
-[;scalie; ;snake; ;viper_(Xcom); ;size Difference;][;Action/Adventure; ;Survival; ;First Person; ;Blood and Gore; ;Curses; ;Murder; ;Drama & Romance; ;Brutality; ;Alternating POV; ;Developing Friendships; ;Flashbacks; ;Unresolved Sexual Tension; ;Alien Biology; ;Alien Culture; ;Alien Cultural Differences; ;Banter; ;Worldbuilding; ;XCOM; ;freeform; ;War Crimes; ;Investigations; ;War; ;Rebellion; ;alien occupation; ;Sarcasm; ;Sameo;]
+[;scalie; ;snake; ;viper_(Xcom); ;size Difference;][;Action/Adventure; ;Survival; ;First Person; ;Blood and Gore; ;Curses; ;Murder; ;Drama;  ;Romance; ;Brutality; ;Alternating POV; ;Developing Friendships; ;Flashbacks; ;Unresolved Sexual Tension; ;Alien Biology; ;Alien Culture; ;Alien Cultural Differences; ;Banter; ;Worldbuilding; ;XCOM; ;freeform; ;War Crimes; ;Investigations; ;War; ;Rebellion; ;alien occupation; ;Sarcasm; ;Sameo;]
 https://archiveofourown.org/works/30716630
 
 -----------------------------------------------------------------------------------------------------------------------------
@@ -731,7 +709,7 @@ https://www.sofurry.com/view/1662158
 #In your typical horror fashion, Anon becomes the latest victim of a hellhound's vices as the Halloween night comes to a close.
 
 >Hellhound of the Morning
-[;canine; ;hellhound; ;succubus;][;angels & devils; ;comfy; ;lewd; ;love/romance; ;m:pov; ;m:temptation; ;sex;]
+[;canine; ;hellhound; ;succubus;][;angels and devils; ;comfy; ;lewd; ;love/romance; ;m:pov; ;m:temptation; ;sex;]
 https://archiveofourown.org/works/32838046
 https://git.io/JZ9iI
 https://www.sofurry.com/view/1662156
@@ -1021,7 +999,7 @@ https://rentry.co/tp2di
 https://git.io/Js8yd
 
 >Roomies
-[;raccoon; ;waifur::Rikki;][;COMPLETE; ;comfy; ;confession of feelings; ;roommates; ;sex;]
+[;raccoon; ;waifur:Rikki;][;COMPLETE; ;comfy; ;confession of feelings; ;roommates; ;sex;]
 https://git.io/Js8SB
 
 >Ruff Ryders
@@ -2704,7 +2682,7 @@ by Fritewag1
 https://archiveofourown.org/works/36934978
 
 >A Lotus By Any Other Name
-[;feline; ;tiger; ;waifur::Tigress;][;Kung Fu Panda; ;sex;]
+[;feline; ;tiger; ;waifur:Tigress;][;Kung Fu Panda; ;sex;]
 https://archiveofourown.org/works/30665606
 
 >Digital Love
@@ -3808,10 +3786,10 @@ by Magnus
 
 >The Wizard and the Fox
 [][]
-https://www.sofurry.com/view/1789614 `(ch. 1 & 2)
+https://www.sofurry.com/view/1789614 `(ch. 1 and 2)
 https://www.sofurry.com/view/1800764 `(ch. 3)
 https://www.sofurry.com/view/1813842 `(ch. 4)
-https://www.sofurry.com/view/1827799 `(ch. 5)
+https://www.sofurry.com/view/1827799 `(ch. 5)()
 
 -----------------------------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------------------------
@@ -4657,7 +4635,7 @@ by Quoth_THE_raven
 [;canine; ;wolf;][]~
 https://git.io/J31sb
 https://www.furaffinity.net/view/34347669/ `(ch 1)
-https://www.furaffinity.net/view/38230593/ `(ch 2 & 3)
+https://www.furaffinity.net/view/38230593/ `(ch 2 and 3)
 https://www.furaffinity.net/view/38418072/ `(ch 4-6)
 #A brand new series about a man and the Nordic wolf of the Apocalypse. Can he warm up her cold, slightly murderous heart? Find out in Blade of Gold, Fangs of Cold.
 
@@ -6324,7 +6302,7 @@ https://git.io/J39Du
 
 =============/ FCP /=============
 >Vishan Biological Report
-[;Vishan; ;scalie; ;waifur::multiple;][;COMPLETE; ;genre::sci-fi; ;stem jargon; ;report;]
+[;Vishan; ;scalie; ;waifur:multiple;][;COMPLETE; ;genre:sci-fi; ;stem jargon; ;report;]
 https://archiveofourown.org/works/38617266
 #Humans have recently discovered a species of scaled anthros on another planet with a high ratio of female to males. This is a biological report for the purpose of analyzing the prospects of future Human-Vishan pairings. Report also includes interviews with members of female Vishans.
 
