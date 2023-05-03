@@ -40,6 +40,7 @@ impl Tree {
     }
   }
 }
+
 impl Node {
     pub fn new (value: Option<Rc<String>>, class: String, ln: Option<usize>) -> Self {
         if let Some(LN) = ln {
@@ -84,8 +85,6 @@ impl Node {
     }
 }
 
-
-
 fn file_to_vec(filename: &str) -> std::io::Result<Vec<String>> {
     let mut lines_out = Vec::new();
     let file_in = File::open(filename).unwrap();
@@ -97,9 +96,6 @@ fn file_to_vec(filename: &str) -> std::io::Result<Vec<String>> {
 
     Ok(lines_out)
 }
-
-
-
 
 fn main() -> std::io::Result<()> {
 
