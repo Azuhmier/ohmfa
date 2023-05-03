@@ -1,8 +1,8 @@
 mod prepare;
 mod lexer;
+
 use std::rc::Rc;
 use std::cell::RefCell;
-
 use std::fs::{File};
 use std::io::{BufRead, BufReader};
 use std::time::{Instant};
