@@ -7,7 +7,6 @@ use std::fs::{File};
 use std::io::{BufRead, BufReader};
 use std::time::{Instant};
 use std::collections::HashMap;
-//use std::rc::Rc;
 use std::fmt::Debug;
 
 fn debug<T: Debug> (arg: &T) {
