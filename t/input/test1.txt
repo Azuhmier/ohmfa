@@ -1,0 +1,11 @@
+    
+This file started with a nonzero width empty line
+  This line has a leading space.
+This line has trailing spaces.   
+    This line has trailing and leading spaces    
+
+   
+
+   
+
+Some of those lines above had leading spaces.

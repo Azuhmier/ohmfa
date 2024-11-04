@@ -1,0 +1,13 @@
+types:
+    author:
+        lvl: 1
+        parents:
+        - thread
+    title:
+        lvl: 2
+        parents: 
+        - author
+    url:
+        lvl: 3
+        parents:
+        - title

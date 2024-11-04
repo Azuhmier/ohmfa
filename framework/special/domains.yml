@@ -1,0 +1,713 @@
+archiveofourown.org:
+    elements:
+        e_accept_NSFW_clk: [_css_, '#main > ul > li:nth-child(1) > a']
+        e_accept_full_work_clk: [_css_, '#main > div.work > ul > li.chapter.entire > a']
+        e_accept_tos_clk: [_css_, '#accept_tos']
+        e_accept_tos : [p, class, submit]
+        e_tos_agree_clk: [_css_, '#tos_agree']
+        e_tos_agree : [input, id, tos_agree]
+        e_pwd: [input, id, user_password]
+        e_usr: [input, id, user_login]
+        e_token: [input, name, authenticity_token]
+        e_body_logged_out: [body, class, logged-out javascript]
+        e_tos_prompt: [div, id, tos_prompt]
+    get:
+        PWD: [e_pwd, name]
+        USR: [e_usr, name]
+        TOKEN_VALUE: [e_token, value]
+        TOKEN_NAME: [e_token, name]
+    actions:
+        fetch_content:
+            type: get
+            method: requests
+            url :
+            - _url
+            - '?view_adult=true&view_full_work=true'
+        login:
+            type: post
+            method: requests
+            url :
+            - https://archiveofourown.org/users/login
+            get :
+            - TOKEN_NAME
+            - TOKEN_VALUE
+            - PWD
+            - USR
+            payload: 
+                usr: USR
+                pwd: USR
+                TOKEN_NAME: TOKEN_VALUE
+        agree:
+            type: js
+            method: selenium
+            do :
+            - [ click, e_tos_agree_clk, 5, 0]
+            - [ click, e_accept_tos_clk, 1, 0]
+            - [ click, e_accept_NSFW_clk, 1, 0]
+            - [ click, e_accept_full_work_clk, 1, 0]
+    workflows:
+        fetch :
+            defaut: yes
+            do: 
+            - [fetch_content]
+    cookies :
+    - __cf_bm
+    - _cfuvid
+    - _otwarchive_session
+    - cf_clearance
+
+.itch.io:
+    elements: # 1
+        e_head_title: [[head, title], [_text_]]
+        e_dscr_raw: [div, class, formatted_description user_formatted]
+        e_dls_class: [div, class, uploads]
+        e_dl_class: [div, class, upload]
+        e_dl_info_class: [div, class, info_column]
+        e_dl_button: [a, class, button download_btn]
+        e_comments: [div, class, game_comments_widget base_widget]
+        e_csrf_token: [meta, name, csrf_token]
+        e_view_more: [a, class, action_btn view_more]
+        e_more_games: [div, class, game_grid_widget base_widget user_game_grid]
+        e_other_game: [a, class, title game_link]
+        e_dl_direct: [a, class, direct_download_btn]
+    get: # 1
+        _AUTHOR_: [[e_head_title, [_text_], [till, by]]]
+        _TITLE_: [[e_head_title, [_text_], [after, by] ]] 
+        _DSCR_: [[e_dscr_raw, [1, p]]]
+        _CONTENT_: [[]]
+        OTHER_TITLES: [[e_view_more, hreff]]
+        TO_OTHER_TITLE: [[e_other_game, hreff]]
+        OTHER_TITLE: [[e_other_game, _text_]]
+        POST_RSP_URL: [[[_a_download_post_], url]]
+        CSRF_TOKEN: [[e_csrf_token, name]]
+        IS_SUCCESS: [[[_a_download_post_], name]]
+    workflows:
+        download_content:
+            default: 'yes'
+            do:
+            - [a_fetch_content]
+            - [a_download_post]
+            - [a_download_get]
+        download_content_alt:
+            default: 'no'
+            do:
+            - [a_purchase_get]
+            - [a_purchase_post]
+            - [a_download_post]
+            - [a_download_get]
+    cookies: 
+        - allow_nsfw_games
+        - itchio_refs
+        - itchio_token
+        - ref%3aregister%3areferrer
+    triggers: 
+        if_post_fail: 
+            criteria: 
+                key: POST_RSP_URL
+                val: null
+            type: get
+            do:
+            - [wfl, download_content_get]
+    actions: 
+        a_fetch_other: 
+            type: get
+            method: requests
+            url : 
+            - [OTHER_TITLES]
+            get: 
+            - TO_OTHER_TITLE, OTHER_TITLE
+        a_fetch_content:
+            type: get
+            method: requests
+            parse: 'yes'
+            url : 
+            - [_url]
+            get: 
+            - CSRF_TOKEN 
+            #- OTHER_TITLES
+            header : 
+                User-Agent: [_ua]
+                DNT: '1'
+                Accept-Encoding: gzip, deflate, br, zstd
+                Accept-Language: 'en-US,en;q=0.5'
+                Connection: keep-alive
+                Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+                #Cookie: [_cookie]
+                Priority: u=0, i
+                Host: [_domain]
+                Sec-Fetch-Dest: document
+                Sec-Fetch-Mode: navigate
+                Sec-Fetch-Site: none
+                Sec-Fetch-User: '?1'
+                Upgrade-Insecure-Requests: '1'
+        a_purchase_get:
+            type: get
+            method: requests
+            parse: 'yes'
+            url : 
+            - [_url]
+            - /purchase
+            get: 
+            - CSRF_TOKEN 
+            #- OTHER_TITLES
+            header : 
+                User-Agent: [_ua]
+                DNT: '1'
+                Accept-Encoding: gzip, deflate, br, zstd
+                Accept-Language: 'en-US,en;q=0.5'
+                Connection: keep-alive
+                Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+                #Cookie: [_cookie]
+                Priority: u=0, i
+                Host: [_domain]
+                Sec-Fetch-Dest: document
+                Sec-Fetch-Mode: navigate
+                Sec-Fetch-Site: none
+                Sec-Fetch-User: '?1'
+                Upgrade-Insecure-Requests: '1'
+        a_purchase_post:
+            type: get
+            method: requests
+            parse: 'yes'
+            url : 
+            - [_url]
+            - /download_url
+            payload: 
+                csrf_token: [CSRF_TOKEN]
+            header : 
+                Accept-Encoding: gzip, deflate, br, zstd
+                Accept-Language: 'en-US,en;q=0.5'
+                Accept: '*/*'
+                Connection: keep-alive
+                Content-Length: 98
+                Cookie: [_cookie_]
+                DNT: 1
+                Host: [https:// + _domain]
+                Origin: [https:// + _domain]
+                Priority: u=0
+                Referer: [_url]
+                Sec-Fetch-Dest: empty
+                Sec-Fetch-Mode: navigate
+                Sec-Fetch-Site: same-origin
+                User-Agent: [_ua]
+                X-Requested-With: XMLHttpRequest
+        a_download_get2:
+            type: get
+            method: requests
+            parse: 'post'
+            url : 
+            - [_url]
+            - /download_url
+            payload: 
+                csrf_token: [CSRF_TOKEN]
+            header : 
+                Accept-Encoding: gzip, deflate, br, zstd
+                Accept-Language: 'en-US,en;q=0.5'
+                Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8'
+                Connection: keep-alive
+                Cookie: [_cookie_]
+                DNT: 1
+                Host: [https:// + _domain]
+                Origin: [https:// + _domain]
+                Priority: u=0, i
+                Referer: [_url]
+                Sec-Fetch-Dest: document
+                Sec-Fetch-Mode: navigate
+                Sec-Fetch-Site: same-origin
+                Sec-Fetch-User: '?1'
+                User-Agent: [_ua]
+                X-Requested-With: XMLHttpRequest
+                Upgrade-Insecure-Requests: '1'
+        a_download_post:
+            type: post
+            method: requests
+            parse: 'yes'
+            url : 
+            - [_url]
+            - /file/7456108?source=view_game&as_props=1&after_download_lightbox=true
+            payload: 
+                csrf_token: [CSRF_TOKEN]
+            header : 
+                User-Agent: [_ua]
+                DNT: 1
+                Accept-Encoding: gzip, deflate, br, zstd
+                Accept-Language: 'en-US,en;q=0.5'
+                Connection: keep-alive
+                Content-Length: 98
+                Content-Length: 102
+                Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+                Accept: '*/*'
+                Cookie: [_cookie_]
+                Referer: [_url]
+                Priority: u=0
+                Host: [_domain]
+                Sec-Fetch-Dest: empty
+                Sec-Fetch-Mode: navigate
+                Origin: [_domain]
+                Sec-Fetch-Site: same-origin
+                Sec-Fetch-Site: cross-site
+                X-Requested-With: XMLHttpRequest
+        a_download_get:
+            type: get
+            method: requests
+            parse:  0
+            url : 
+            - [POST_RSP_URL]
+            header : 
+                User-Agent: [_ua]
+                DNT: '1'
+                Accept-Encoding: gzip, deflate, br, zstd
+                Accept-Language: 'en-US,en;q=0.5'
+                Connection: keep-alive
+                Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+                Referer: [_url]
+                Priority: u=4
+                Host: itchio-mirror.cb031a832f44726753d6267436f3b414.r2.cloudflarestorage.com
+                Sec-Fetch-Dest: iframe
+                Sec-Fetch-Mode: navigate
+
+
+blokfort.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+catbox.moe:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+
+docs.google.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+drive.google.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+
+
+fiction.live:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+files.catbox.moe:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+ghostbin.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+hardbin.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+literotica.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+mcstories.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+mega.nz:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+oliver-hart.itch.io:
+    captcha: null
+    login_required: null
+    login_url: null
+    critera:
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+pastebin.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+pastefs.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+pastes.psstaudio.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+poneb.in:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+rentry.co:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+rentry.org:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+snekguy.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+snootgame.xyz:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+www.fanfiction.net:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+www.furaffinity.net:
+    captcha: 'Yes'
+    login_required: 'Yes'
+    login_url: https://www.furaffinity.net/login
+    criteria :
+    elements:
+        pwd: pass
+        token: null
+        usr: name
+    workflows:
+        default:
+            actions: null
+            method: requests
+
+www.literotica.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+www.reddit.com:
+    captcha: null
+    login_required: null
+    login_url: null
+    criteria :
+    elements:
+        accept_NSFW: null
+        accept_full_work: null
+        accept_tos: null
+        pwd: null
+        token: null
+        tos_agree: null
+        usr: null
+    workflows:
+        default:
+        actions: null
+        method: null
+
+www.sofurry.com:
+    captcha: 'No'
+    login_required: 'Yes'
+    login_url: https://www.sofurry.com/user/login
+    criteria :
+    workflows:
+        _default:
+            actions: null
+            method: requests
+    elements:
+        pwd: LoginForm[sfLoginPassword]
+        token: null
+        usr: LoginForm[sfLoginUsername]

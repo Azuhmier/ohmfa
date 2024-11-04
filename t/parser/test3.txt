@@ -1,0 +1,24 @@
+———
+Masterbin
+———
+
+  by author1
+>title1
+[tag1, tag2][tag3]
+http://url1.com
+http://url2.com
+ >title2
+ []
+http://url1.com
+
+--- 
+
+ By author2
+> title1
+[][tag1]
+http://url1.com 
+> title2
+[tag1, tag2, tag3][tag4, tag5, tag6]
+http://url1.com  
+  http://url2.com
+http://url3.com  

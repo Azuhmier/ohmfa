@@ -1,0 +1,24 @@
+———
+Masterbin
+———
+
+  by author1 `  (attr1, attr2) (group1: ::attr3, label4::attr4; attr5,)
+>title1 `() (attr1)
+  [, , tag1, tag2; tag4]  [,tag3]
+http://url1.com
+http://url2.com
+ >title2 `(label1:att r1; ;)(attr2;, attr3; attr4, attr5)
+ [,]
+http://url1.com
+
+--- 
+
+ By author2
+> title1 `  (:::attr2; attr2)(group2:::)
+[;][tag1,label2:tag2]  
+http://url1.com 
+> title2
+[tag1, ,,;  ;,ta g2, tag3] [;:tag4; tag5; label6:]
+http://url1.com  
+  http://url2.com
+http://url3.com  

@@ -1,0 +1,8 @@
+threads: 
+    root: 'threads'
+    content: 'threads/*.html'
+ops:
+    root: 'ops'
+    folder: 'ops/*'
+    meta: 'ops/*/meta*.txt'
+    content: 'ops/*/*.txt'

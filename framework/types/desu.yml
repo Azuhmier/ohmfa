@@ -1,0 +1,20 @@
+thread:
+    rel_lvl: -1
+    rel_child: author
+    parents: null
+    shared_parenity:
+    - thread
+thread_header:
+    rel_lvl : 0
+    rel_child: author
+    parents:
+    - thread 
+    shared_parenity :
+    - thread
+thread_edition:
+    rel_lvl: 0
+    rel_child: author
+    parents:
+    - thread
+    shared_parenity :
+    - thread
