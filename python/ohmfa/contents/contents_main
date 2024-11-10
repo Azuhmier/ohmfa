@@ -1,0 +1,62 @@
+"""contents_main.py
+"""
+
+
+from urllib.parse import urlparse
+from ohmfa.ohmfa import Ohmfa
+from ohmfa.utils.pather import Pather
+
+
+class ContentsMain(Ohmfa,Pather):
+    """_summary_
+
+    Args:
+        Ohmfa (_type_): _description_
+        Pather (_type_): _description_
+    """
+
+
+    def get_strtimes(self, dir_obj):
+        """_summary_
+
+        Args:
+            dir_obj (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        dirlist = list(dir_obj.iterdir())
+        strtimes = [x for x in dirlist if not x.suffix ]
+        return strtimes
+
+
+    def get_url_dir_from_url(self,surl_dir):
+        """_summary_
+
+        Args:
+            surl_dir (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        res = surl_dir.absolute().replace('__','/',1)
+        res = res.replace('_','/')
+        surl = str(res)
+        return surl
+
+
+    def get_url_from_url_dir(self,surl):
+        """_summary_
+
+        Args:
+            surl (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        url_obj = urlparse(surl)
+        path = str(url_obj.path)
+        path = path.replace('/','_')
+        domain = url_obj.netloc
+        url_dir = str(domain) + '__' + str(path)
+        return url_dir

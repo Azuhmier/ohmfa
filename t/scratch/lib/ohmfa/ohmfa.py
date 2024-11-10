@@ -1,0 +1,2 @@
+class Ohmfa():
+    pass

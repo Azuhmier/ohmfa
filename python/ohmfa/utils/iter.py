@@ -2,7 +2,7 @@
 
 
 
-
+import copy
 from ohmfa.ohmfa import Ohmfa
 
 
@@ -46,12 +46,6 @@ class BatchIter(Iter):
     iter_batch = None
     iter_area_batch = None
 
-
-    def __init__(self, iter_batch=None, iter_area_batch=None):
-        self.iter_batch = iter_batch
-        self.iter_area_batch = iter_area_batch
-
-
     def get_next(self):
         retu = None
 
@@ -64,17 +58,18 @@ class BatchIter(Iter):
             
         return retu
 
+    def set_iter_batch(self,iter_batch):
+        self.iter_batch = copy.deepcopy(iter_batch)
+
+    def set_iter_area_batch(self,iter_area_batch):
+        self.iter_area_batch = copy.deepcopy(iter_area_batch)
+
 
 
 
 class LinkedIter(Iter):
-    
-
-    def __init__(self, start_iter=None, iter_area=None):
-
-        self.iter           = start_iter
-        self.iter_area      = iter_area
-
+    iter = None
+    iter_area = None
 
     def get_next(self):
         retu = False

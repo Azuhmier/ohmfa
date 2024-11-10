@@ -28,7 +28,6 @@ class Fetcher(Ohmfa,Pather):
     p      = None
 
     mode        = 'update'
-    read_only   = False
     max_iter    = 0
     timeout     = 10
     wait        = 1
@@ -82,8 +81,3 @@ class Fetcher(Ohmfa,Pather):
                 login_url = d_config["login"]
                 s.post( login_url , data=payload, headers=header)
         return s
-
-    def fetch(self):
-        self.r    = self.s.get(self.url)
-        self.content = self.r.content
-        self.soup = BeautifulSoup( self.content, 'html.parser' )

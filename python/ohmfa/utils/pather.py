@@ -4,7 +4,6 @@
 
 
 
-import os
 from pathlib import Path
 import json
 import sys
@@ -19,197 +18,112 @@ class Pather():
     """_summary_
     """
 
-    
+    read_only = False
+    pcwd = None
 
 
-    def __init__(self):
-        pass
+    def get_path_object(self, path) :
+        path_obj = Path(path)
+        return path_obj
 
+    def get_pdata(self, path_obj, bp_in=None, clear=False, no_exist="error") :
+        pdata = None
 
-    def dir_walk(self, path):
-        for root, dirs, files in os.walk(path):
-            path = root.split(os.sep)
-            print((len(path) - 1) * '---', os.path.basename(root))
-            for file in files:
-                print(len(path) * '---', file)
-
-
-    def get_file_obj(self, path, bp_in=None, clear=False, no_exist="error") :
-        p = Path(path)
-        data = None
-
-        if p.is_file():
-
-            # ----- File Does Exists! -----#
-            #- Clear
-            if not self.dry_run and clear :
-                p.unlink()
-
-            #- Load
+        # ----- File Does Exists! -----#
+        if path_obj.is_file():
+        #- Clear
+            if not self.read_only and clear :
+                path_obj.unlink()
+        #- Load
             else :
-                data = self.read(p)
-
+                pdata = self.pather_read(path_obj)
+        # ----- Boiler_plate -----#
         elif bp_in:
-            data = copy.deepcopy(bp_in)
-
+            pdata = copy.deepcopy(bp_in)
         # ----- File Does Not Exists! -----#
         # - Make
-        elif not self.dry_run and no_exist == "make":
-            self.write(p,data)
-
+        elif not self.read_only and no_exist == "make":
+            self.pather_write(path_obj, pdata)
         # - Error
         elif no_exist == "error" :
-            sys.exit("ERROR: '" + str(p.absolute()) + "' does not Exist")
+            sys.exit("ERROR: '" + str(path_obj.absolute()) + "' does not Exist")
+        return pdata
 
-        return p, data
 
-
-    def get_dir_obj(self, path, clear = False, no_exist = "error") :
-        """_summary_
-
-        Args:
-            path (_type_): _description_
-            clear (bool, optional): _description_. Defaults to False.
-            no_exist (str, optional): _description_. Defaults to "error".
-
-        Returns:
-            _type_: _description_
-        """
-
-        d = Path(path)
-        data = None
-
-        if d.is_dir():
-
+    def get_plist(self, path, clear = False, no_exist = "error") :
+        dir_obj = Path(path)
+        plist = []
+        if dir_obj.is_dir():
             # ----- Directory Does Exists! -----#
             # - Clear
-            if not self.dry_run and clear :
-                d.rmdir()
-
+            if not self.read_only and clear :
+                dir_obj.rmdir()
             # - Load
             else :
-                data = list(d.iterdir())
-
+                plist = list(dir_obj.iterdir())
         else:
-
             # ----- Directory Does Not Exists! -----#
             # - Make
-            if not self.dry_run and no_exist == "make":
-                d.mkdir()
-
+            if not self.read_only and no_exist == "make":
+                dir_obj.mkdir()
             # - Error
             elif no_exist == 'error' :
-                sys.exit("ERROR: '" + str(d.absolute()) + "' does not Exist")
+                sys.exit("ERROR: '" + str(dir_obj.absolute()) + "' does not Exist")
+        return plist
 
-        return d, data
 
-
-    def get_latest_strtime_dir(self, d) :
-        """_summary_
-
-        Args:
-            p (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        print(d)
-        list_of_files = list(d.glob("*"))
+    def get_latest_strtime_dir(self, dir_obj) :
+        list_of_files = list(dir_obj.glob("*"))
         latest =  max( [int(Path(x).stem) for x in list_of_files] )
         return str(latest)
 
 
-    def import_pwds (self, path, delim) :
-        """_summary_
-
-        Args:
-            path (_type_): _description_
-            delim (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        pwds = {}
-
-        with open(path, encoding="utf-8") as infile:
-
-            # csv reader object constructed from file and given delimiter. 
-            reader = csv.reader( infile, delimiter=delim)
-
-            # Load lines into object
-            next(reader)
-
-            data = [ tuple(row) for row in reader ]
-
-            # create domain crendentials dictionary 
-            for row in data :
-                domain = row[0]
-                username = row[1]
-                password = row[2]
-                pwds[ domain ] = { "usr":username, "pwd":password }
-
-        return pwds
-
-
-    def read(self, p) :
-        """_summary_
-
-        Args:
-            p (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        with p.open(mode='r', encoding="utf-8") as infile:
+    def pather_read(self, path_obj,delim=None) :
+        with path_obj.open(mode='r', encoding="utf-8") as infile:
             # Json
-            if p.suffix == ".json":
-                data=json.load(infile)
+            if path_obj.suffix == ".json":
+                pdata=json.load(infile)
             # yaml
-            elif p.suffix in [".yaml", ".yml"]:
-                data = yaml.safe_load(infile)
-
-
+            elif path_obj.suffix in [".yaml", ".yml"]:
+                pdata = yaml.safe_load(infile)
+            # csv
+            elif path_obj.suffix in [".csv"]:
+                csv_reader = csv.reader( infile, delimiter=delim)
+                csv_list = [ tuple(row) for row in csv_reader ]
+                columns = csv_list.pop(0)
+                pdata={}
+                for row in csv_list :
+                    key = row.pop(0)
+                    for idx,item in enumerate(row):
+                        pdata[key][columns[idx]] = item
             # text
-            elif p.suffix in [".txt", ".text"]:
-                data = infile
-
+            elif path_obj.suffix in [".txt", ".text"]:
+                pdata = infile
             # undefined
             else: 
-                sys.exit("Error: file extension "+str(p.suffix)+" is not supported for read!" )
+                sys.exit("Error: file extension "+str(path_obj.suffix)+" is not supported for pather_read!" )
+            return pdata
 
-            return data
 
-
-    def write(self, p, data) :
-        """_summary_
-
-        Args:
-            p (_type_): _description_
-            data (_type_): _description_
-        """
-
-        with p.open(mode='w+', encoding="utf-8") as outfile:
-
+    def pather_write(self, path_obj, pdata) :
+        with path_obj.open(mode='w+', encoding="utf-8") as outfile:
             # json
-            if p.suffix == ".json":
-                json.dump(data,outfile)
-
+            if path_obj.suffix == ".json":
+                json.dump(pdata,outfile)
             # yaml
-            elif p.suffix == ".yml":
-                yaml.dump(data,outfile)
-
+            elif path_obj.suffix == ".yml":
+                yaml.dump(pdata,outfile)
             # text
-            elif p.suffix in [".txt", ".text", ".html", ".csv"]:
-                if isinstance(data,bytes):
-                    p.write_bytes(data)
-                elif isinstance(data,str):
-                    p.write_text(data, encoding="utf-8")
+            elif path_obj.suffix in [".txt", ".text", ".html", ".csv"]:
+                if isinstance(pdata,bytes):
+                    path_obj.write_bytes(pdata)
+                elif isinstance(pdata,str):
+                    path_obj.write_text(pdata, encoding="utf-8")
                 else:
                     sys.exit()
-
             # undefined
             else: 
-                sys.exit("Error: file extension "+str(p.suffix)+" is not supported for write!" )
+                sys.exit("Error: file extension "+str(path_obj.suffix)+" is not supported for pather_write!" )
 
 
 
@@ -221,25 +135,43 @@ class SinglePather(Pather):
         Pather (_type_): _description_
     """
 
+    pdata      = None
+    ppath      = None
+    plist      = None
 
-    parent_dir = None
-    fext       = None
-    fname      = None
-    path       = None
-    content    = None
+    def __init__(self,pdir=None,pname=None,pstem=None,pext=None,read_only=False,bp=None,ptype=None):
+        self.pdir = pdir
+        self.pname = pname
+        self.pstem = pstem
+        self.pext = pext
+        self.read_only = read_only
+        self.ptype = ptype
+        self.bp = bp
+        if self.pname :
+            self.pext = self.pname.suffix
+            self.pstem = self.pname.stem
 
 
-    def gen_path(self):
+    def gen_ppath(self, clear = False, no_exists = "error"):
         """_summary_
         """
+        path_seg = self.pstem+self.pext
+        self.ppath = self.pdir.joinpath(path_seg)
+        if self.ptype == 'file':
+            self.pdata = self.get_pdata(self.ppath,clear=clear,no_exist=no_exists,bp_in=self.bp)
+        elif self.ptype == 'dir':
+            self.plist = self.get_plist(self.ppath,clear=clear,no_exist=no_exists)
 
-        p = self.parent_dir.joinpath(self.fname+self.fext)
-        self.path = p
 
-
-    def write_to_path(self):
+    def write_pdata(self):
         """_summary_
         """
+        self.gen_ppath()
+        self.pather_write(self.ppath, self.pdata)
 
-        self.gen_path()
-        self.write(self.path,self.content)
+
+    def read_pdata(self):
+        """_summary_
+        """
+        self.gen_ppath()
+        self.pdata = self.pather_read(self.ppath)

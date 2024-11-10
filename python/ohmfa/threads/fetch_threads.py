@@ -1,6 +1,6 @@
 
 import re
-from ohmfa.fetch.fetcher import Fetcher
+from ohmfa.jobs.fetcher import Fetcher
 from ohmfa.utils.iter import BatchIter, LinkedIter
 from ohmfa.utils.pather import SinglePather
 
@@ -8,6 +8,14 @@ from ohmfa.utils.pather import SinglePather
 
 
 class FetchThreads(Fetcher):
+    """_summary_
+
+    Args:
+        Fetcher (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     last_fetched_updated = None
     last_fetched         = None
     mode = 'update'
@@ -18,6 +26,7 @@ class FetchThreads(Fetcher):
             '_start_url' : None,
             '_bad_threads' : None,
             '_threads' : None,
+            '_fetch_content_bps' : None,
         }
 
         self.start_session()

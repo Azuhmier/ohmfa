@@ -11,7 +11,7 @@ archiveofourown.org:
         e_token: [input, name, authenticity_token]
         e_body_logged_out: [body, class, logged-out javascript]
         e_tos_prompt: [div, id, tos_prompt]
-    get:
+    wkfl_vars:
         PWD: [e_pwd, name]
         USR: [e_usr, name]
         TOKEN_VALUE: [e_token, value]
@@ -28,7 +28,7 @@ archiveofourown.org:
             method: requests
             url :
             - https://archiveofourown.org/users/login
-            get :
+            wkfl_vars :
             - TOKEN_NAME
             - TOKEN_VALUE
             - PWD
@@ -56,215 +56,162 @@ archiveofourown.org:
     - _otwarchive_session
     - cf_clearance
 
+
+
+
 .itch.io:
-    elements: # 1
-        e_head_title: [[head, title], [_text_]]
-        e_dscr_raw: [div, class, formatted_description user_formatted]
-        e_dls_class: [div, class, uploads]
-        e_dl_class: [div, class, upload]
-        e_dl_info_class: [div, class, info_column]
-        e_dl_button: [a, class, button download_btn]
-        e_comments: [div, class, game_comments_widget base_widget]
-        e_csrf_token: [meta, name, csrf_token]
-        e_view_more: [a, class, action_btn view_more]
-        e_more_games: [div, class, game_grid_widget base_widget user_game_grid]
-        e_other_game: [a, class, title game_link]
-        e_dl_direct: [a, class, direct_download_btn]
-    get: # 1
-        _AUTHOR_: [[e_head_title, [_text_], [till, by]]]
-        _TITLE_: [[e_head_title, [_text_], [after, by] ]] 
-        _DSCR_: [[e_dscr_raw, [1, p]]]
-        _CONTENT_: [[]]
-        OTHER_TITLES: [[e_view_more, hreff]]
-        TO_OTHER_TITLE: [[e_other_game, hreff]]
-        OTHER_TITLE: [[e_other_game, _text_]]
-        POST_RSP_URL: [[[_a_download_post_], url]]
-        CSRF_TOKEN: [[e_csrf_token, name]]
-        IS_SUCCESS: [[[_a_download_post_], name]]
+    wkfl_vars:
+        _AUTHOR_:         [e_head_title,        [_text_], [till, by]]
+        _TITLE_:          [e_head_title,        [_text_], [after, by] ] 
+        _DSCR_:           [e_dscr_raw,          [1, p]]
+        _CONTENT_:        []
+        g_other_titles:   [e_view_more,         hreff]
+        g_to_other_title: [e_other_game,        hreff]
+        g_other_title:    [e_other_game,        _text_]
+        g_csrf_token:     [e_csrf_token,        name]
+        g_post_rsp_url:   [a_download_post_,    url]
+        g_is_success:     [a_download_post_,    name]
+    elements:
+        e_head_title:    [[head, title], [_text_]]
+        e_dscr_raw:      [div,  class, formatted_description user_formatted]
+        e_dls_class:     [div,  class, uploads]
+        e_dl_class:      [div,  class, upload]
+        e_dl_info_class: [div,  class, info_column]
+        e_dl_button:     [a,    class, button download_btn]
+        e_comments:      [div,  class, game_comments_widget base_widget]
+        e_csrf_token:    [meta, name,  csrf_token]
+        e_view_more:     [a,    class, action_btn view_more]
+        e_more_games:    [div,  class, game_grid_widget base_widget user_game_grid]
+        e_other_game:    [a,    class, title game_link]
+        e_dl_direct:     [a,    class, direct_download_btn]
     workflows:
         download_content:
             default: 'yes'
             do:
-            - [a_fetch_content]
-            - [a_download_post]
-            - [a_download_get]
+            - a_fetch_content
+            - a_download_post
+            - a_download_get
         download_content_alt:
             default: 'no'
             do:
-            - [a_purchase_get]
-            - [a_purchase_post]
-            - [a_download_post]
-            - [a_download_get]
+            - a_purchase_get
+            - a_purchase_post
+            - a_download_post
+            - a_download_get
+    triggers: 
+        if_post_fail: 
+            criteria: 
+                key: post_rsp_url
+                val: null
+            type: get
+            do:
+            - [wfl, download_content_alt]
     cookies: 
         - allow_nsfw_games
         - itchio_refs
         - itchio_token
         - ref%3aregister%3areferrer
-    triggers: 
-        if_post_fail: 
-            criteria: 
-                key: POST_RSP_URL
-                val: null
-            type: get
-            do:
-            - [wfl, download_content_get]
+    headers:
+        a:
+            Accept-Encoding: gzip, deflate, br, zstd
+            Accept-Language: 'en-US,en;q=0.5'
+            Connection: keep-alive
+            DNT: '1'
+            User-Agent: [_ua]
+            Sec-Fetch-Mode: navigate
+        aa: 
+            Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+            Priority: u=0, i
+            Sec-Fetch-Dest: document
+            Sec-Fetch-User: '?1'
+            Upgrade-Insecure-Requests: '1'
+        ab:
+            Cookie: [_cookie_]
+            Priority: u=0
+            Referer: [_url]
+            Sec-Fetch-Dest: empty
+            X-Requested-With: XMLHttpRequest
     actions: 
-        a_fetch_other: 
-            type: get
-            method: requests
-            url : 
-            - [OTHER_TITLES]
-            get: 
-            - TO_OTHER_TITLE, OTHER_TITLE
         a_fetch_content:
-            type: get
+            get: [g_csrf_token]
             method: requests
             parse: 'yes'
-            url : 
-            - [_url]
-            get: 
-            - CSRF_TOKEN 
-            #- OTHER_TITLES
+            pre_header: 'aa'
+            type: get
+            url : [_url]
             header : 
-                User-Agent: [_ua]
-                DNT: '1'
-                Accept-Encoding: gzip, deflate, br, zstd
-                Accept-Language: 'en-US,en;q=0.5'
-                Connection: keep-alive
-                Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
-                #Cookie: [_cookie]
-                Priority: u=0, i
                 Host: [_domain]
-                Sec-Fetch-Dest: document
-                Sec-Fetch-Mode: navigate
                 Sec-Fetch-Site: none
-                Sec-Fetch-User: '?1'
-                Upgrade-Insecure-Requests: '1'
         a_purchase_get:
-            type: get
+            wkfl_vars: 
+            - g_csrf_token
             method: requests
             parse: 'yes'
-            url : 
-            - [_url]
-            - /purchase
-            get: 
-            - CSRF_TOKEN 
-            #- OTHER_TITLES
+            pre_header: 'aa'
+            type: get
+            url : [_url, /purchase]
             header : 
-                User-Agent: [_ua]
-                DNT: '1'
-                Accept-Encoding: gzip, deflate, br, zstd
-                Accept-Language: 'en-US,en;q=0.5'
-                Connection: keep-alive
-                Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
-                #Cookie: [_cookie]
-                Priority: u=0, i
                 Host: [_domain]
-                Sec-Fetch-Dest: document
-                Sec-Fetch-Mode: navigate
                 Sec-Fetch-Site: none
-                Sec-Fetch-User: '?1'
-                Upgrade-Insecure-Requests: '1'
-        a_purchase_post:
-            type: get
-            method: requests
-            parse: 'yes'
-            url : 
-            - [_url]
-            - /download_url
-            payload: 
-                csrf_token: [CSRF_TOKEN]
-            header : 
-                Accept-Encoding: gzip, deflate, br, zstd
-                Accept-Language: 'en-US,en;q=0.5'
-                Accept: '*/*'
-                Connection: keep-alive
-                Content-Length: 98
-                Cookie: [_cookie_]
-                DNT: 1
-                Host: [https:// + _domain]
-                Origin: [https:// + _domain]
-                Priority: u=0
-                Referer: [_url]
-                Sec-Fetch-Dest: empty
-                Sec-Fetch-Mode: navigate
-                Sec-Fetch-Site: same-origin
-                User-Agent: [_ua]
-                X-Requested-With: XMLHttpRequest
         a_download_get2:
-            type: get
             method: requests
             parse: 'post'
-            url : 
-            - [_url]
-            - /download_url
+            pre_header: 'aa'
+            type: get
+            url : [_url, /download_url]
             payload: 
-                csrf_token: [CSRF_TOKEN]
+                csrf_token: [g_csrf_token]
             header : 
-                Accept-Encoding: gzip, deflate, br, zstd
-                Accept-Language: 'en-US,en;q=0.5'
-                Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8'
-                Connection: keep-alive
-                Cookie: [_cookie_]
-                DNT: 1
-                Host: [https:// + _domain]
-                Origin: [https:// + _domain]
-                Priority: u=0, i
+                Host: [https://,_domain]
+                Origin: [https://,_domain]
                 Referer: [_url]
-                Sec-Fetch-Dest: document
-                Sec-Fetch-Mode: navigate
                 Sec-Fetch-Site: same-origin
-                Sec-Fetch-User: '?1'
-                User-Agent: [_ua]
                 X-Requested-With: XMLHttpRequest
-                Upgrade-Insecure-Requests: '1'
-        a_download_post:
-            type: post
+        a_purchase_post:
             method: requests
             parse: 'yes'
-            url : 
-            - [_url]
-            - /file/7456108?source=view_game&as_props=1&after_download_lightbox=true
-            payload: 
-                csrf_token: [CSRF_TOKEN]
-            header : 
-                User-Agent: [_ua]
-                DNT: 1
-                Accept-Encoding: gzip, deflate, br, zstd
-                Accept-Language: 'en-US,en;q=0.5'
-                Connection: keep-alive
-                Content-Length: 98
-                Content-Length: 102
-                Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-                Accept: '*/*'
-                Cookie: [_cookie_]
-                Referer: [_url]
-                Priority: u=0
-                Host: [_domain]
-                Sec-Fetch-Dest: empty
-                Sec-Fetch-Mode: navigate
-                Origin: [_domain]
-                Sec-Fetch-Site: same-origin
-                Sec-Fetch-Site: cross-site
-                X-Requested-With: XMLHttpRequest
-        a_download_get:
+            pre_header: 'ab'
             type: get
+            url : [_url, /download_url]
+            payload: 
+                csrf_token: [g_csrf_token]
+            header : 
+                Accept: '*/*'
+                Content-Length: 98
+                Host: [https://, _domain]
+                Origin: [https://, _domain]
+                Sec-Fetch-Site: same-origin
+        a_download_post:
+            method: requests
+            parse: 'yes'
+            pre_header: 'ab'
+            type: post
+            url : [_url, /file/7456108?source=view_game&as_props=1&after_download_lightbox=true]
+            payload: 
+                csrf_token: [g_csrf_token]
+            header : 
+                Accept: '*/*'
+                #Content-Length: 102
+                Content-Length: 98
+                Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+                Host: [_domain]
+                Origin: [_domain]
+                Sec-Fetch-Site: cross-site
+                #Sec-Fetch-Site: same-origin
+        a_download_get:
             method: requests
             parse:  0
-            url : 
-            - [POST_RSP_URL]
+            pre_header: 'a'
+            type: get
+            url : [g_post_rsp_url]
             header : 
-                User-Agent: [_ua]
-                DNT: '1'
-                Accept-Encoding: gzip, deflate, br, zstd
-                Accept-Language: 'en-US,en;q=0.5'
-                Connection: keep-alive
                 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
-                Referer: [_url]
-                Priority: u=4
                 Host: itchio-mirror.cb031a832f44726753d6267436f3b414.r2.cloudflarestorage.com
+                Priority: u=4
+                Referer: [_url]
                 Sec-Fetch-Dest: iframe
-                Sec-Fetch-Mode: navigate
+
+
 
 
 blokfort.com:

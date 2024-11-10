@@ -1,5 +1,5 @@
 from ohmfa.ohmfa import Ohmfa
-from ohmfa.fetch.fetch_threads import FetchThreads
+from python.ohmfa.threads.fetch_threads import FetchThreads
 from pathlib import Path
 
 
