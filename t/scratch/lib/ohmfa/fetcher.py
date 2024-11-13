@@ -3,9 +3,10 @@ import copy
 import os
 import requests
 import scrapy
-import selenium
+import csv
 import sys
 import time
+import yaml
 from bs4 import BeautifulSoup
 from pathlib import Path
 from socket import gethostbyname,gaierror
@@ -13,11 +14,56 @@ from urllib.parse import urlparse
 from requests.exceptions import ConnectionError, Timeout, ConnectTimeout
 from urllib3.exceptions import NewConnectionError
 from http.client import RemoteDisconnected
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
+
+
+
 class Fetcher():
-    def __init__(self):
+    """_summary_
+    {property} = r.{property}
+
+    in
+    for
+    where
+    is
+
+    V
+        [e_*, attr]
+        e_*
+            [,in, 'url/soup']
+        attr
+            ['tag'>, *]
+            [for, *]
+            [where, *]
+
+
+    """
+    def __init__(self,config_file):
+        self.pwds = {}
+
+        #self.dspt = yaml.safe_load(config_file)
+
+        # Selinium
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_binary_path = os.path.join('/usr/bin/google-chrome')
+        chromedriver_path = os.path.join('/usr/bin/chromedriver')
+        chrome_options.binary_location = chrome_binary_path
+        service = Service(chromedriver_path)
+        self.browser = webdriver.Chrome(service=service, options=chrome_options)
+
+        # Requests
+        self.s = requests.session()
+
         self.durls = {}
         self.sdspt={}
-        self.s = requests.session()
         self.timeout = 5
         self.substrings = [
             'itch.io',
@@ -84,6 +130,13 @@ class Fetcher():
         }
         self.dspt = {
             'archiveofourown.org':[{
+                'login': {
+                    'url':  'https://archiveofourown.org/users/login',
+                    'pwd': 'pass',
+                    'usr': 'name',
+                    'tos': False,
+                    'captcha': False,
+                    'token': None},
                 'dead':       False,
                 'bin':        { '_series':['series','_series_uid_'] },
                 'splash':{
@@ -206,17 +259,34 @@ class Fetcher():
                 'user':       { '_user':['u','_user_uid_','_user_']},
                 'content':    { '_part':['s','_work_uid_','_part_','_work_']}}],
             'www.furaffinity.net':[{
+                'login': {
+                    'url':  'https://www.furaffinity.net/login',
+                    'pwd': 'pass',
+                    'usr': 'name',
+                    'tos': False,
+                    'captcha': False,
+                    'token': None},
                 'dead' :      False,
                 'splash':     { '_work':['gallery','_author_','iter_','\?']},
                 'user':       { '_user':['user','_user_']},
                 'content':    { '_work':['view','_work_uid_']}}],
             'www.sofurry.com':[{
+                'login': {
+                    'url': 'https://www.sofurry.com/user/login',
+                    'pwd': 'LoginForm[sfLoginPassword]',
+                    'usr': 'LoginForm[sfLoginUsername]',
+                    'tos': False,
+                    'captcha': False,
+                    'token': None},
                 'dead':       False,
                 'bins':       { '_folder':['browse','folder','stories','?by=_user_uid_','?folder=_folder_uid_']},
                 'splash':     { '*':['browse','user','stories','?uid=','_user_uid_','?stories-page=','_iter_']},
                 'user':       { '_user':['_user_','._domain_']},
                 'content':    { '_work':['view','_work_uid_']}}],
         }
+        pppath = '/home/azuhmier/progs/ohmfa/t/scratch/lib/frameworks/domains_config.yml'
+        with open(pppath,'w+',encoding='utf-8') as outfile:
+            yaml.dump(self.dspt, outfile)
 
 
     def load_urls(self,urls,test=False):
@@ -441,7 +511,7 @@ class Fetcher():
         soup = None
         time.sleep(wait)
         try:
-            r = self.s.get('https://'+url.netloc,timeout=timeout,params=params,headers=headers)
+            r = self.s.get(url,timeout=timeout,params=params,headers=headers)
             value = 'unkown status'
             if r.status_code == 200:
                 value = 'Success'
@@ -483,9 +553,63 @@ class Fetcher():
         """
         soups = []
         for key, domains in self.durls.items():
-            print(key)
             for domain,dkeys in domains.items(): 
+                print(domain)
                 soups.append(self.fetch('https://'+domain))
                 for dkey,urls in dkeys.items(): 
-                    soups.append(self.fetch(urls[0].geturl()))
+                    url = urls[0].geturl()
+                    soups.append(self.fetch(url))
         soups = [x for x in soups if x]
+
+    def get_payload (self,d_config, pwds, domain) :
+        usr = d_config["usr"]
+        pwd = d_config["pwd"]
+        payload = None
+        if usr  is not None and pwd is not None :
+            payload = {
+                usr : pwds[domain]["usr"],
+                pwd : pwds[domain]["pwd"],
+            }
+        return payload
+
+
+    def get_token (self,d_config, r):
+        soup  = BeautifulSoup( r.content, 'html.parser' )
+        token = soup.find('input', attrs={'name': d_config["token"]})
+        return token
+
+
+    def login (self, dc_data, pwds, header ) :
+        s = requests.Session()
+        for domain in dc_data :
+            d_config = dc_data[domain]
+            payload = self.get_payload(d_config, pwds, domain)
+            if payload is not None :
+                r = s.get( d_config["login"], headers=header )
+                if d_config["token"] is not None :
+                    token = self.get_token(d_config, r)
+                    if token is None:
+                        sys.exit("ERROR: could not find `authenticity_token` on login form for '" + domain )
+                    else :
+                        payload.update(
+                            { d_config["token"] : token.get('value').strip() }
+                        )
+                login_url = d_config["login"]
+                s.post( login_url , data=payload, headers=header)
+        return s
+
+    def get_passwords(self, pwds_file):
+        csv_reader = csv.reader( pwds_file)
+        csv_list = [ tuple(row) for row in csv_reader ]
+        columns = csv_list.pop(0)
+        #for row in csv_list :
+        #    key = row.pop(0)
+        #    for idx,item in enumerate(row):
+        #        pdata[key][columns[idx]] = item
+        for row in csv_list :
+            domain = row.pop(0)
+            usr = row.pop(0)
+            pwd = row.pop(0)
+            self.pwds[domain] = {'usr':usr, 'pwd':pwd}
+
+

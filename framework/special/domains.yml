@@ -55,10 +55,6 @@ archiveofourown.org:
     - _cfuvid
     - _otwarchive_session
     - cf_clearance
-
-
-
-
 .itch.io:
     wkfl_vars:
         _AUTHOR_:         [e_head_title,        [_text_], [till, by]]
