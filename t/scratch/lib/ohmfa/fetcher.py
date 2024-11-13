@@ -26,22 +26,11 @@ from selenium.webdriver.chrome.options import Options
 
 class Fetcher():
     """_summary_
-    {property} = r.{property}
-
-    in
-    for
-    where
-    is
-
-    V
-        [e_*, attr]
-        e_*
-            [,in, 'url/soup']
-        attr
-            ['tag'>, *]
-            [for, *]
-            [where, *]
-
+    elements
+            arg
+                []
+                .*
+                *='*'
 
     """
     def __init__(self,config_file):

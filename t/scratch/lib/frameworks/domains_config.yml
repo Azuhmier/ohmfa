@@ -48,7 +48,7 @@ archiveofourown.org:
     e_tos_prompt:             [div,   id='tos_prompt']
     e_wrapper:                [div,   class='wrapper']
       ev_tags:                [dd,    class=".+tags",                   [ul, _for, [li, [a, .txt]]]]
-      ev_stats:               [dd,    class"stats",                     [dl, _for, [_hash, [dt, .txt], [[dd, [[a?]],.txt]]]] ]
+      ev_stats:               [dd,    class"stats",                     [dl, _for, [_hash, [dt, .txt], [dd, [_exists, a, .txt]]]]]
     e_preface:                [div,   class='preface_group']
       ev_author:              [h3,    class='byline heading',           [a,.txt]]
       ev_title:               [h2,    class='title heading',            .txt]
@@ -61,13 +61,13 @@ archiveofourown.org:
             e_chrono:         [h3,                                      [_not, a, .txt,'2:']]
           ev_txt:             [div,   class="userstuff module",         [h3, id="work",.txt]]
     e_splash_titles:          [ol,    class="work index group"]
-      e_splash_serie:         [li,                                      [div, [h4, [a,.href]]]]
-      ev_splash_title_tags:   [ul,    class="tags comma",               _for, [li, [a,.txt]]]
+      e_splash_serie:         [li,                                      [div, [h4, [a, .href]]]]
+      ev_splash_title_tags:   [ul,    class="tags comma",               _for, [li, [a, .txt]]]
     e_splash_series:          [ul,    class="series index group"]
-      e_splash_series:        [li,                                      [div, [h4, [a,.href]]]]
-      ev_splash_series_tags:  [ul,    class="tags comma",               _for, [li, [a,.txt]]]
-    e_author_wrapper:         [div,   class="wrapper",                  _for, [_hash, [dt,.txt], [dd, ['?a',.txt]]]]
-      e_bio:                  [div,   class='bio module',               [[blockquote],.txt]]
+      e_splash_series:        [li,                                      [div, [h4, [a, .href]]]]
+      ev_splash_series_tags:  [ul,    class="tags comma",               _for, [li, [a, .txt]]]
+    e_author_wrapper:         [div,   class="wrapper",                  _for, [_hash, [dt,.txt], [dd, [_exists, a, .txt]]]]
+      e_bio:                  [div,   class='bio module',               [blockquote, .txt]]
 
 blokfort.com:
   purl:
