@@ -160,7 +160,54 @@ ghostbin.com
     
 hardbin.com
     /ipfs/.+/#.+
+breakpoint 9267
+6773
+8666| function Animation( elem, properties, options ) {
+868  | jQuery.ready.promise = function( obj ) {
+9263 | jQuery.timers = [];
+8651 | function createTweens( animation, props ) {
+11   | function showTOSPrompt()
+VM626
+//<![CDATA[
+
+  $j(document).ready(function() {
+    var container = $j("#tos_prompt");
+    var outer = $j("#outer");
+    var button = $j("#accept_tos");
+
+    setTimeout(showTOSPrompt, 1500);
+
+    function showTOSPrompt() {
+      $j.when(container.fadeIn(500)).done(function() {
+        outer.addClass("hidden").attr("aria-hidden", "true");
+      });
+
+      $j("#tos_agree").on("click", function() {
+        button.attr("disabled", !this.checked);
+        if (this.checked) {
+          button.on("click", function() {
+            acceptTOS();
+            outer.removeClass("hidden").removeAttr("aria-hidden");
+            $j.when(container.fadeOut(500)).done(function() {
+              container.remove();
+            });
+          });
+        };
+      }).change();
+    };
+  });
+
+//]]]]><![CDATA[>
+
+    https://archiveofourown.org/token_dispenser.json
+    https://archiveofourown.org/works/33232534/hit_count.json
+    meta, name='csrf-param', content='authenticity_token'
+    meta, name='csrf-token', content
+sec-fetch-data=style,priority=u=0,accept=text/css,*/*;q=0.1
+accept=*/*
+    .js,sef-fetch-data=script,priority=u=1
 """
+
 import sys
 sys.path.append(  '/home/azuhmier/progs/ohmfa/t/scratch/lib' )
 from lib.ohmfa.main import Main
@@ -175,8 +222,8 @@ URLS_FILE = '/home/azuhmier/hmofa/hmofa/.ohm/output/paged_lists/objs/plain/url.t
 o = Main()
 o.select_ohmfa_dir(OHMFA_DIR)
 o.load_urls(URLS_FILE)
-f = Fetcher('home/azuhmier/progs/ohmfa/t/scratch/lib/frameworks/domain_configs.yml')
-#f.load_urls(o.d_urls,test=True)
-#f.get_passwords('/home/azuhmier/.pwds')
-#f.check_urls()
+f = Fetcher('/home/azuhmier/progs/ohmfa/t/scratch/lib/frameworks/domains_config.yml')
+f.load_urls(o.d_urls,slds=['archiveofourown','sofurry'])
+#xx = f.check_urls(groups=['archiveofourown.org'])
+f.get_passwords('/home/azuhmier/.pwds')
 f.browser.quit()

@@ -1,76 +1,168 @@
-archiveofourown.org:
-  cookies :        [__cf_bm, _cfuvid, _otwarchive_session, cf_clearance]
-  _purl:
-    bin:
-      _series:     [series, _series_uid_]
-    content:
-      _part:       [works, _work_uid_, chapters, _part_uid_,'?show_comments=',_show_comments_]
-      _work:       [works, _work_uid_, '?show_comments=',_show_comments_,]
-    splash:
-      _series:     [u_user, series, '?page=', _iter_]
-      _work:       [u_user, works, '?page=', _iter_]
-    user:
-      _user:       [user, _user_]
-      _user_alias: [user, _user_, pseuds, _alias_]
-  _wkfl_vars:
-    PWD:           [e_pwd, name]
-    USR:           [e_usr, name]
-    TOKEN_VALUE:   [e_token, value]
-    TOKEN_NAME:    [e_token, name]
-  _workflows:
-    _w :           [a_login, a_content]
-  _actions:
-    a_login:
-      url :        https://archiveofourown.org/users/login
-      wkfl_vars :  [TOKEN_NAME, TOKEN_VALUE, PWD, USR]
-      payload: 
-        usr:       USR
-        pwd:       USR
-        TOKEN_NAME: TOKEN_VALUE
-    a_unhide_comments:
-    a_content:
-        do :
-        - [ click, e_tos_agree_clk, 5, 0]
-        - [ click, e_accept_tos_clk, 1, 0]
-        - [ click, e_accept_NSFW_clk, 1, 0]
-        - [ click, e_accept_full_work_clk, 1, 0]
-  _elements:
-    e_accept_NSFW_clk:        [t_css, '#main > ul > li:nth-child(1) > a']
-    e_accept_full_work_clk:   [t_css, '#main > div.work > ul > li.chapter.entire > a']
-    e_accept_tos_clk:         [t_css, '#accept_tos']
-    e_tos_agree_clk:          [t_css, '#tos_agree']
-    e_accept_tos :            [p,     class='submit']
-    e_tos_agree :             [input, id='tos_agree']
-    e_pwd:                    [input, id='user_password']
-    e_usr:                    [input, id='user_login']
-    e_token:                  [input, name='authenticity_token']
-    e_body_logged_out:        [body,  class='logged-out javascript']
-    e_tos_prompt:             [div,   id='tos_prompt']
-    e_wrapper:                [div,   class='wrapper']
-      ev_tags:                [dd,    class=".+tags",                   [ul, _for, [li, [a, .txt]]]]
-      ev_stats:               [dd,    class"stats",                     [dl, _for, [_hash, [dt, .txt], [dd, [_exists, a, .txt]]]]]
-    e_preface:                [div,   class='preface_group']
-      ev_author:              [h3,    class='byline heading',           [a,.txt]]
-      ev_title:               [h2,    class='title heading',            .txt]
-      e_dscp:                 [div,   class="summary module",           [blockquote, .txt]]
-    e_workskin:               [div,   id='workskin']
-      e_chapters:             [div,   id="chapters", role='article']
-        e_chapter:            [div,   class="chapter"]
-          e_chapter_preface:  [div,   class="chapter preface group"]
-                    e_chroni: [h3,                                      [a, .txt]]
-            e_chrono:         [h3,                                      [_not, a, .txt,'2:']]
-          ev_txt:             [div,   class="userstuff module",         [h3, id="work",.txt]]
-    e_splash_titles:          [ol,    class="work index group"]
-      e_splash_serie:         [li,                                      [div, [h4, [a, .href]]]]
-      ev_splash_title_tags:   [ul,    class="tags comma",               _for, [li, [a, .txt]]]
-    e_splash_series:          [ul,    class="series index group"]
-      e_splash_series:        [li,                                      [div, [h4, [a, .href]]]]
-      ev_splash_series_tags:  [ul,    class="tags comma",               _for, [li, [a, .txt]]]
-    e_author_wrapper:         [div,   class="wrapper",                  _for, [_hash, [dt,.txt], [dd, [_exists, a, .txt]]]]
-      e_bio:                  [div,   class='bio module',               [blockquote, .txt]]
+archiveofourown:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [org]
+        bp_author:
+            d_user:         [user, _user_]
+            d_user_profile: [user, _user_,profile]
+            d_user_alias:   [user, _user_, pseuds, _alias_]
+        bp_series:
+            d_series:       [series, _series_uid_]
+        bp_content:
+            d_part:         [works, _work_uid_, chapters, _part_uid_, {show_comments: true, view_adult: true}]
+            d_work:         [works, _work_uid_, {show_comments: true, view_adult: true, view_full_work: true}]
+        bp_listing:
+            d_series:       [user, _user_, series, {page: _iter}]
+            d_work:         [user, _user_, works, {page: _iter}]
+        bp_misc:
+            d_login:        [users, login]
+    fetch:
+        cookies :        [__cf_bm, _cfuvid, _otwarchive_session, view_adult,cf_clearance]
+        workflows:
+            w0 : [a_init, a_login, a_content]
+            w1 : [a_content]
+        actions:
+            a_content:
+            a_init:
+                url: _domain_
+                do:
+                - [ click, e_tos_agree_clk, 5, 0]
+                - [ click, e_tos_agree_clk, 5, 0]
+                - [ click, e_accept_tos_clk, 1, 0]
+            a_login:
+                url : m_login
+                payload: 
+                    user[login]: _usr_ 
+                    user[password]: _pwd_
+                    user[remeber_me]: 0 
+                    commit: "Log+in" 
+                    authenticity_token: g_token_value
+        gets:
+            g_pwd:           [e_pwd, name]
+            g_usr:           [e_usr, name]
+            g_token_value:   [e_token, value]
+            g_token_name:    [e_token, name]
+        elements:
+            e_tos :                   [body, [div, id='tos_prompt']]
+            e_tos_accept:             [_css, '#accept_tos']
+            e_tos_agree:              [_css, '#tos_agree']
+            e_user:                   [_css, '#user_login']
+            e_remeber_me:             [_css, '#user_remeber_me']
+            e_password:               [_css, '#user_password']
+            e_submit:                 [_css, '#input.submit']
+            e_token:                  [input, name='authenticity_token']
+            e_csrf:                   [meta, meta, name=csrf-token, content]
+            #--------work
+            # = meta
+            e_meta:                   [div, class=wrapper,[dl, class=work meta group]]
+            ev_tags:                  [_in, e_meta, dd, class="freeform tags", [ul,[_for, li, [ a,.txt]]]]
+            ev_stats:                 [_in, e_meta, dd, class="stats", [dl, [_for, [_hash,[ dt,.txt], [dd, [_exists, a, .txt]]]]]]
+            # - preface
+            e_preface:                [div, class='preface_group']
+            ev_author:                [_in, e_preface, h3, class='byline heading',[a,.txt]]
+            ev_title:                 [_in, e_preface, h2, class='title heading', .txt]
+            ev_dscp:                   [_in, e_preface, div, class="summary module", [blockquote  .txt]]
+            # - workskin
+            e_workskin:               [div, id='workskin']
+            e_chapters:               [_in, e_workskin, div, id=chapters, role=article]
+            e_chapter:                [_in, e_chapters, div, class="chapter"]
+            e_chapter_preface:        [_in, e_chapter, div, class="chapter preface group"]
+            ev_chroni:                [_in, e_chapter_preface, h3, [a, .txt]]
+            ev_chrono:                [_in, e_chapter_preface, h3, [_not, a, .txt, '2:']]
+            ev_txt:                   [_in, e_chapter, div, class="userstuff module", [h3, id="work", .txt]]
+            #titles
+            e_splash_titles:        [ol, class="work index group"]
+            evv_splash_serie:       [_in, e_splash_tites,li, [div, [h4,[a,.href]]]]
+            ev_splash_title_tags:   [_in, e_splash_tites,ul, class="tags comma", [_for, li, [a,.txt]]]
+            #series
+            e_splash_series:        [ul, class="series index group"]
+            evv_splash_series:      [_in, e_splash_series, li, [div, [h4,[a,.href]]]]
+            ev_splash_series_tags:  [_in, e_splash_series, ul, class="tags comma",[_for, li, [a,.txt]]]
+            #Profile
+            e_profile:              [div, class="user home profile"]
+            ev_stats:               [_in, e_profile, dl, [_for, [_hash, [dt,.txt], [dd,[_exists, a, .txt]]]]]
+            ev_bio:                 [_in, e_profile, div, class='bio module',[blockquote, .txt]]
+
+
+sofurry:
+    reffs:
+        domain:
+            d:
+                hostname: [null, www]
+                tld: [com]
+            u:
+                hostname: [_user_]
+                tld: [com]
+        bp_author:
+            u_user:         []
+        bp_content:
+            d_work:           [view, _work_uid_]
+        bp_bin:
+            d_story_folder:   [browse, folder, stories, {by: _user_uid_, folder: _story_folder_uid_}]
+            d_art_folder:     [browse, folder, art, {by: _user_uid_, folder: _art_folder_uid_}]
+        bp_listing: 
+            d_stories:        [browse, user, stories, {uid: _user_uid_, stories-page: _iter_}]
+            u_journals:       [user, journals]
+            u_art:            [user, artwork]
+        bp_misc: 
+            d_icon:           [std, avatar, {user: _user_id_, character:  _character_, level: _level_}]
+            d_login:          [user, login]
+            d_pdf:            [export,ePub,{id: _work_id_}]
+    workflows:
+        w_:      [a_login, a_init, a_html]
+        w_crawl: [a_login, a_init, a_compute]
+    actions:
+        a_login:
+            url: m_login
+            pwd: LoginForm[sfLoginPassword]
+            usr: LoginForm[sfLoginUsername]
+            token: null
+        a_init:
+            url: [_url]
+        a_html:
+            url: null
+        a_compute:
+            url: null
+    gets:
+        g_author:          [e_author, {text}]
+        g_author_stats:    [e_joined, [where, [strong>, {text}]]]
+        g_title:           [e_title, {text}]
+        g_tags:            [[and, e_tag_of, e_tag_ef], [for, e_tag, {text}]]
+        g_dscr:            [e_content,e_dscr]
+        g_pdf:             [s_pdf]
+        g_txt:             [e_content, e_txt, {text}]
+        g_chrono:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
+        g_chroni:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
+        g_stats:           [e_stat_header, e_stats, [by, line, ['[7:],views[:3],faves[:1],comments[:1],vote[:1]]']]]
+        g_image:           [in, s_art for, w_work, where, e_contentimage]
+        g_folder_image:    [in s_art, in, e_folders for, e_folder_link]
+        g_titles:          [in, s_titles for, w_work, where, e_titles]
+        g_folder_titles:   [in, s_titles, in, e_folders for, e_folder_link]
+        g_journals:        [in, s_journals, for w_work]
+    _elements:
+        e_author:        [span, class="sf-username sfTextMedium"]
+        e_title:         [span, id='sfContentTitle', itemprop='name'] 
+        e_chrons:        [div, class="section sf-storyfolder-link"]
+        e_chrono_:       [div, class='section-content-list']
+        e_chroni_:       [span, class='sfTextMedium']
+        e_tag_of_:       [div class="section-title", text==Official Tags]
+        e_tag_uf_:       [div class="section-title", text==UnOfficial Tags]
+        e_tag:           [a class='sf-tag',<text>]
+        e_content_:      [div, id="sf-viewcontent-content"]
+        e_content_txt:   [div, id="sfContentBody"]
+        e_dscr:          [div, 'id=sfContentDescription']
+        e_joined_:       [span, class="user-stats sfTextMedLight"]
+        e_stats_:        [div, class='section-content']
+        e_folders_:      [div, class="sfBrowseListFolders"]
+        e_folder_link_:  [a, class='sfTextMedium']
+        e_content_image_: [div, id="sfContentImage]
+        e_titles_:        [span class='sf-browse-shortlist-title']
+
 
 blokfort.com:
-  purl:
+  reffs:
     content:
       _work:      [_work_]
     splash:
@@ -93,7 +185,7 @@ blokfort.com:
 
 
 files.catbox.moe:
-  purl:
+  reffs:
     content:
       _work: [files, ._domain_, _work_uid_, ._fext_]
   _workflows:
@@ -106,7 +198,7 @@ files.catbox.moe:
     _CONTENT_: []
 
 catbox.moe:
-  purl:
+  reffs:
     content:
       _work:       [c, _work_uid_]
   _workflows:
@@ -127,7 +219,7 @@ catbox.moe:
 
 
 docs.google.com:
-  purl:
+  reffs:
     content:
       _work:      [document, d, _work_uid_]
       _work_edit: [document, d, _work_uid_, edit]
@@ -147,7 +239,7 @@ docs.google.com:
 
 
 drive.google.com:
-  purl:
+  reffs:
     content:
       _work:      [file, d, _work_uid_]
       _work_view: [file, d, _work_uid_, view]
@@ -168,7 +260,7 @@ drive.google.com:
 
 
 fiction.live:
-  purl:
+  reffs:
     content:
       _part:      [stories, _work_, _work_uid_, _part_, _part_uid_]
     flash:
@@ -192,7 +284,7 @@ fiction.live:
 
 
 ghostbin.com:
-  purl:
+  reffs:
     content:
       _work:      [p_folder, _work_uid_]
       _work_nofd: [_work_uid_]
@@ -215,7 +307,7 @@ ghostbin.com:
 
 
 git.io:
-  purl:
+  reffs:
     content:
       _work:      [_work_uid_]
   _workflows:
@@ -235,7 +327,7 @@ git.io:
 
 
 hardbin.com:
-  purl:
+  reffs:
     content:
       _work:          [ipfs, _work_uid_]
   _workflows:
@@ -256,20 +348,20 @@ hardbin.com:
 
 itch.io:
   cookies:            [allow_nsfw_games, itchio_refs, itchio_token, ref%3aregister%3areferrer]
-  _purl :
-      content:
-        _work:        [u_user, _work_uid_]
-      user:
-        _user:        [_user_, ._domain_]
+  reffs :
+    content:
+      _work: [u_user, _work_uid_]
+    user:
+      _user: [_user_, ._domain_]
   _workflows:
-    w_:               [a_init, a_post, a_content]
-    w_purchase:       [a_init_purchase, a_post_purchase, a_post, a_content]
+    w_:             [a_init, a_post, a_content]
+    w_purchase:     [a_init_purchase, a_post_purchase, a_post, a_content]
   _actions: 
     a_init:
       url :           [_url]
       wkfl_vars:      [g_csrf_token]
     a_post:
-      url :           [_url, /file/7456108?source=view_game&as_props=1&after_download_lightbox=true]
+      url :           [_url, '/file/7456108?source=view_game&as_props=1&after_download_lightbox=true']
       payload: 
         csrf_token:   [g_csrf_token]
     a_content:
@@ -308,9 +400,9 @@ itch.io:
 
 
 literotica:
-  _purl:
+  reffs:
     content:
-      _page: [s, _work_, ?page=, page_]
+      _page: [s, _work_, '?page=', page_]
       _page_none: [s, _work_]
     splash:
       _work: [_user_, works, stories, all]
@@ -334,7 +426,7 @@ literotica:
 
 
 mcstories.com:
-  _purl:
+  reffs:
     content:
       _work: [_work_, _work_, ._fext_]
     flash:
@@ -361,7 +453,7 @@ mcstories.com:
 
 
 mega.nz:
-  _purl:
+  reffs:
     bin:
       _work: [p_folders]
     content:
@@ -387,7 +479,7 @@ mega.nz:
 
 
 pastebin.com:
-  _purl:
+  reffs:
     content:
       _work: [_work_uid_]
     splash:
@@ -413,7 +505,7 @@ pastebin.com:
 
 
 pastefs.com:
-  _purl:
+  reffs:
     content:
       _work: [pid, _work_uid_]
   _workflows:
@@ -430,7 +522,7 @@ pastefs.com:
 
 
 pastes.psstaudio.com:
-  _purl:
+  reffs:
     content:
       _work: [post, _work_uid_]
   _workflows:
@@ -451,7 +543,7 @@ pastes.psstaudio.com:
 
 
 poneb.in:
-  _purl:
+  reffs:
     content:
       _work: [_work_uid_]
     splash:
@@ -476,7 +568,7 @@ poneb.in:
 
 
 raw.githubusercontent.com:
-  _purl:
+  reffs:
     bin:
       _repo: [_user_, _repo_, _version_]
     content:
@@ -504,7 +596,7 @@ raw.githubusercontent.com:
 
 
 rentry:
-  _purl:
+  reffs:
     content:
       _work: [_work_uid_]
   _workflows:
@@ -526,7 +618,7 @@ rentry:
 
 snekguy.com:
   _author_: snekguy
-  _purl:
+  reffs:
     content:
       _work: [stories, p_group, _work_]
       _work_edition: [stories, p_group, _work_, _edition_]
@@ -552,7 +644,7 @@ snekguy.com:
 
 
 snootgame.xyz:
-  _purl:
+  reffs:
     content:
       _work: [en, bin, _work_uid_, .zip]
     flash:
@@ -577,7 +669,7 @@ snootgame.xyz:
 
 
 www.fanfiction.net:
-  _purl:
+  reffs:
     content:
       _part: [s, _work_uid_, _part_, _work_]
     user:
@@ -601,11 +693,11 @@ www.fanfiction.net:
 
 
 www.furaffinity.net:
-  _purl:
+  reffs:
     content:
       _work: [view, _work_uid_]
     splash:
-      _work: [gallery, _author_, iter_, \?]
+      _work: [gallery, _author_, iter_, '\?']
     user:
       _user: [user, _user_]
   _workflows:
@@ -631,7 +723,7 @@ www.furaffinity.net:
     TXT:             [e_content, e_txt, {text}]
     CHRONO:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
     CHRONI:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
-    STATS:           [e_stat_header, e_stats, [by, line, [[7:],views[:3],faves[:1],comments[:1],vote[:1]]]]
+    STATS:           [e_stat_header, e_stats, [by, line, ['[7:],views[:3],faves[:1],comments[:1],vote[:1]']]]
     IMAGE:           [in, s_art for, w_work, where, e_contentimage]
     FOLDER_IMAGE:    [in s_art, in, e_folders for, e_folder_link]
     TITLES:          [in, s_titles for, w_work, where, e_titles]
@@ -641,9 +733,9 @@ www.furaffinity.net:
 
     e_info: [div.info]
     e_tag2: [div, class='section-ody info",[div,[strong],[span]]]
-    e_tag: [section, class='tags-mobile',[span,  class='tags' [a]]]
+    e_tag:  [section, class='tags-mobile',[span,  class='tags', [a]]]
 
-    [section, class="folders-moile"[div[div[a]]]]
+    e_tag2: [section, class="folders-moile",[div,[div,[a]]]]
 
     e_joined: [span, class="hideonmoile" >registered<]
     e_text:     [div, class="submission-content"]
@@ -655,12 +747,10 @@ www.furaffinity.net:
     e_rating:   [div, class='rating']
     e_date: [.popup_date]
     e_stats: [div, class='table',[div, class='highlight']]
-    views subs cmts faves comments earned comments made journals
-    e_titles: [figcaption [p [a]]]
+    e_titles: [figcaption, [p ,[a]]]
 
-https://d.furaffinity.net/art/azuhmier/stories/1571677337/1571677337.azuhmier_the_search_for_hmofa.txt
 www.reddit.com:
-  _purl:
+  reffs:
     bin:
       _sub:  [r, _sub_]
     content:
@@ -683,81 +773,3 @@ www.reddit.com:
     _TITLE_:          [] 
     _CONTENT_:        []
 
-
-www.sofurry.com:
-  _purl:
-    user:
-      _user:           [_user_, ._domain_]
-    content:
-      _work:           [view, _work_uid_]
-    bins:
-      _story_folder:   [browse, folder, stories, ?by=_user_uid_, ?folder=_story_folder_uid_]
-      _art_folder:     [browse, folder, art, ?by=_user_uid_, ?folder=_art_folder_uid_]
-    splash: 
-      _stories:        [browse, user, stories, ?uid=, _user_uid_, ?stories-page=, _iter_]
-      _journals:       [u_user, user, journals]
-      _art:            [u_user, user, artwork]
-    misc: 
-      _icon:           [std, avatar, ?user=, _user_id_, &character=, _character_, level=, _level_]
-      _login:          [user, login]
-      _pdf:            [export,ePub,?id=,_work_id_]
-  _triggers:
-  _workflows:
-    w_:      [a_login, a_init, a_html]
-    w_crawl: [a_login, a_init, a_compute]
-  _actions:
-    a_login:
-      url: m_login
-      pwd: LoginForm[sfLoginPassword]
-      usr: LoginForm[sfLoginUsername]
-      token: null
-    a_init:
-      url: [_url]
-    a_html:
-      url: null
-    a_compute:
-      url: null
-  _wkfl_vars:
-    AUTHOR:          [e_author, {text}]
-    AUTHOR_STATS:    [e_joined, [where, [strong>, {text}]]]
-    TITLE:           [e_title, {text}]
-    TAGS:            [[and, e_tag_of, e_tag_ef], [for, e_tag, {text}]]
-    DSCR:            [e_content,e_dscr]
-    PDF:             [s_pdf]
-    TXT:             [e_content, e_txt, {text}]
-    CHRONO:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
-    CHRONI:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
-    STATS:           [e_stat_header, e_stats, [by, line, [[7:],views[:3],faves[:1],comments[:1],vote[:1]]]]
-    IMAGE:           [in, s_art for, w_work, where, e_contentimage]
-    FOLDER_IMAGE:    [in s_art, in, e_folders for, e_folder_link]
-    TITLES:          [in, s_titles for, w_work, where, e_titles]
-    FOLDER_TITLES:   [in, s_titles, in, e_folders for, e_folder_link]
-    JOURNALS:        [in, s_journals, for w_work]
-
-  _elements:
-    e_author:        [span, class="sf-username sfTextMedium"]
-    e_title:         [span, id='sfContentTitle', itemprop='name'] 
-
-    e_chrons:        [div, class="section sf-storyfolder-link"]
-    e_chrono_:       [div, class='section-content-list']
-    e_chroni_:       [span, class='sfTextMedium']
-
-    e_tag_of_:       [div class="section-title", {text}==Official Tags]
-    e_tag_uf_:       [div class="section-title", {text}==UnOfficial Tags]
-    e_tag:           [a class='sf-tag',<text>]
-
-    e_content_:      [div, id="sf-viewcontent-content"]
-    e_content_txt:   [div, id="sfContentBody"]
-    e_dscr:          [div, 'id=sfContentDescription']
-
-
-    e_joined_:       [span, class="user-stats sfTextMedLight"]
-
-    e_stats_header_: [div, class='section-title', {text}==Stats]
-    e_stats_:        [div, class='section-content']
-
-    e_folders_:      [div, class="sfBrowseListFolders"]
-    e_folder_link_:  [a, class='sfTextMedium']
-
-    e_content_image_: [div, id="sfContentImage]
-    e_titles_:        [span class='sf-browse-shortlist-title']
