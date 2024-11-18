@@ -161,615 +161,605 @@ sofurry:
         e_titles_:        [span class='sf-browse-shortlist-title']
 
 
-blokfort.com:
+itch:
+    cookies:            [allow_nsfw_games, itchio_refs, itchio_token, ref%3aregister%3areferrer]
+    reffs :
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [io]
+            u:
+                hostname: [_user_]
+                tld: [io]
+        bp_content:
+            u_work: [_work_uid_]
+        bp_user:
+            u_user: []
+    workflows:
+        w:             [a_init, a_post, a_content]
+        w_purchase:     [a_init_purchase, a_post_purchase, a_post, a_content]
+    actions: 
+        a_init:
+            url :           [_url]
+            wkfl_vars:      [g_csrf_token]
+        a_post:
+            url :           [_url, '/file/7456108?source=view_game&as_props=1&after_download_lightbox=true']
+            payload: 
+                csrf_token:   [g_csrf_token]
+        a_content:
+            url :           [g_post_rsp_url]
+        a_init_purchase:
+            url :           [_url, /purchase]
+            wkfl_vars:      [g_csrf_token]
+        a_post_purchase:
+            url :           [_url, /download_url]
+            payload: 
+                csrf_token:   [g_csrf_token]
+    get:
+        _AUTHOR_:         [e_head_title,        [_text_], [till, by]]
+        _TITLE_:          [e_head_title,        [_text_], [after, by] ] 
+        _DSCR_:           [e_dscr_raw,          [1, p]]
+        _CONTENT_:        []
+        g_other_titles:   [e_view_more,         hreff]
+        g_to_other_title: [e_other_game,        hreff]
+        g_other_title:    [e_other_game,        _text_]
+        g_csrf_token:     [e_csrf_token,        name]
+        g_post_rsp_url:   [a_download_post_,    url]
+        g_is_success:     [a_download_post_,    name]
+    elements:
+        e_head_title:     [[head, title], [_text_]]
+        e_dscr_raw:       [div,  class, formatted_description user_formatted]
+        e_dls_class:      [div,  class, uploads]
+        e_dl_class:       [div,  class, upload]
+        e_dl_info_class:  [div,  class, info_column]
+        e_dl_button:      [a,    class, button download_btn]
+        e_comments:       [div,  class, game_comments_widget base_widget]
+        e_csrf_token:     [meta, name,  csrf_token]
+        e_view_more:      [a,    class, action_btn view_more]
+        e_more_games:     [div,  class, game_grid_widget base_widget user_game_grid]
+        e_other_game:     [a,    class, title game_link]
+        e_dl_direct:      [a,    class, direct_download_btn]
+
+
+furaffinity:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [net]
+        bp_content:
+            d_work: [view, _work_uid_]
+        bp_listings:
+            d_work: [gallery, _author_, iter_, '\?']
+        bp_user:
+            d_user: [user, _user_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_login:
+                url: https://www.furaffinity.net/login
+                usr: name
+                pwd: pass
+                token: null
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+            AUTHOR:          [e_author, {text}]
+            AUTHOR_STATS:    [e_joined, [where, [strong>, {text}]]]
+            TITLE:           [e_title, {text}]
+            TAGS:            [[and, e_tag_of, e_tag_ef], [for, e_tag, {text}]]
+            DSCR:            [e_content,e_dscr]
+            PDF:             [s_pdf]
+            TXT:             [e_content, e_txt, {text}]
+            CHRONO:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
+            CHRONI:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
+            STATS:           [e_stat_header, e_stats, [by, line, ['[7:],views[:3],faves[:1],comments[:1],vote[:1]']]]
+            IMAGE:           [in, s_art for, w_work, where, e_contentimage]
+            FOLDER_IMAGE:    [in s_art, in, e_folders for, e_folder_link]
+            TITLES:          [in, s_titles for, w_work, where, e_titles]
+            FOLDER_TITLES:   [in, s_titles, in, e_folders for, e_folder_link]
+            JOURNALS:        [in, s_journals, for w_work]
+        elements:
+            e_info: [div.info]
+            e_tag2: [div, class='section-ody info",[div,[strong],[span]]]
+            e_tag:  [section, class='tags-mobile',[span,  class='tags', [a]]]
+            e_tag2: [section, class="folders-moile",[div,[div,[a]]]]
+            e_joined: [span, class="hideonmoile" >registered<]
+            e_text:     [div, class="submission-content"]
+            e_title:    [.submission-title]
+            e_author:   [a]
+            e_views:    [div, class='views']
+            e_favs:     [div, class='favorites']
+            e_comments: [div, class='comments']
+            e_rating:   [div, class='rating']
+            e_date: [.popup_date]
+            e_stats: [div, class='table',[div, class='highlight']]
+            e_titles: [figcaption, [p ,[a]]]
+
+
+blokfort:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_content:
+            d_work:      [_work_]
+        bp_listing:
+            d_works:     [nsfw-comics]
+    fetch:
+        workflows:
+            _w:           [_init, _content]
+        actions:
+            a_init:
+                  url: [_url]
+            a_content:
+                url: [IMAGES]
+        wkfl_vars:
+            IMAGES: [e_images, [for, _CONTENT_, r<pdf>]]
+        elements:
+            _AUTHOR_:         'Blokfort'
+            _TITLE_:          [] 
+            _DSCR_:           []
+            _CONTENT_:        []
+            e_images:         []
+
+
+catbox:
   reffs:
-    content:
-      _work:      [_work_]
-    splash:
-      _works:     [nsfw-comics]
-  _workflows:
-    _w:           [_init, _content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-    IMAGES: [e_images, [for, _CONTENT_, r<pdf>]]
-  _elements:
-    _AUTHOR_:         'Blokfort'
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
-    e_images:         []
+      domain:
+          d:
+              hostname: [null,www]
+              tld: [moe]
+          f:
+              hostname: [files]
+              tld: [moe]
+      bp_bin:
+          d_works:       [c, _work_uid_]
+      bp_content:
+          f_work: [_work_uid_, ._fext_]
+  fetch:
+      workflows:
+          w: [a_init, a_content]
+      actions:
+          a_init:
+              url: [_url]
+          a_content:
+              url: [IMAGES]
+      get:
+          g_images: []
+      elements: 
+          e_image: []
 
 
-files.catbox.moe:
-  reffs:
-    content:
-      _work: [files, ._domain_, _work_uid_, ._fext_]
-  _workflows:
-    _w: [a_content]
-  _actions:
-    a_content:
-      url: [_url]
-  _wkfl_vars: null
-  _elements: 
-    _CONTENT_: []
-
-catbox.moe:
-  reffs:
-    content:
-      _work:       [c, _work_uid_]
-  _workflows:
-    _w: [a_init, a_content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-    IMAGES: [e_images, [for, _CONTENT_, r<pdf>]]
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
-    e_images:         []
+google:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+            c:
+                hostname: [drive]
+                tld: [com]
+            w:
+                hostname: [docs]
+                tld: [com]
+        bp_content:
+            w_work:        [document, d, _work_uid_]
+            w_work_edit:   [document, d, _work_uid_, edit]
+            w_work_pub:    [document, d, e, _work_uid_, pub]
+            c_work:      [file, d, _work_uid_]
+            c_work_view: [file, d, _work_uid_, view]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_init:
+            a_content:
+        get:
+        elements:
 
 
-docs.google.com:
-  reffs:
-    content:
-      _work:      [document, d, _work_uid_]
-      _work_edit: [document, d, _work_uid_, edit]
-      _work_pub:  [document, d, e, _work_uid_, pub]
-  _workflows:
-    _w: [a_init, a_content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _CONTENT_:        []
+fiction:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [live]
+        bp_content:
+            d_part:      [stories, _work_, _work_uid_, _part_, _part_uid_]
+        bp_flash:
+            d_flash:     [stories, _work_, _work_uid_]
+        bp_user:
+            d_user:      [user, _user_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
+
+ghostbin:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_content:
+            d_work:      [p_folders, _work_uid_]
+        path:
+            folders:    [_folder_uid_]
+    workflows:
+        w: [a_init, a_content]
+    actions:
+        a_init:
+            url: [_url]
+        a_content:
+            url: [IMAGES]
+    get:
+    elements:
 
 
-drive.google.com:
-  reffs:
-    content:
-      _work:      [file, d, _work_uid_]
-      _work_view: [file, d, _work_uid_, view]
-  _workflows:
-    _w:
-    _w: [a_init, a_content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+git:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [io]
+        bp_content:
+            d_work:      [_work_uid_]
+    workflows:
+        w: [a_init, a_content]
+    actions:
+        a_init:
+            url: [_url]
+        a_content:
+            url: [IMAGES]
+    get:
+    elements:
 
 
-fiction.live:
-  reffs:
-    content:
-      _part:      [stories, _work_, _work_uid_, _part_, _part_uid_]
-    flash:
-      _flash:     [stories, _work_, _work_uid_]
-    user:
-      _user:      [user, _user_]
-  _workflows:
-    _w:
-    _w: [a_init, a_content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
-
-
-ghostbin.com:
-  reffs:
-    content:
-      _work:      [p_folder, _work_uid_]
-      _work_nofd: [_work_uid_]
-    path:
-      _folder:    [_folder_uid_]
-  _workflows:
-    _w:
-    _w: [a_init, a_content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
-
-
-git.io:
-  reffs:
-    content:
-      _work:      [_work_uid_]
-  _workflows:
-    _w:
-    _w: [a_init, a_content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
-
-
-hardbin.com:
-  reffs:
-    content:
-      _work:          [ipfs, _work_uid_]
-  _workflows:
-    _w:
-    _w: [a_init, a_content]
-  _actions:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
-
-
-itch.io:
-  cookies:            [allow_nsfw_games, itchio_refs, itchio_token, ref%3aregister%3areferrer]
-  reffs :
-    content:
-      _work: [u_user, _work_uid_]
-    user:
-      _user: [_user_, ._domain_]
-  _workflows:
-    w_:             [a_init, a_post, a_content]
-    w_purchase:     [a_init_purchase, a_post_purchase, a_post, a_content]
-  _actions: 
-    a_init:
-      url :           [_url]
-      wkfl_vars:      [g_csrf_token]
-    a_post:
-      url :           [_url, '/file/7456108?source=view_game&as_props=1&after_download_lightbox=true']
-      payload: 
-        csrf_token:   [g_csrf_token]
-    a_content:
-      url :           [g_post_rsp_url]
-    a_init_purchase:
-      url :           [_url, /purchase]
-      wkfl_vars:      [g_csrf_token]
-    a_post_purchase:
-      url :           [_url, /download_url]
-      payload: 
-        csrf_token:   [g_csrf_token]
-  _wkfl_vars:
-    _AUTHOR_:         [e_head_title,        [_text_], [till, by]]
-    _TITLE_:          [e_head_title,        [_text_], [after, by] ] 
-    _DSCR_:           [e_dscr_raw,          [1, p]]
-    _CONTENT_:        []
-    g_other_titles:   [e_view_more,         hreff]
-    g_to_other_title: [e_other_game,        hreff]
-    g_other_title:    [e_other_game,        _text_]
-    g_csrf_token:     [e_csrf_token,        name]
-    g_post_rsp_url:   [a_download_post_,    url]
-    g_is_success:     [a_download_post_,    name]
-  _elements:
-    e_head_title:     [[head, title], [_text_]]
-    e_dscr_raw:       [div,  class, formatted_description user_formatted]
-    e_dls_class:      [div,  class, uploads]
-    e_dl_class:       [div,  class, upload]
-    e_dl_info_class:  [div,  class, info_column]
-    e_dl_button:      [a,    class, button download_btn]
-    e_comments:       [div,  class, game_comments_widget base_widget]
-    e_csrf_token:     [meta, name,  csrf_token]
-    e_view_more:      [a,    class, action_btn view_more]
-    e_more_games:     [div,  class, game_grid_widget base_widget user_game_grid]
-    e_other_game:     [a,    class, title game_link]
-    e_dl_direct:      [a,    class, direct_download_btn]
+hardbin:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_content:
+            d_work:          [ipfs, _work_uid_]
+    workflows:
+        w: [a_init, a_content]
+    actions:
+        a_init:
+            url: [_url]
+        a_content:
+            url: [IMAGES]
+    get:
+    elements:
 
 
 literotica:
-  reffs:
-    content:
-      _page: [s, _work_, '?page=', page_]
-      _page_none: [s, _work_]
-    splash:
-      _work: [_user_, works, stories, all]
-    user:
-      _user: [users, _user_]
-  _workflows:
-    w_:
-  _actions:
-    a_login:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [net,com]
+        bp_content:
+            d_page: [s, _work_, {page: _iter_}]
+            d_page_none: [s, _work_]
+        bp_listing:
+            d_work: [_user_, works, stories, all]
+        bp_user:
+            d_user: [users, _user_]
+    fetch:
+        workflows:
+            w:
+        actions:
+            a_login:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-mcstories.com:
-  reffs:
-    content:
-      _work: [_work_, _work_, ._fext_]
-    flash:
-      _work: [_work_, index, .html]
-    splash:
-      _user: [users, index, .html]
-    user:
-      _user: [users, _user_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+mcstories:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_content:
+            d_work: [_work_, _work_, ._fext_]
+        bp_flash:
+            d_work: [_work_, index, .html]
+        bp_listing:
+            d_user: [users, index, .html]
+        bp_user:
+            d_user: [users, _user_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-mega.nz:
-  reffs:
-    bin:
-      _work: [p_folders]
-    content:
-      _work: [p_folders, file, _work_uid_]
-    path:
-      _folders: [folder, _folder_uid_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_login:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+mega:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [nz]
+        bp_bin:
+            d_work: [p_folders]
+        bp_content:
+            d_work: [p_folders, file, _work_uid_]
+        path:
+            folders: [folder, _folder_uid_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_login:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-pastebin.com:
-  reffs:
-    content:
-      _work: [_work_uid_]
-    splash:
-      _work: [u_user]
-    user:
-      _user: [u, _user_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_login:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+pastebin:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_content:
+            d_work: [_work_uid_]
+        bp_listing:
+            d_work: [u, _user_]
+        bp_user:
+            d_user: [u, _user_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_login:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-pastefs.com:
-  reffs:
-    content:
-      _work: [pid, _work_uid_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+pastefs:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_content:
+            d_work: [pid, _work_uid_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_content:
+        get:
+        elements:
 
 
-pastes.psstaudio.com:
-  reffs:
-    content:
-      _work: [post, _work_uid_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+psstaudio:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+            p:
+                hostname: [pastes]
+                tld: [com]
+        bp_content:
+            p_work: [post, _work_uid_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-poneb.in:
-  reffs:
-    content:
-      _work: [_work_uid_]
-    splash:
-      _work: [u_user]
-    user:
-      _user: [u, _user_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+poneb:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [in]
+        bp_content:
+            d_work: [_work_uid_]
+        bp_listing:
+            d_work: [u, _user_, user]
+        bp_user:
+            d_user: [u, _user_]
+    workflows:
+        w: [a_init, a_content]
+    actions:
+        a_content:
+        a_init:
+            url: [_url]
+        a_content:
+            url: [IMAGES]
+    get:
+    elements:
 
 
-raw.githubusercontent.com:
-  reffs:
-    bin:
-      _repo: [_user_, _repo_, _version_]
-    content:
-      work: [b_repo, p_folders, _work_uid_]
-      work_nofolers: [b_repo, _work_uid_]
-    path:
-      _folders: [_folders_]
-    user:
-      _user: [_user_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+githubusercontent:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+            r:
+                hostname: [raw]
+                tld: [com]
+        bp_bin:
+            r_repo: [_user_, _repo_, _version_]
+        bp_content:
+            r_work: [_user_, _repo, _version, p_folders, _work_uid_]
+        path:
+            folders: [_folders_]
+        bp_user:
+            r_user: [_user_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
 rentry:
-  reffs:
-    content:
-      _work: [_work_uid_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [org,co]
+        bp_content:
+            d_work: [_work_uid_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
+
+snekguy:
+    _author_: snekguy
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_content:
+            d_work: [stories, p_group, _work_]
+            d_work_edition: [stories, p_group, _work_, _edition_]
+        path:
+            group: [_group_]
+        bp_listing:
+            d_work: [stories]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-snekguy.com:
-  _author_: snekguy
-  reffs:
-    content:
-      _work: [stories, p_group, _work_]
-      _work_edition: [stories, p_group, _work_, _edition_]
-    path:
-      _group: [_group_]
-    splash:
-      _work: [stories]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+snootgame:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [xyz]
+        bp_content:
+            d_work: [en, bin, _work_uid_, .zip]
+        bp_flash:
+            d_flash: []
+        bp_splash:
+            d_downloads: [en, download, .html]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-snootgame.xyz:
-  reffs:
-    content:
-      _work: [en, bin, _work_uid_, .zip]
-    flash:
-      _flash: []
-    splash:
-      _downloads: [en, download, .html]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
+fanfiction:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [net]
+        bp_content:
+            d_part: [s, _work_uid_, _part_, _work_]
+        bp_user:
+            d_user: [u, _user_uid_, _user_]
+    fetch:
+        workflows:
+            w: [a_init, a_content]
+        actions:
+            a_login:
+            a_content:
+            a_init:
+                url: [_url]
+            a_content:
+                url: [IMAGES]
+        get:
+        elements:
 
 
-www.fanfiction.net:
-  reffs:
-    content:
-      _part: [s, _work_uid_, _part_, _work_]
-    user:
-      _user: [u, _user_uid_, _user_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_login:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _DSCR_:           []
-    _CONTENT_:        []
-
-
-www.furaffinity.net:
-  reffs:
-    content:
-      _work: [view, _work_uid_]
-    splash:
-      _work: [gallery, _author_, iter_, '\?']
-    user:
-      _user: [user, _user_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_login:
-      url: https://www.furaffinity.net/login
-      usr: name
-      pwd: pass
-      token: null
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-    AUTHOR:          [e_author, {text}]
-    AUTHOR_STATS:    [e_joined, [where, [strong>, {text}]]]
-    TITLE:           [e_title, {text}]
-    TAGS:            [[and, e_tag_of, e_tag_ef], [for, e_tag, {text}]]
-    DSCR:            [e_content,e_dscr]
-    PDF:             [s_pdf]
-    TXT:             [e_content, e_txt, {text}]
-    CHRONO:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
-    CHRONI:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
-    STATS:           [e_stat_header, e_stats, [by, line, ['[7:],views[:3],faves[:1],comments[:1],vote[:1]']]]
-    IMAGE:           [in, s_art for, w_work, where, e_contentimage]
-    FOLDER_IMAGE:    [in s_art, in, e_folders for, e_folder_link]
-    TITLES:          [in, s_titles for, w_work, where, e_titles]
-    FOLDER_TITLES:   [in, s_titles, in, e_folders for, e_folder_link]
-    JOURNALS:        [in, s_journals, for w_work]
-  _elements:
-
-    e_info: [div.info]
-    e_tag2: [div, class='section-ody info",[div,[strong],[span]]]
-    e_tag:  [section, class='tags-mobile',[span,  class='tags', [a]]]
-
-    e_tag2: [section, class="folders-moile",[div,[div,[a]]]]
-
-    e_joined: [span, class="hideonmoile" >registered<]
-    e_text:     [div, class="submission-content"]
-    e_title:    [.submission-title]
-    e_author:   [a]
-    e_views:    [div, class='views']
-    e_favs:     [div, class='favorites']
-    e_comments: [div, class='comments']
-    e_rating:   [div, class='rating']
-    e_date: [.popup_date]
-    e_stats: [div, class='table',[div, class='highlight']]
-    e_titles: [figcaption, [p ,[a]]]
-
-www.reddit.com:
-  reffs:
-    bin:
-      _sub:  [r, _sub_]
-    content:
-      _work: [b_sub, comments, _work_uid_, _work_]
-    user:
-      _user: [user, _user_]
-  _workflows:
-    w_:
-    _w: [a_init, a_content]
-  _actions:
-    a_login:
-    a_content:
-    a_init:
-      url: [_url]
-    a_content:
-      url: [IMAGES]
-  _wkfl_vars:
-  _elements:
-    _AUTHOR_:         []
-    _TITLE_:          [] 
-    _CONTENT_:        []
+reddit:
+    reffs:
+        domain:
+            d:
+                hostname: [null,www]
+                tld: [com]
+        bp_bin:
+            d_sub:  [r, _sub_]
+        bp_content:
+            d_work: [r, _sub_, comments, _work_uid_, _work_]
+        bp_user:
+            d_user: [user, _user_]
+    fetch:
+        workflows:
+            _w: [a_init, a_content]
+        actions:
+            a_init:
+            a_content:
+        get:
+        elements:
 

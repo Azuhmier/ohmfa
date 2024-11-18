@@ -223,7 +223,40 @@ o = Main()
 o.select_ohmfa_dir(OHMFA_DIR)
 o.load_urls(URLS_FILE)
 f = Fetcher('/home/azuhmier/progs/ohmfa/t/scratch/lib/frameworks/domains_config.yml')
-f.load_urls(o.d_urls,slds=['archiveofourown','sofurry'])
-#xx = f.check_urls(groups=['archiveofourown.org'])
+slds = [
+    #'archiveofourown',
+    #'sofurry',
+    #'blokfort',
+    #'catbox',
+    #'google',
+    #'fiction',
+    #'pastebin',
+    #'snekguy',
+    #'poneb',
+    #'snootgame',
+    #'itch',
+    'fanfiction',
+    #'google',
+    #'reddit',
+    #'hardbin',
+    #'fiction',
+    #'git',
+    #'rentry',
+    #'githubusercontent',
+    #'psstaudio',
+    #'pastefs',
+    #'mega',
+    #'mcstroies',
+    #'literotica',
+    #'furaffinity',
+    #'ghostbin',
+    ]
+bad_shit = [
+    'Privacy error',
+    'Just a moment...',
+]
+f.load_urls(o.d_urls)
 f.get_passwords('/home/azuhmier/.pwds')
-f.browser.quit()
+#f.check_urls(oslds=slds)
+f.check_urls(oslds=slds,no_domain=True)
+f.driver.quit()

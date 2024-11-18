@@ -30,13 +30,6 @@ class OhmfaUrl():
         'author',
         'misc',
         ]
-    slds = [
-        'itch.io',
-        'literotica',
-        'rentry', 
-        'sofurry',
-        'archiveofourown' ]
-
     action_idx = 0
     action = None
     action_name = None
@@ -53,14 +46,13 @@ class OhmfaUrl():
         self.domain = url.netloc
         self.actions = []
         self.ws = {}
+        self.log = []
 
-        # Determine Group
-        for sld in self.slds:
-            if sld in self.domain:
-                self.sld = sld
-                break
-        else:
-            self.sld = self.domain
+        # Determine sld
+        domain_frags = self.domain.split('.')
+        self.sld = domain_frags[1]
+        if len(domain_frags) == 2:
+            self.sld = domain_frags[0]
 
         # Determine Group
         # Get Config
@@ -81,6 +73,10 @@ class OhmfaUrl():
         res = self.resolve_url(url_ar0)
 
         if not res['url_type']:
+            print(self.url.geturl())
+            print(self.domain)
+            for line in self.log:
+                print(line)
             sys.exit('ERROR: url resolution failed!')
 
         self.url_type=res['url_type']
@@ -122,9 +118,9 @@ class OhmfaUrl():
                         self.ws[hostname_var] = hostname
             else:
                 if hostnames[0]:
-                  hostname = hostnames[0]
+                    hostname = hostnames[0]
                 else:
-                  hostname = hostnames[1]
+                    hostname = hostnames[1]
 
         if tld not in domain_reff['tld']: 
             sys.exit('Error: invalid tld "'+str(tld)+'"')
@@ -139,6 +135,17 @@ class OhmfaUrl():
         return domain_type
 
 
+    def logthis(self,*args):
+        nargs=[]
+        for arg in args:
+            if isinstance(arg,list):
+                nargs.append(copy.deepcopy(arg))
+            elif isinstance(arg,dict):
+                nargs.append(copy.deepcopy(arg))
+            else:
+                nargs.append(arg)
+        self.log.append(nargs)
+
     def resolve_url(self,url_ar0): 
         retu = {
           'query':    None,
@@ -150,25 +157,35 @@ class OhmfaUrl():
 
         def is_match(url_ar,bp_ar):
 
-            idx         = -1
-            pre_items   = []
+            is_match.idx         = -1
+            is_match.url_ar      = url_ar
+            is_match.bp_ar       = bp_ar
+            is_match.pre_items   = []
             success     = False
+            _log = []
 
 
-            def rept(url_ar,bp_ar,idx):
+            def rept():
                 is_rept = False
                 if rept.active:
-                  if not rept.end:
-                      bp_ar[rept.start:rept.start] = rept.val
-                      url_ar = pre_items[rept.start:] + url_ar
-                      idx = rept.start - 1
-                      rept.end = len(rept.val) + idx
-                      is_rept = True
-                  elif idx >= rept.end:
-                      bp_ar[rept.end:rept.end] = rept.val
-                      url_ar = pre_items[rept.end:] + url_ar
-                      idx = rept.end - 1
-                      is_rept = True
+                    self.logthis('REPT????',is_match.idx,len(is_match.bp_ar),rept.start,rept.end,rept.active,is_match.bp_ar,is_match.url_ar)
+                    if rept.end == 0:
+                        is_match.bp_ar[rept.start:rept.start] = rept.val
+                        is_match.url_ar = is_match.pre_items[rept.start:] + is_match.url_ar
+                        del is_match.pre_items[rept.start:]
+                        is_match.idx = rept.start - 1
+                        rept.end = len(rept.val) + is_match.idx
+                        is_match.is_rept = True
+                        is_rept = True
+                    elif is_match.idx >= rept.end:
+                        is_match.bp_ar[rept.end:rept.end] = rept.val
+                        is_match.url_ar = is_match.pre_items[rept.end:] + is_match.url_ar
+                        del is_match.pre_items[rept.start:]
+                        is_match.idx = rept.end - 1
+                        is_rept = True
+
+                if is_rept:
+                    self.logthis('REPT<<<<',is_match.idx,len(is_match.bp_ar),rept.start,rept.end,rept.active,is_match.bp_ar,is_match.url_ar)
                 return is_rept
 
 
@@ -177,56 +194,72 @@ class OhmfaUrl():
             rept.end    = 0
             rept.active = False
 
-            while len(url_ar):
+            while len(is_match.url_ar):
                 success = False
-
-                idx += 1
+                is_match.idx += 1
+                self.logthis('START===',is_match.idx,len(is_match.bp_ar),rept.start,rept.end,rept.active,is_match.bp_ar,is_match.url_ar)
+                if len(is_match.url_ar) > 10:
+                    for line in self.log:
+                        print(line)
+                    sys.exit('ERROR! Iteration Depth Reached at "'+str(is_match.idx)+'"')
                 #reff exhausted
-                if (idx+1) > len(bp_ar):
-                    if rept(url_ar,bp_ar,idx):
+                if (is_match.idx+1) > len(is_match.bp_ar):
+                    if rept():
                         continue
                     break
 
-                item      = url_ar.pop(0)
-                reff_item = bp_ar[idx]
-                pre_items.append(item)
+                item      = is_match.url_ar.pop(0)
+                reff_item = is_match.bp_ar[is_match.idx]
+                is_match.pre_items.append(item)
 
+                self.logthis('POPPED  ',is_match.idx,len(is_match.bp_ar),rept.start,rept.end,rept.active,is_match.bp_ar,is_match.url_ar,rept.active)
                 if reff_item[:2] == 'p_':
-                    rept.start               = idx
+                    rept.start               = is_match.idx
                     rept.active              = True
-                    rept.val                 = self.reff['path'][reff_item[1:]]
-                    bp_ar.pop(idx)
-                    reff_item                = bp_ar[idx]
+                    rept.val                 = self.reff['path'][reff_item[2:]]
+                    is_match.bp_ar.pop(is_match.idx)
+                    if len(is_match.bp_ar) < (is_match.idx+1):
+                        if rept():
+                            continue
+                        break
+                    else:
+                        reff_item  = is_match.bp_ar[is_match.idx]
 
 
+                self.logthis('VALIDATE',is_match.idx,len(is_match.bp_ar),rept.start,rept.end,rept.active,is_match.bp_ar,url_ar)
                 if reff_item[0] == '_':
                     retu['vars'][reff_item] = item
                 elif item != reff_item:
-                    if rept(url_ar,bp_ar,idx):
+                    if rept():
                         continue
                     break
 
+                self.logthis('SUCCESS ',is_match.idx,len(is_match.bp_ar),rept.start,rept.end,rept.active,is_match.bp_ar,is_match.url_ar)
                 success=True
 
-            if not (success and (idx+1) == len(bp_ar)):
+            if not (success and (is_match.idx+1) == len(is_match.bp_ar)):
                 success = False
             return success
 
 
         for url_type in self.url_types:
+            self.logthis(url_type)
             bps_key = 'bp_'+url_type
 
             if bps_key not in self.reff:
+                self.logthis('not_found!')
                 continue
 
             bps = self.reff[bps_key]
             for bp_key, bp in bps.items():
+                self.logthis(bp_key[0],self.domain_type)
 
                 if bp_key[0] != self.domain_type:
+                    self.logthis('no_match!')
                     continue
 
                 bp_ar0 = copy.deepcopy(bp)
-                if isinstance(bp_ar0[-1],dict):
+                if len(bp_ar0) and isinstance(bp_ar0[-1],dict):
                     retu['query']=bp_ar0.pop(-1)
                 bp_ar0 = self.process_url_ar(bp_ar0)
 
