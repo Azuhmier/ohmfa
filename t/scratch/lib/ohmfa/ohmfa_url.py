@@ -276,8 +276,6 @@ class OhmfaUrl():
 
         return retu
 
-        
-
 
     def process_url_ar(self,ar,keep_vars=True):
         new_ar = []

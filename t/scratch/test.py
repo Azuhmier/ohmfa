@@ -231,11 +231,11 @@ slds = [
     #'google',
     #'fiction',
     #'pastebin',
-    #'snekguy',
+    'snekguy',
     #'poneb',
     #'snootgame',
     #'itch',
-    'fanfiction',
+    #'fanfiction',
     #'google',
     #'reddit',
     #'hardbin',
@@ -257,6 +257,6 @@ bad_shit = [
 ]
 f.load_urls(o.d_urls)
 f.get_passwords('/home/azuhmier/.pwds')
-#f.check_urls(oslds=slds)
+#f.check_urls(no_domain=True)
 f.check_urls(oslds=slds,no_domain=True)
-f.driver.quit()
+#f.driver.quit()

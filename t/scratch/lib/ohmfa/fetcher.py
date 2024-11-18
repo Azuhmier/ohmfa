@@ -1,79 +1,85 @@
 import os
 import csv
 import sys
+import json
 import time
 import yaml
-
-# -------- Requests
-import requests
-# -------- Selenium
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-# - Chrome
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-# - Exceptions
-from selenium.common.exceptions import (WebDriverException,NoSuchWindowException)
-# - Undetected Chrome
-#import undetected_chromedriver as uc
-# - Selenium Base
-from seleniumbase import Driver
 
 from lib.ohmfa.ohmfa_url import OhmfaUrl
 from bs4 import BeautifulSoup
 
+# ------- requests
+import requests
+
+# ------- selenium
+from selenium.webdriver.support.ui import WebDriverWait
+# - Chrome
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+# - Exceptions
+from selenium.common.exceptions import (WebDriverException,NoSuchWindowException)
+
+# ------- seleniumbase
+from seleniumbase import Driver
+
 class Fetcher():
     def __init__(self,config_file):
+        self.durls = {}
+        self.sdspt={}
         self.pwds = {}
 
         with open(config_file, mode='r',encoding='utf-8' ) as infile:
             self.dspt = yaml.safe_load(infile)
 
-        # -------- driver
-        chrome_options = Options()
-        #chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_binary_path = os.path.join('/usr/bin/google-chrome')
-        chromedriver_path = os.path.join('/usr/bin/chromedriver')
-        chrome_options.binary_location = chrome_binary_path
-        chrome_service = Service(chromedriver_path)
+        # -------- requests
+        self.s = requests.session()
 
-        self.driver = Driver(
+        # -------- selenium
+        # - paths
+        chrome_binary_path = os.path.join('/usr/bin/google-chrome')
+        chromedriver_path  = os.path.join('/usr/bin/chromedriver')
+        # - options
+        options = webdriver.ChromeOptions()
+        chrome_options = Options()
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.binary_location = chrome_binary_path
+        # - driver
+        chrome_service = Service(chromedriver_path)
+        self.s_driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+
+        # -------- seleniumBase
+        # - driver
+        self.sb_driver = Driver(
             uc=True,
-            #headless=True,
+            headless=True,
             agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.138 Safari/537.36 AVG/112.0.21002.139",
             undetectable=True,
             do_not_track=True,
             no_sandbox=True,
-            #devtools=True,
-            #browser="chrome",
+            devtools=True,
+            browser="chrome",
             uc_cdp_events=True,
             
             )
-        #self.driver.set_page_load_timeout(5)
-        #self.driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
-        res=self.driver.execute_cdp_cmd('Page.enable', {})
-        print(res)
-        res=self.driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
-        'source': """
-        Element.prototype._as = Element.prototype.attachShadow;
-        Element.prototype.attachShadow = function (params) {
-        return this._as({mode: "open"})
-        };
-        """
+        # - options
+        self.sb_driver.set_page_load_timeout(5)
+        # - CDP
+        self.sb_driver.execute_cdp_cmd('Page.enable', {})
+        self.sb_driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
+            'source': """
+            Element.prototype._as = Element.prototype.attachShadow;
+            Element.prototype.attachShadow = function (params) {
+            return this._as({mode: "open"})
+            }; """
         })
-        print(res)
-        #self.driver.execute_cdp_cmd('Network.enable', {})
+        self.sb_driver.execute_cdp_cmd('Network.enable', {})
 
-        # Requests
-        self.s = requests.session()
 
-        self.durls = {}
-        self.sdspt={}
-        #self.timeout = 5
 
 
     def load_urls(self,urls, slds=[]):
@@ -92,90 +98,110 @@ class Fetcher():
             self.durls[u.sld][u.domain][u.bp_key].append(u)
 
 
+    def fetch(self,url):
+        codes = {
+            200:'Success',
+            410:'GONE',
+            406:'Not Acceptable',
+            404:'Not Found',
+            504:'Success',
+            403:'Forbidden',
+        }
 
-
-
-    def fetch_request(self,url,timeout=5,params={},headers={},wait=1):
-        time.sleep(wait)
+        # -------- Requests
+        # - config
+        rq_cookies = {cookie["name"]: cookie["value"] for cookie in original_cookies}
+        self.s.cookies.update(rq_cookies)
+        self.s.headers.update({"User-Agent": rq_user_agent})
+        # - fetch
         try:
-            r = self.s.get(url,timeout=timeout,params=params,headers=headers)
-            value = 'unkown status'
-            if r.status_code == 200:
-                value = 'Success'
-                soup = BeautifulSoup(r.content,'html.parser')
-            elif r.status_code == 410:
-                value = 'GONE'
-            elif r.status_code == 406:
-                value = 'Not Acceptable'
-            elif r.status_code == 404:
-                value = 'Not Found'
-            elif r.status_code == 504:
-                value = 'Success'
-            elif r.status_code == 403:
-                value = 'Forbidden'
-            print("    ",url," status: ", r.status_code," ",value)
+            rq_r = self.s.get(url)
         except (
             requests.exceptions.ConnectionError,
             requests.exceptions.ConnectTimeout):
-            exc_type, value, traceback = sys.exc_info()
-            name = exc_type.__name__
-            value = str(value)
-            if name == 'ConnectionError':
-                if 'RemoteDisconnected' in value:
-                    value = 'RemoteDisconnected'
-                elif '[Errno -2]' in value:
-                    value = 'Name or service not known'
-                elif '[Errno -3]' in value:
-                    value = 'Temporary failer in name resolution'
-                elif '[Errno 113]' in value:
-                    value = 'No route to host'
-            elif name == 'ConnectTimeout':
-                if 'Max retries exceeded' in value:
-                    value = 'Max retries exceeded'
-            print("        ",url," ", name," ",value)
+            rq_exc_type, rq_value, rq_traceback = sys.exc_info()
+            rq_name = rq_exc_type.__name__
+            rq_value = str(value)
+            if rq_name == 'ConnectionError':
+                if 'RemoteDisconnected' in rq_value:
+                    rq_value = 'RemoteDisconnected'
+                elif '[Errno -2]' in rq_value:
+                    rq_value = 'Name or service not known'
+                elif '[Errno -3]' in rq_value:
+                    rq_value = 'Temporary failer in name resolution'
+                elif '[Errno 113]' in rq_value:
+                    rq_value = 'No route to host'
+            elif rq_name == 'ConnectTimeout':
+                if 'Max retries exceeded' in rq_value:
+                    rq_value = 'Max retries exceeded'
+            print("        ",url," ", rq_name," ",rq_value)
+        # - response
+        rq_resp = rq_r.content 
+        rq_code = rq_r.status_code
 
-    def fetch_selenium(self,url,timeout=5,params={},headers={},wait=1,page_wait=2000):
-        retu = {
-            'current_url':None,
-            'page_title':None,
-            'response': None,
-            'elapsed_time': None,
-            'success': False,
-            'status_code': None,
-            'status_code_meaning': None,
-            'error': {
-                'name': None,
-                'msg': None,
-                'tldr': None,
-            },
-        }
+        # -------- Selinium
+        # - config
+        # - fetch
         try:
-            self.driver.uc_open(url)
-            retu['current_url'] = self.driver.current_url
-            retu['page_title']  = self.driver.title
-            retu['response']    = self.driver.page_source
+            self.s_driver
         except (WebDriverException, NoSuchWindowException):
-            exc_type, value, traceback = sys.exc_info()
-            name = exc_type.__name__
-            retu['error']['name'] = name
-            retu['error']['msg'] = value
+            s_exc_type, s_value, s_traceback = sys.exc_info()
+            s_name = s_exc_type.__name__
+        # - response
+        s_url    = self.s_driver.current_url
+        s_title  = self.s_driver.title
+        s_resp   = self.s_driver.page_source
+        
+        # -------- SeliniumBase
+        # - config
+        # - fetch
+        try:
+            self.sb_driver.us_open(url)
+        except (WebDriverException, NoSuchWindowException):
+            sb_exc_type, sb_value, sb_traceback = sys.exc_info()
+            sb_name = sb_exc_type.__name__
+        # - response
+        sb_url    = self.sb_driver.current_url
+        sb_title  = self.sb_driver.title
+        sb_resp   = self.sb_driver.page_source
+
+        # -------- Flare_Solver
+        # - config
+        fs_url = "http://localhost:8191/v1"
+        fs_headers = {"Content-Type": "application/json"}
+        fs_data = {
+            "cmd": "request.get",
+            "url": fs_url,
+            "maxTimeout": fs_timeout
+        }
+        # - fetch 
+        try:
+            fs_r = self.s.post(fs_url, headers=fs_headers, json=fs_data)
+        except:
+            pass
+        # - response
+        fs_soup = BeautifulSoup(fs_r.content,'html.parser')
+        try:
+            fs_title = fs_soup.head.title.text)
+        except AttributeError:
+            pass
+        fs_js = json.loads(fs_r.content)
+        original_cookies = fs_js["solution"]["cookies"]
+        fs_ua = fs_js["solution"]["userAgent"]
 
 
-        cur_url  = retu['current_url']
-        title    = retu['page_title']
-        code     = retu['status_code']
-        success  = retu['success']
-        err_name = retu['error']['name']
-        err_value = retu['error']['msg']
-        print('        CurURL:  ',cur_url)
-        print('        Title:   ',title)
-        print('        Code:    ',code)
-        print('        Error:   ',err_name)
-        #print('        Erval:   ',err_value)
-        print('        Success: ',success)
 
 
-        return retu
+    def fetchh(self,url):
+        durl = "http://localhost:8191/v1"
+        headers = {"Content-Type": "application/json"}
+        data = {
+            "cmd": "request.get",
+            "url": url,
+            "maxTimeout": 60000
+        }
+        r = self.s.post(durl, headers=headers, json=data)
+        print("    ",r.status_code)
 
 
     def check_urls(self, oslds=[],no_domain=False):
@@ -186,13 +212,13 @@ class Fetcher():
                     print(domain)
                     print("    ",'https://'+domain)
                     if not no_domain:
-                        retu = self.fetch_selenium('https://'+domain)
+                        self.fetch('https://'+domain)
 
                     for urls in url_types.values(): 
                         u = urls[0]
                         print("    ",u.url.geturl())
-                        print("        type: ",u.url_type)
-                        retu = self.fetch_selenium(u.url.geturl())
+                        print("     type: ",u.url_type)
+                        self.fetch(u.url.geturl())
 
 
     def get_payload (self,d_config, pwds, domain) :
