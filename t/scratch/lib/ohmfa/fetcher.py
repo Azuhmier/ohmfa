@@ -10,6 +10,9 @@ from bs4 import BeautifulSoup
 
 # ------- requests
 import requests
+# - Exceptions
+from requests.exceptions import HTTPError
+from requests.auth import HTTPBasicAuth
 
 # ------- selenium
 from selenium.webdriver.support.ui import WebDriverWait
@@ -27,181 +30,515 @@ from selenium.common.exceptions import (WebDriverException,NoSuchWindowException
 from seleniumbase import Driver
 
 class Fetcher():
-    def __init__(self,config_file):
+    def __init__(self,config_file,
+                d_page_wait=20,
+                ):
+
         self.durls = {}
         self.sdspt={}
         self.pwds = {}
+        self.fs_domains = []
+        self.cookie_jar = {}
 
         with open(config_file, mode='r',encoding='utf-8' ) as infile:
             self.dspt = yaml.safe_load(infile)
 
-        # -------- requests
+        # --------- request
         self.s = requests.session()
+        self.s_url = "http://localhost:8191/v1"
+        self.s_fs_timeout = 6000
 
-        # -------- selenium
-        # - paths
-        chrome_binary_path = os.path.join('/usr/bin/google-chrome')
-        chromedriver_path  = os.path.join('/usr/bin/chromedriver')
-        # - options
-        options = webdriver.ChromeOptions()
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.binary_location = chrome_binary_path
-        # - driver
-        chrome_service = Service(chromedriver_path)
-        self.s_driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+        cmd     = "sessions.list"
+        headers = {"Content-Type": "application/json"}
+        fs_data = { "cmd": cmd}
+        r = self.s.post(self.s_url, headers=headers, json=fs_data)
+        fs_r_json     = json.loads(r.content)
+        session_list = fs_r_json['sessions']
+        for session_id in session_list:
+            cmd     = "sessions.destroy"
+            headers = {"Content-Type": "application/json"}
+            fs_data = { "cmd": cmd,"session":session_id}
+            r = self.s.post(self.s_url, headers=headers, json=fs_data)
+            fs_r_json     = json.loads(r.content)
+            status = fs_r_json['status']
+        cmd     = "sessions.create"
+        headers = {"Content-Type": "application/json"}
+        fs_data = { "cmd": cmd}
+        r=self.s.post(self.s_url, headers=headers, json=fs_data)
+        response_data    = json.loads(r.content)
+        status           = response_data["status"]
 
-        # -------- seleniumBase
-        # - driver
-        self.sb_driver = Driver(
-            uc=True,
-            headless=True,
-            agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.138 Safari/537.36 AVG/112.0.21002.139",
-            undetectable=True,
-            do_not_track=True,
-            no_sandbox=True,
-            devtools=True,
-            browser="chrome",
-            uc_cdp_events=True,
-            
-            )
-        # - options
-        self.sb_driver.set_page_load_timeout(5)
-        # - CDP
-        self.sb_driver.execute_cdp_cmd('Page.enable', {})
-        self.sb_driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
-            'source': """
-            Element.prototype._as = Element.prototype.attachShadow;
-            Element.prototype.attachShadow = function (params) {
-            return this._as({mode: "open"})
-            }; """
-        })
-        self.sb_driver.execute_cdp_cmd('Network.enable', {})
+        r = self.s_fs('https://www.google.com')
+        response_data    = json.loads(r.content)
+        user_agent       = response_data["solution"]["userAgent"]
 
-
-
-
-    def load_urls(self,urls, slds=[]):
-        for url in urls:
-            u = OhmfaUrl(url,self.dspt)
-            if len(slds) and not u.sld in slds:
-                del u
-                continue
-            u.process()
-            if u.sld not in self.durls:
-                self.durls[u.sld]={}
-            if u.domain not in self.durls[u.sld]:
-                self.durls[u.sld][u.domain]={}
-            if u.bp_key not in self.durls[u.sld][u.domain]:
-                self.durls[u.sld][u.domain][u.bp_key]=[]
-            self.durls[u.sld][u.domain][u.bp_key].append(u)
-
-
-    def fetch(self,url):
-        codes = {
-            200:'Success',
-            410:'GONE',
-            406:'Not Acceptable',
-            404:'Not Found',
-            504:'Success',
-            403:'Forbidden',
-        }
-
-        # -------- Requests
-        # - config
-        rq_cookies = {cookie["name"]: cookie["value"] for cookie in original_cookies}
-        self.s.cookies.update(rq_cookies)
-        self.s.headers.update({"User-Agent": rq_user_agent})
-        # - fetch
-        try:
-            rq_r = self.s.get(url)
-        except (
-            requests.exceptions.ConnectionError,
-            requests.exceptions.ConnectTimeout):
-            rq_exc_type, rq_value, rq_traceback = sys.exc_info()
-            rq_name = rq_exc_type.__name__
-            rq_value = str(value)
-            if rq_name == 'ConnectionError':
-                if 'RemoteDisconnected' in rq_value:
-                    rq_value = 'RemoteDisconnected'
-                elif '[Errno -2]' in rq_value:
-                    rq_value = 'Name or service not known'
-                elif '[Errno -3]' in rq_value:
-                    rq_value = 'Temporary failer in name resolution'
-                elif '[Errno 113]' in rq_value:
-                    rq_value = 'No route to host'
-            elif rq_name == 'ConnectTimeout':
-                if 'Max retries exceeded' in rq_value:
-                    rq_value = 'Max retries exceeded'
-            print("        ",url," ", rq_name," ",rq_value)
-        # - response
-        rq_resp = rq_r.content 
-        rq_code = rq_r.status_code
-
-        # -------- Selinium
-        # - config
-        # - fetch
-        try:
-            self.s_driver
-        except (WebDriverException, NoSuchWindowException):
-            s_exc_type, s_value, s_traceback = sys.exc_info()
-            s_name = s_exc_type.__name__
-        # - response
-        s_url    = self.s_driver.current_url
-        s_title  = self.s_driver.title
-        s_resp   = self.s_driver.page_source
         
-        # -------- SeliniumBase
-        # - config
-        # - fetch
-        try:
-            self.sb_driver.us_open(url)
-        except (WebDriverException, NoSuchWindowException):
-            sb_exc_type, sb_value, sb_traceback = sys.exc_info()
-            sb_name = sb_exc_type.__name__
-        # - response
-        sb_url    = self.sb_driver.current_url
-        sb_title  = self.sb_driver.title
-        sb_resp   = self.sb_driver.page_source
 
-        # -------- Flare_Solver
-        # - config
-        fs_url = "http://localhost:8191/v1"
-        fs_headers = {"Content-Type": "application/json"}
-        fs_data = {
-            "cmd": "request.get",
-            "url": fs_url,
-            "maxTimeout": fs_timeout
-        }
-        # - fetch 
-        try:
-            fs_r = self.s.post(fs_url, headers=fs_headers, json=fs_data)
-        except:
-            pass
+        # --------- driver
+        self.d = Driver(
+            agent=user_agent,
+            browser="chrome",
+            #devtools=True,
+            do_not_track=True,
+            headless=True,
+            no_sandbox=True,
+            uc=True,
+            #uc_cdp_events=True,
+            undetectable=True,
+            #uc_subprocess=True,
+            #version_main = 130,
+            )
+        self.d_page_wait = d_page_wait
+        self.d.set_page_load_timeout(self.d_page_wait)
+        #for cookie in cookies:
+        #    cookie.update({'domain': 'www.google.com'})
+        #    self.d.execute_cdp_cmd('Network.setCookie', cookie)
+        
+
+
+    def fetch(self,u):
+        fs_all = False
+        url      = u.url.geturl()
+
+        r  = None
+        page_title    = None
+
+        fs_used = False
+        fs_page_title  = None
+        fs_cookies     = None
+        fs_user_agent  = None
+
+        bad_page_titles = [
+            'Reddit - Dive into anything',
+            'Fiction.live',
+        ]
+
+        print(url)
+        print(u.domain)
+
+        # ------- FlareSolverr
+        if u.domain not in self.fs_domains or fs_all:
+            # - flags
+            if not fs_all:
+                self.fs_domains.append(u.domain)
+            fs_used = True
+            # - fetch
+            fs_r = self.s_fs(url)
+            # - response
+            fs_r_json     = json.loads(fs_r.content)
+            fs_user_agent       = fs_r_json["solution"]["userAgent"]
+            fs_cookies          = fs_r_json["solution"]["cookies"]
+            fs_status           = fs_r_json["status"]
+            fs_soup             = BeautifulSoup(fs_r.content,'html.parser')
+            # - update driver
+            fs_cookies = sorted(fs_cookies, key=lambda d: d['name'])
+            self.d.execute_cdp_cmd('Network.enable',{})
+            for fs_cookie in fs_cookies:
+                fs_cookie.update({'domain': u.domain})
+                res = self.d.execute_cdp_cmd('Network.setCookie', fs_cookie)
+
+            self.d.execute_cdp_cmd('Network.disable', {})
+            # - page title check
+            try:
+                fs_page_title = fs_soup.head.title.text
+                if not fs_page_title:
+                    raise(AttributeError)
+                elif page_title in bad_page_titles:
+                    raise(AttributeError)
+            except AttributeError: 
+                print('        Bad fs_Title: ', fs_page_title)
+            else:
+                print('        fs_Title: ', fs_page_title)
+
+        # -------- Driver
+        # - fetch
+        self.d.get(url)
+        time.sleep(5)
         # - response
-        fs_soup = BeautifulSoup(fs_r.content,'html.parser')
+        cookies = self.d.get_cookies()
+        cookies = sorted(cookies, key=lambda d: d['name'])
+        user_agent = self.d.execute_script("return navigator.userAgent;")
+        # page title check
+        try :
+            page_title = self.d.title
+            if not page_title:
+                raise(Exception)
+            elif page_title in bad_page_titles:
+                raise(Exception)
+        except Exception:
+            print('        Bad Page_Title: ', page_title)
+        else:
+            print('        Page_Title: ', self.d.title)
+
+        # ------ diffs
+        if fs_used:
+            print('        Diff-----------')
+        # - UA
+            if fs_user_agent != user_agent:
+                print('        UA: ',fs_user_agent)
+        # - CKS
+            cks_dict = {cookie['name']: cookie['value'] for cookie in cookies}
+            fs_cks_dict = {fs_cookie['name']: fs_cookie['value'] for fs_cookie in fs_cookies}
+            uniq_cks    = list(set(cks_dict.keys()) - set(fs_cks_dict.keys()))
+            for k in uniq_cks:
+                print('            >',k)
+            shared_cks  = list(set(cks_dict.keys()).intersection(fs_cks_dict.keys()))
+            for k in shared_cks: 
+                v = cks_dict[k]
+                fs_v = fs_cks_dict[k]
+                if v != fs_v:
+                    print('            !',k)
+            uniq_fs_cks = list(set(fs_cks_dict.keys()) - set(cks_dict.keys()))
+            for k in uniq_fs_cks:
+                print('            <',k)
+        else:
+            print('        Diff-----------')
+            old_cks_dict = self.cookie_jar[u.domain] 
+            cks_dict = {cookie['name']: cookie['value'] for cookie in cookies}
+            uniq_cks    = list(set(cks_dict.keys()) - set(old_cks_dict.keys()))
+            for k in uniq_cks:
+                print('            >',k)
+            shared_cks  = list(set(cks_dict.keys()).intersection(old_cks_dict.keys()))
+            for k in shared_cks: 
+                v = cks_dict[k]
+                old_v = old_cks_dict[k]
+                if v != old_v:
+                    print('            !',k)
+            uniq_old_cks = list(set(old_cks_dict.keys()) - set(cks_dict.keys()))
+            for k in uniq_old_cks:
+                print('            <',k)
+        if u.domain not in self.cookie_jar:
+            self.cookie_jar[u.domain] = {}
+        self.cookie_jar[u.domain].update(cks_dict)
+
+        # ------ actions
+        print('        ACTIONS-----------')
+
+        if u.fetch_config['params']['enabled']:
+            wkfl = u.fetch_config['workflows']['w']
+            for action in wkfl:
+                u.actions.append([action,[]])
+                print("            ",action)
+                a = u.fetch_config['actions'][action]
+                for do in a['do']:
+                    res = self.do_action(do,u)
+                    u.actions[-1][1].append([do,res])
+                    print("               ",res," ",do)
+        return r
+
+    def get_element_path(self, element):
+        path = []
+        while element.parent:
+            parent = element.parent
+            siblings = parent.find_all(element.name, recursive=False)
+            index = siblings.index(element) + 1 if siblings else 1
+            path.insert(0, f'{element.name}:nth-of-type({index})')
+            element = parent
+        return ' > '.join(path)
+
+    def do_action(self,do,u): 
+        retu = None
+        res = None
+        status = False
+        arg_ar = None
+        no_soup = False
+        for arg in do:
+            if arg[:2] == 'e_':
+                arg_ar = u.fetch_config['elements'][arg]
+                if not no_soup:
+                    soup = BeautifulSoup(self.d.page_source,'html.parser')
+                    retu, res, retu_type = self.eval_element(arg_ar,u,soup)
+                    if not retu_type:
+                        status=False
+                    else:
+                        status=True
+                        if retu_type != 'list':
+                            retu = retu[0]
+            if arg[0] == '_':
+                if arg[:6] == '_click':
+                    if not no_soup:
+                        selector = self.get_element_path(retu)
+                    else:
+                        selector = arg_ar[1]
+                    wait_time = arg[7:-1]
+                    if wait_time:
+                        time.sleep(int(wait_time))
+                    self.d.click(selector, by="css selector")
+                if arg == '_exists':
+                    retu = status
+                if arg[:5] == '_wait':
+                    wait_time = arg[6:-1]
+                    if wait_time:
+                        time.sleep(int(wait_time))
+                if arg == '_len':
+                    retu = len(res)
+                if arg == '_no_soup':
+                    no_soup=True
+                if arg[:7] == '_skipif':
+                    act = -1
+                    nop=True
+                    ele = arg[8:-1]
+                    if ele[0] == '!':
+                        ele=ele[1:]
+                        nop=False
+                    if ',' in ele:
+                        act, ele = ele.split(',')
+                        
+                    cond = u.actions[int(act)][1][int(ele)][1]
+                    if not ( nop ^ cond ):
+                        retu='skipped!'
+                        return retu
+
+        return retu
+
+    def eval_element(self,arg_ar,u,given_soup):
+        """_summary_
+        page_source -
+
+        """
+        retu=[]
+        res = []
+        retu_type = None
+
+        tag=None
+        qtxt= None
+        where = False
+        tgts, retu, tgt_params     = [[],[],[]]
+        query = {}
+        setty = {}
+        opts  = {
+            '_not':   {'enabled': False,'val':None,'used':False},
+            '_for':  {'enabled': False,'val':None,'used':False},
+            '_exists':{'enabled': False,'val':None,'used':False},
+            '_hash':  {'enabled': False,'val':None,'used':False},
+            '_css':   {'enabled': False,'val':None,'used':False},
+            '_in':    {'enabled': False,'val':None,'used':False},
+            '_slice':    {'enabled': False,'val':None,'used':False},
+            
+        }
+        tgt_idx = -1
+
+        for item in arg_ar:
+            if isinstance(item,list):
+                tgts.append(item)
+                tgt_params.append([])
+                tgt_idx+=1
+            elif opts['_css']['enabled']:
+                where=True
+                tag=self.clean_arg(item)
+                opts['_css']['val']     = tag
+                opts['_css']['enabled'] = False
+            elif '=' in item:
+                key,value = item.split('=',1)
+                value = self.clean_arg(value)
+                if key[0] == '_':
+                    setty[key] = value
+                else:
+                    if key == 'txt':
+                        qtxt=value
+                    else:
+                        query.update({key: value})
+            elif item[0] == '_':
+                if item == '_in':
+                    opts[item]['enabled'], opts[item]['used'] = True,True
+                elif item == '_for':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+                elif item == '_css':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+                elif item == '_join':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+                    opts[item]['val']=[]
+                elif item == '_hash':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+                    opts[item]['val']=[]
+                elif item == '_not':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+                elif item == '_exists':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+                elif item == '_split':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+            elif item[:2] == 'e_':
+                if opts['_in']['enabled']:
+                    where=True
+                    opts['_in']['val'] = item
+                    opts['_in']['enabled'] =False
+                else:
+                    sys.exit('ERROR: _in not enabled for ',item)
+            elif ':' in item:
+                tgt_params[tgt_idx].append(['slice',item])
+            elif not where:
+                tag = item
+                where = True
+            else:
+                tgt_idx+=1
+                tgts.append(item)
+                tgt_params.append([])
+
+        #------ pre soup
+        # - _in
+        if opts['_in']['used']: 
+            ele_name = opts['_in']['val'] 
+            if ele_name not in u.soups:
+                ele = u.fetch_config['elements'][ele_name]
+                given_soup = self.eval_element(ele,u,given_soup)[0]
+                if not len(given_soup):
+                    print('                ...bad given_batch',ele)
+                    return [],[],None
+                if isinstance(given_soup[0],list):
+                    sys.exit("given_soup cant be list: ",ele_name)
+            else:
+                given_soup = u.soups[ele_name]
+
+        # ------- soup params
+        # - _not
+        # - _exist
+        # - query
+        # - _for()
+
+        # ----- get soup
+        soup_batch = None
+        # - CSS
+        if opts['_css']['used']:
+            selector = opts['_css']['val']
+            soup_batch = given_soup.select(selector)
+            if not len(soup_batch):
+                print('                ...bad soup_batch',arg_ar)
+                return [],[],None
+        # - QUERY
+        elif not opts['_in']['used']:
+            if qtxt: 
+                soup_batch = given_soup.find_all(tag, attrs=query, string=qtxt) 
+                if not len(soup_batch):
+                    print('                ...bad soup_batch',arg_ar)
+                    return [],[],None
+            else:
+                soup_batch = given_soup.find_all(tag, attrs=query) 
+                if not len(soup_batch):
+                    print('                ...bad soup_batch',arg_ar)
+                    return [],[],None
+        else:
+            soup_batch = [given_soup[0]]
+
+        if not opts['_for']['used']:
+            retu_type = 'scalar'
+            soup_batch = [soup_batch[0]]
+        else:
+            retu_type = 'list'
+
+        if isinstance(soup_batch[0],list):
+            sys.exit("soup_batch items cant be list")
+        # ----- get tgt
+        for soup in soup_batch:
+            if not opts['_hash']['used']:
+                if not len(tgts):
+                    retu.append(soup)
+                else:
+                    tgt = tgts[0]
+                    if isinstance(tgt,list):
+                        child_soup, child_res, child_soup_type = self.eval_element(tgt,u,soup)
+
+                        if not len(child_soup):
+                            print('                ...bad child_batch',tgt)
+                            return [],[],None
+                        if child_soup_type == 'list':
+                            if isinstance(child_soup[0],list):
+                                sys.exit('child soup list items cant be list :'+str(tgt))
+                            if opts['_for']['used']:
+                                sys.exit('only 1 list')
+                            else:
+                                if len(soup_batch) > 1:
+                                    sys.exit('once again, only 1 list')
+                                retu=child_soup
+                                res=child_res
+                                retu_type = list
+                                break
+                        else:
+                            retu.append(child_soup[0])
+                            if len(child_res):
+                                res.append(child_res[0])
+                    else:
+                        tgt_param = tgt_params[0]
+                        if tgt in ['text','txt']:
+                            retu.append(soup)
+                            res.append(soup.text)
+                        else:
+                            sys.exit('only text')
+            else:
+                sys.exit('no hash')
+
+
+        if len(retu):
+            if isinstance(retu[0],list):
+                print('tgts: '+str(tgts))
+                sys.exit('retu elements cant be list: '+str(arg_ar))
+        return retu, res, retu_type      
+
+        # ----- post soup
+        # - setty
+        # - _slice
+        # - _hash
+        # - _split
+            
+
+
+
+
+    def clean_arg(self,arg):
+        retu = arg
+        if arg[0] == '"':
+            retu = arg[1:-1]
+        return retu
+
+
+    def s_fs(self,url,post=False):
+        r = None
+        cmd     = "request.post" if post else "request.get"
+        headers = {"Content-Type": "application/json"}
+        fs_data = { 
+                    "cmd": cmd, 
+                    "url": url,
+                    "waitInSeconds": 20,
+                    "maxTimeout": 60000,
+                    }
         try:
-            fs_title = fs_soup.head.title.text)
+            r = self.s.post(self.s_url, headers=headers, json=fs_data)
+        except Exception as err:
+            exc_type, value, traceback = sys.exc_info()
+            name = exc_type.__name__
+            print(f"Other error occurred: {err}")
+        return r
+
+
+
+
+    def fetch_exceptions(self, e):
+        try :
+            pass
+        except HTTPError as http_err:
+            print(f"HTTP error occurred: {http_err}")
+        except requests.exceptions.ConnectTimeout :
+            if 'Max retries exceeded' in value:
+                pass
+        except requests.exceptions.ConnectionError :
+            exc_type, value, traceback = sys.exc_info()
+            name = exc_type.__name__
+            if name == 'ConnectionError':
+                if 'RemoteDisconnected' in value:
+                    value = 'RemoteDisconnected'
+                elif '[Errno -2]' in value:
+                    value = 'Name or service not known'
+                elif '[Errno -3]' in value:
+                    value = 'Temporary failer in name resolution'
+                elif '[Errno 113]' in value:
+                    value = 'No route to host'
         except AttributeError:
             pass
-        fs_js = json.loads(fs_r.content)
-        original_cookies = fs_js["solution"]["cookies"]
-        fs_ua = fs_js["solution"]["userAgent"]
+        except (WebDriverException, NoSuchWindowException):
+            pass
+        except Exception as err:
+            print(f"Other error occurred: {err}")
 
 
-
-
-    def fetchh(self,url):
-        durl = "http://localhost:8191/v1"
-        headers = {"Content-Type": "application/json"}
-        data = {
-            "cmd": "request.get",
-            "url": url,
-            "maxTimeout": 60000
-        }
-        r = self.s.post(durl, headers=headers, json=data)
-        print("    ",r.status_code)
 
 
     def check_urls(self, oslds=[],no_domain=False):
@@ -209,16 +546,20 @@ class Fetcher():
             self.sdspt=self.dspt[slds]
             if not len(oslds) or (slds in oslds):
                 for domain, url_types in domains.items(): 
-                    print(domain)
-                    print("    ",'https://'+domain)
+                    #print(domain)
+                    #print("    ",'https://'+domain)
                     if not no_domain:
                         self.fetch('https://'+domain)
 
                     for urls in url_types.values(): 
-                        u = urls[0]
-                        print("    ",u.url.geturl())
-                        print("     type: ",u.url_type)
-                        self.fetch(u.url.geturl())
+                        for idx, url in enumerate(urls):
+                            if idx > 1:
+                                break
+                            #print("    ",u.url.geturl())
+                            #print("         type: ",u.url_type)
+                            self.fetch(url)
+
+
 
 
     def get_payload (self,d_config, pwds, domain) :
@@ -233,10 +574,14 @@ class Fetcher():
         return payload
 
 
+
+
     def get_token (self,d_config, r):
         soup  = BeautifulSoup( r.content, 'html.parser' )
         token = soup.find('input', attrs={'name': d_config["token"]})
         return token
+
+
 
 
     def login (self, dc_data, pwds, header ) :
@@ -259,6 +604,8 @@ class Fetcher():
         return s
 
 
+
+
     def get_passwords(self, pwds_file):
         with open(pwds_file, mode='r', encoding='utf-8') as csv_file:
             csv_reader = csv.reader( csv_file, delimiter=' ')
@@ -276,3 +623,19 @@ class Fetcher():
                     self.pwds[domain] = {'usr':usr, 'pwd':pwd}
 
 
+
+
+    def load_urls(self,urls, slds=[]):
+        for url in urls:
+            u = OhmfaUrl(url,self.dspt)
+            if len(slds) and not u.sld in slds:
+                del u
+                continue
+            u.process()
+            if u.sld not in self.durls:
+                self.durls[u.sld]={}
+            if u.domain not in self.durls[u.sld]:
+                self.durls[u.sld][u.domain]={}
+            if u.bp_key not in self.durls[u.sld][u.domain]:
+                self.durls[u.sld][u.domain][u.bp_key]=[]
+            self.durls[u.sld][u.domain][u.bp_key].append(u)

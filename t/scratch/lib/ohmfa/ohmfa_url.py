@@ -20,7 +20,7 @@ class OhmfaUrl():
             '_hash=''': None,
             '_not=''': None,
         }
-      }
+    }
     url_types  = [
         'content', 
         'series',
@@ -44,9 +44,11 @@ class OhmfaUrl():
     def __init__(self,url,sld_configs):
         self.url = url
         self.domain = url.netloc
+        self.ck_domain = None
         self.actions = []
         self.ws = {}
         self.log = []
+        self.soups = {}
 
         # Determine sld
         domain_frags = self.domain.split('.')
@@ -56,8 +58,8 @@ class OhmfaUrl():
 
         # Determine Group
         # Get Config
-        self.reff=sld_configs[self.sld]['reffs']
-        #self.fetch_config=sld_configs[self.sld]['fetch']
+        self.reff        =sld_configs[self.sld]['reffs']
+        self.fetch_config=sld_configs[self.sld]['fetch']
 
 
     def process(self):
@@ -91,7 +93,7 @@ class OhmfaUrl():
         domain_type  = 'd'
         domain_reffs = self.reff['domain']
         domain_reff  = domain_reffs[domain_type]
-        hostname, sld, tld = [None, None,None]
+        hostname, sld, tld = [None, None, None]
 
         domain_frags = self.domain.split('.')
 
@@ -99,7 +101,7 @@ class OhmfaUrl():
             sld,tld = domain_frags
             hostnames = domain_reff['hostname']
             if hostname in hostnames:
-                hostname = hostnames[1]
+                hostname = hostnames[0]
             else:
                 sys.exit('Error: invalid hostname at length of 2 "'+str(hostname)+'"')
         else :
@@ -117,17 +119,18 @@ class OhmfaUrl():
                         hostname_var = domain_reff['hostname'][0]
                         self.ws[hostname_var] = hostname
             else:
-                if hostnames[0]:
-                    hostname = hostnames[0]
-                else:
-                    hostname = hostnames[1]
+                hostname = hostnames[0]
 
         if tld not in domain_reff['tld']: 
             sys.exit('Error: invalid tld "'+str(tld)+'"')
-        else:
-            tld = domain_reff['tld'][0]
+        #else:
+        #    tld = domain_reff['tld'][0]
 
-        self.domain = '.'.join([hostname,sld,tld])
+        if hostname:
+            self.domain = '.'.join([hostname,sld,tld])
+        else:
+            self.domain = '.'.join([sld,tld])
+
         self.bp_domain = self.domain
         if domain_type == 'u':
             hostname_var = domain_reff['hostname'][0]
@@ -148,10 +151,10 @@ class OhmfaUrl():
 
     def resolve_url(self,url_ar0): 
         retu = {
-          'query':    None,
-          'url_type': None,
-          'bp_key':   None,
-          'vars': {},
+            'query':    None,
+            'url_type': None,
+            'bp_key':   None,
+            'vars': {},
         }
 
 
