@@ -4,12 +4,12 @@ from urllib.parse import urlparse
 
 
 class Main():
-    ohmfa_dir = None
+    ohmfa_dir     = None
     ohmfa_dot_dir = None
-    archive = None
-    db_name = None
-    db = None
-    urls = None
+    archive       = None
+    db_name       = None
+    db            = None
+    urls          = None
 
 
     def __init__(self,*args,**kwargs):
@@ -63,7 +63,6 @@ class Main():
     def load_urls(self,urls_file_path=None):
         infile =  open(urls_file_path,'r', encoding='utf-8')
         self.urls = infile.readlines()
-        self.d_urls = [urlparse(x) for x in self.urls]
         infile.close()
 
 

@@ -1,0 +1,84 @@
+url -> [scheme, domain, path, query]
+
+scheme
+domain -> domain_array [hostname,sld,tld]
+path   -> path_array   [...path segmant]
+query  -> query_dict   {...name: value}
+
+
+      
+abbreviations
+- domain         (dmn)
+- hostname       (hstn)
+- segment        (sgmt)
+- argument array (arg_ar)
+- member         (mbr)
+- config         (cnfg)
+
+key
+- var:type[size]
+- ? optional
+- * reference
+
+# - type defitions
+[dmn:str[0], *path:arg_ar[ ?sgmt:str[+]; ?group[mbr:str[+]][+] ], ?query:dict[+]]
+
+{
+  sld:       str[+]
+  hstn_list: [hstn:str[*]]
+  tld_list:  [tld:str[+]][+]
+}
+
+
+# - parsing
+sgmt -> _sgmt[1:-1]_ -> sgmt[1:-1] -> var
+sgmt -X _sgmt[1:-1]_ 
+     -> sgmt[] -> string
+     
+
+[sgmt_0, sgmt_1, ... sgmt_n-2, sgmt_n-1] -> [... string_i, var_j ...]
+
+prt_i, i%2 = 0
+prt_j, j%2 = 1
+
+
+
+[]
+[ hstn, sld, tld]
+*path
+group
+
+
+
+
+
+# - KEYWORDS
+  _{variable}({parameters})_
+
+  _{dependent methods}({args})
+    _<click({})
+    _<exists({})
+
+  _{operators}({args})
+    _for>({})
+    _hash>({})
+    _not>({})
+    _no_soup>({})
+    _skipif>({})
+
+  _{independent methods}({args})
+    _<wait>({})
+    _<{recurse}>({recursive_path_segment})
+    _<iter>({start_index})
+
+  _{operators}({args})
+    _<url>({})
+
+
+  {hostname:[*hostnames] tld:[*tlds]}
+  [*path_array, query_dict]
+
+  !*'();:@&=+$,/?#[]
+  A-Za-z0-9_.~-
+
+  

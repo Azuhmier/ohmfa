@@ -1,207 +1,154 @@
-## File Sytems
-https://realpython.com/working-with-files-in-python/
-https://docs.python.org/3/library/os.html#os.makedirs
 
-os
-    .mkdir()
-        .mkdirs(dir1/dir2/dir3)
-            mode=0o770
-            - gives owner and group uerse r,w,and x prems
-            - default is 0o777
-    .listdir()
-    .scandir()
-    .walk()
-        RETURNS [,[dirpath, dirnames,files]]
-        - topdown=False
-    .stat()
-        .st_mtime
-    .remove()
-        - remove file
-    .unlink()
-    path
-        .join()
-        .is_file()
-        .is_dir()
-        .exists()
-        .rmdir()
-glob
-    .iglob(pat)
-        RETURNS: iterator
-        recursive=True
-    .glob(pat)
-        recursive=True
-pathlib
-    Path
-        .mkdir(dir)
-            exists_ok=True
-        .iterdir()
-        .glob()
-            RETURNS: generator
-        .joinpath()
-        .is_file()
-        .is_dir()
-        .name
-        .stat()
-            .st_mtime
-        .rmdir()
-        .mkdir()
-            exist_ok=True
-            parents=True
-            - create parents if no exists
-        .rename()
-time
-    ctime(entry.mtime)
-datime
-    .utcfromtimestamp(ppath.stat().st_mtime)
-    .strftime('%d %b %Y)
-tarfile
-    .open()
-        ..add(file)
-        ..extract()
-        ..extractfile()
-        ..extractall()
-            path=path
-        ..getnames()
-        ..getmembers()
-            ..name
-            ..size
-zipfile
-    .ZipFile
-        RETURNS File i/o
-        .namelist()
-        .extract()
-        .write()
-        .extractall()
-            path = dir
-            pwd = pwd
-        .getinfo
-            .file_size
-            .filename
-            .compress_size
-sys
-    .argv
-fileinput
-    .input()
-        ..isfirstline()
-        ..filename()
-        ..lineno()
-shutil
-    .make_archive(base_name, format, root_dir)
-    .unpack_archive()
-    .rmtree()
-    .copy()
-        - content, meta
-    .copy2()
-        - content, meta, attribs
-    .copytree()
-    - for non empty directories
-    .move()
-    .rename()
+##### TO DO #####
+1)
+  current_var_value = self.ws[var_name]
+  if isinstance(current_var_value,list):
+      self.ws[var_name].append(var_value)
+  else:
+      self.ws[var_name] = item(var_value)
+2)
+  u.iter_query_name=None
+  for query_name, query_value in u.query:
+    if query_value == '_iter':
+      if not u.iter_query_name:
+        u.iter_query_name = query_name
+      else:
+        sys.exit('ERROR: Cannot replace query_name "',query_name,'" with "',u.iter_query_name,'". Only 1 query_name can be itered per url.')
+3)
+  expand s_fs
 
-__str__
-    .endswith()
-    .startswith()
-fnmatch
-    .fnmatch(fname, '*.txt')
-tempfile.TempraryFile()
-    RETURNS: File i/o
-    .write()
-    .seek()
-    .read()
-    .close()
-io.
-    TextIOWrapper
-        .name
-        .mode
-        .encoding
-    BytesIO
-    StringIO
+4)
+  expand fetch
+5)
+  break up eval_element
+6) 
+  clean do_actions
+7) 
+  move test to main
+8)
+  make thread fetcher
+9)
+  make crawler disable
+10)
+  fix hang on pdf page
+11)
+  fix fiction.live and pastebin
+12) 
+  grab defuals css
+13) 
+  wait for element
+14) 
+  parallel processing
+15)
+  archive db
+16) 
+  put all backups into archive db
 
-urllib
-    parse
-        urlparse
-            .scheme
-            .netloc
-            .path
-            .params
-            .query
-            .fragment
-FileExistsError
-OSError
-IsADirectoryError
 
-pastebin.com
-    /[a-zA-Z0-9]{8}
+##### ARCHIVE #####
 
-archiveofourown.com
-    /works/\d+
-        /chapters/\d{8}
-    /series/\d+
-    view_full_work=true
-catbox.moe
-    /c/[a-z0-9]{6}
-files.catbox.moe
-    /[a-z0-9].ext
-docs.google.com
-    /d/e/2PACX.+/PUB
-    /d/.+
-        /edit
-drive.google.com
-    /file/d/.+/view 
-fiction.live
-    /title/.+
-ghostbin.com
-    /.+
-        /.+
-    /paste/.+
-        /.+
-            /.+
-    
-hardbin.com
-    /ipfs/.+/#.+
-breakpoint 9267
-6773
-8666| function Animation( elem, properties, options ) {
-868  | jQuery.ready.promise = function( obj ) {
-9263 | jQuery.timers = [];
-8651 | function createTweens( animation, props ) {
-11   | function showTOSPrompt()
-VM626
-//<![CDATA[
+parent
+  node [attrs]
+    tags
+    note
 
-  $j(document).ready(function() {
-    var container = $j("#tos_prompt");
-    var outer = $j("#outer");
-    var button = $j("#accept_tos");
+bin binIdx
+alias
 
-    setTimeout(showTOSPrompt, 1500);
+nodes
+  url
+  title
+  author
+  series
+  chrono
+  chroni
 
-    function showTOSPrompt() {
-      $j.when(container.fadeIn(500)).done(function() {
-        outer.addClass("hidden").attr("aria-hidden", "true");
-      });
 
-      $j("#tos_agree").on("click", function() {
-        button.attr("disabled", !this.checked);
-        if (this.checked) {
-          button.on("click", function() {
-            acceptTOS();
-            outer.removeClass("hidden").removeAttr("aria-hidden");
-            $j.when(container.fadeOut(500)).done(function() {
-              container.remove();
-            });
-          });
-        };
-      }).change();
-    };
-  });
+archives
+  masterbins
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    masterbins
+  thread
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    threads
+  crawl
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    crawls
+  content
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    contents
+      a03-works{_work_uid_}chapter{_chapter_uid_}
+      sf-view{_view_uid_}
+        config.yml
+        info.json
+        strtimes
+          page_#
+            fetch.log
+            info.json
+            html
+              a03-works{_work_uid_}chapter{_chapter_uid_}.html
+            fxt
+              a03-works{_work_uid_}chapter{_chapter_uid_}.fxt
+            images
+              "use reffs from html"
 
-//]]]]><![CDATA[>
+##### CONFIGS #####
+reffs
+  domain
+    d/u/f
+      sld:     []
+      hostname:[]
+  path
+  bp_(content, bin, listing, usr, misc, flash)
+    (d/u/f)_(work, part, series, usr, login, page, folder)
+      [,frag,{query}]
+fetch
+  params
+    enabled
+    login
+    crawl
+    dead
+  workflows
+    w_(fetch,crawl,test)
+  actions
+    a_(init,login,content,crawl)
+      url[]
+      do
+        [_(no_soup,skipif(!a,b),_wait),e_*,_(wait,exists)]
+  elements
+    e_(w,wl,f,fl,wfl,u,l,g,s,d,b,p,q)
+      [_in, e_* tgt,_(slice,index)]
+      [_css, selector tgt,_(slice,index)]
+      [_(for,hash,join,not,exists),query,setty,tgt,_(slice,index)]
 
-    https://archiveofourown.org/token_dispenser.json
-    https://archiveofourown.org/works/33232534/hit_count.json
-    meta, name='csrf-param', content='authenticity_token'
-    meta, name='csrf-token', content
-sec-fetch-data=style,priority=u=0,accept=text/css,*/*;q=0.1
-accept=*/*
-    .js,sef-fetch-data=script,priority=u=1
+##### URLS ###########
+[{var_name:var},[hostname,sld,tld], [,path], {query:val}]
+{
+  'domain':[hostname,sld,tld]
+  'path':[,path]
+  'query':{query_name: query_value}
+
+}
+domain = '.'.join(domain_ar)
+path = '/'.join(path_ar)
+
+dfdafda####dafdasfda
+dfdafda
+
+##### ALOGRITHMS #########################
