@@ -1,815 +1,992 @@
+
 archiveofourown:
-    url:
-        dmn:
-            d:
-                hstns:               ['', www]
-                hstn_var:            null
-                tlds:                [org]
-        _usr:
-            u_usr:                   [d, users, _user(node;author)_, p_psueds(1)]
-            u_usr_profile:           [d, users, _user(node;author)_, profile]
-        path: 
-            p_psueds:                [psueds, _psued(attr;author;alias)_]
+    params:
+        login:   False
+        init:    False
+        content: False
+        crawl:   False
+    dmns:
+        d:
+            hstns:               ['', www]
+            hstn_var:            null
+            tlds:                [org]
+    urec:  
+        p_psueds:                [psueds, _psued(attr;author;alias)_]
+    urls:
+        _user:
+            u_user:
+                cnfg: [d, users, _user(node;author)_, p_psueds(1)]
+                actions: 
+                    init:
+                        do:
+                        - [ e_tos, _exists]
+                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
+                        - [_wait(2), e_w_dl, _exists]
+                        - [e_w_author, _exists]
+                    content:
+                        do:
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    crawl:
+                        do:
+                        - []
+                elements: {}
+            u_user_profile:
+                cnfg: [d, users, _user(node;author)_, profile]
+                actions:
+                    init:
+                        do:
+                        - [ e_tos, _exists]
+                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
+                        - [_wait(2), e_w_dl, _exists]
+                        - [e_w_author, _exists]
+                    content:
+                        do:
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    crawl:
+                        do:
+                        - []
+                elements: {}
         _listing:
-            l_series:                [d, series, _series(node;series)_, {page: _page(content;iter;1)_}]
-            l_series_listing:        [d, users, _usr(node;author)_, p_psueds(1), series, {page: _page(content;iter;1)_}]
-            l_work_listing:          [d, users, _usr(node;author)_, works, {page: _page(content;iter;1)_}]
+            l_series_listing:
+                cnfg: [d, users, _usr(node;author)_, p_psueds(1), series, {page: _page(content;iter;1)_}]
+                actions: 
+                    init:
+                        do:
+                        - [ e_tos, _exists]
+                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
+                        - [_wait(2), e_w_dl, _exists]
+                        - [e_w_author, _exists]
+                    content:
+                        do:
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    crawl:
+                        do:
+                        - []
+                elements: {}
+            l_work_series_listing:
+                cnfg: [d, series, _series(node;series)_, {page: _page(content;iter;1)_}]
+                actions:
+                    init:
+                        do:
+                        - [ e_tos, _exists]
+                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
+                        - [_wait(2), e_w_dl, _exists]
+                        - [e_w_author, _exists]
+                    content:
+                        do:
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    crawl:
+                        do:
+                        - []
+                elements: {}
+            l_series:
+                cnfg: [d, series, _series(node;series)_, {page: _page(content;iter;1)_}]
+                actions:
+                    init:
+                        do:
+                        - [ e_tos, _exists]
+                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
+                        - [_wait(2), e_w_dl, _exists]
+                        - [e_w_author, _exists]
+                    content:
+                        do:
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    crawl:
+                    do:
+                        - []
+                elements: {}
         _content:
-            c_chapter:               [d, works, _work(parent;part;title)_, chapters, _chapter(node;part)_, {show_comments: true, view_adult: true}]
-            c_work:                  [d, works, _work(node;title)_, {show_comments: true, view_adult: true, view_full_work: true}]
+            c_work:
+                cnfg: [d, works, _work(node;title)_, {show_comments: true, view_adult: true, view_full_work: true}]
+                actions:
+                    init:
+                        do:
+                        - [ e_tos, _exists]
+                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
+                        - [_wait(2), e_w_dl, _exists]
+                        - [e_w_author, _exists]
+                    content:
+                        do:
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    crawl:
+                        do:
+                        - []
+                elements:
+                    e_meta:                   [div, class=wrapper,[dl, class=work meta group]]
+                    ev_tags:                  [_in, e_meta, dd, class="freeform tags", [ul,[_for, li, [ a,.txt]]]]
+                    ev_stats:                 [_in, e_meta, dd, class="stats", [dl, [_for, [_hash,[ dt,.txt], [dd, [_exists, a, .txt]]]]]]
+                    e_w_preface:              [div, class=preface group]
+                    e_w_author:               [_in, e_w_preface, [h3, class=byline heading,[a,_user_=txt]]]
+                    e_title:                  [_in, e_w_preface, h2, class='title heading', _title_=txt]
+                    e_dscp:                   [_in, e_w_preface, div, class="summary module", [blockquote, _dscp_=txt]]
+                    e_workskin:               [div, id='workskin']
+                    e_chapters:               [_in, e_workskin, div, id=chapters, role=article]
+                    e_chapter:                [_in, e_chapters, div, class="chapter"]
+                    e_chapter_preface:        [_in, e_chapter, div, class="chapter preface group"]
+                    ev_chroni:                [_in, e_chapter_preface, h3, [a, .txt]]
+                    ev_chrono:                [_in, e_chapter_preface, h3, [_not, a, .txt, '2:']]
+                    ev_txt:                   [_in, e_chapter, div, class=userstuff module, [h3, id=work, .txt]]
+                    e_w_head:                 [_in, ec_area, [div, id=worksin, [div, class=preface group]]]
+                    e_w_name:                 [_in, e_w_head, [h2, class=title heading, work_name=text]]
+                    e_w_usr_name:             [_in, e_w_head, [_for, a, rel=author, usr_name=text]]
+                    # - meta
+                    e_w_meta:                 [dl, class=work meta group]
+                    e_w_meta_tags:            [_in, ec_meta, [_for, _hash,[ec_meta_tags_dt, ec_meta_tags_dd]]]
+                    e_w_meta_tags_dt:         [dt, class!=,[stats, series], text]
+                    e_w_meta_tags_dd:         [dd, class!=,[stats, series],[_for, li, text]]
+                    e_w_meta_sris:            [_in, ec_meta, [dd, class=series, [span, class=position, [a, text]]]]
+                    e_w_meta_sris_krni:       [_in, ec_meta, [dd, class=series, [span, class=position, [_not, a, text]]]]
+                    e_w_stats:                [_in, ec_meta, [dd, class=stats,[dl, [_for, _hash, [dt, text], [dd, text]]]]]
+                    # - body
+                    e_w_area:                 [div, id=worksin]
+                    e_w_area_prts:            [_in, ec_area, [div, id=chapters, [_for, div, class=chapter]]]
+                    e_w_area_prts_text:       [_in, ec_prts, [div, class=userstuff module,[_for, p, vis_text]]]
+                    e_w_area_prts_imgs:       [_in, ec_prts, [div, class=userstuff module,[_for, img, src]]]
+                    e_w_area_prts_head:       [_in, ec_prts, [div, class=chapter preface group]]
+                    e_w_area_prts_head_krno:  [_in, ec_prts_head, [div, class=title, text]]
+                    e_w_area_prts_head_krno_upath:       [_in, ec_prts_head, [div, class=title, [a, hreff]]]
+                    e_w_area_prts_head_dscp:  [_in, ec_prts_head, [_for, p, txt]]
+
+                    # - misc
+                    e_w_dl_btn:               [_css, .download, a]
+                    e_w_dl_upaths:            [_css, .download, [ul, [_for, li, [a, href]]]]
+            c_chapter:
+                cnfg: [d, works, _work(parent;part;title)_, chapters, _chapter(node;part)_, {show_comments: true, view_adult: true}]
+                actions:
+                    init:
+                        do:
+                        - [ e_tos, _exists]
+                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
+                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
+                        - [_wait(2), e_w_dl, _exists]
+                        - [e_w_author, _exists]
+                    content:
+                        do:
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
+                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    crawl:
+                        do:
+                        - []
+                elements: {}
         _misc:
-            m_login:                 [d, users, login]
-    fetch:
-        params:
-            enabled: True
-            login: False
-            crawl: True
-        workflows:
-            w : 
-            - a_init
-            #- a_content
-        dmns:
-            d:
-                hstns:               ['', www]
-                hstn_var:            null
-                tlds:                [org]
-        paths: 
-            p_psueds:                [psueds, _psued(attr;author;alias)_]
-        urls:
-            _user:
-                u_user:
-                    cnfg: [d, users, _user(node;author)_, p_psueds(1)]
-                    actions: 
-                        init:
-                            do:
-                            - [ e_tos, _exists]
-                            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                            - [_wait(2), e_w_dl, _exists]
-                            - [e_w_author, _exists]
-                        content:
-                            do:
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                        crawl:
+            m_login:
+                cnfg: [d, users, login]
+                actions:
+                    init:
                         do:
                         - []
-                u_user_profile:
-                    cnfg: [d, users, _user(node;author)_, profile]
-                    actions:
-                        init:
-                            do:
-                            - [ e_tos, _exists]
-                            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                            - [_wait(2), e_w_dl, _exists]
-                            - [e_w_author, _exists]
-                        content:
-                            do:
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                        crawl:
+                    content:
                         do:
                         - []
-            _listing:
-                l_series_listing:
-                    cnfg: [d, users, _usr(node;author)_, p_psueds(1), series, {page: _page(content;iter;1)_}]
-                    actions: 
-                        init:
-                            do:
-                            - [ e_tos, _exists]
-                            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                            - [_wait(2), e_w_dl, _exists]
-                            - [e_w_author, _exists]
-                        content:
-                            do:
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                        crawl:
+                    crawl:
                         do:
                         - []
-                l_work_series_listing:
-                    cnfg: [d, series, _series(node;series)_, {page: _page(content;iter;1)_}]
-                    actions:
-                        init:
-                            do:
-                            - [ e_tos, _exists]
-                            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                            - [_wait(2), e_w_dl, _exists]
-                            - [e_w_author, _exists]
-                        content:
-                            do:
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                        crawl:
-                        do:
-                        - []
-                l_series:
-                    cnfg: [d, series, _series(node;series)_, {page: _page(content;iter;1)_}]
-                    actions:
-                        init:
-                            do:
-                            - [ e_tos, _exists]
-                            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                            - [_wait(2), e_w_dl, _exists]
-                            - [e_w_author, _exists]
-                        content:
-                            do:
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                        crawl:
-                        do:
-                        - []
-            _content:
-                c_work:
-                    cnfg: [d, works, _work(node;title)_, {show_comments: true, view_adult: true, view_full_work: true}]
-                    elements:
-                        e_meta:                   [div, class=wrapper,[dl, class=work meta group]]
-                        ev_tags:                  [_in, e_meta, dd, class="freeform tags", [ul,[_for, li, [ a,.txt]]]]
-                        ev_stats:                 [_in, e_meta, dd, class="stats", [dl, [_for, [_hash,[ dt,.txt], [dd, [_exists, a, .txt]]]]]]
-                        e_w_preface:              [div, class=preface group]
-                        e_w_author:               [_in, e_w_preface, [h3, class=byline heading,[a,_user_=txt]]]
-                        e_title:                  [_in, e_w_preface, h2, class='title heading', _title_=txt]
-                        e_dscp:                   [_in, e_w_preface, div, class="summary module", [blockquote, _dscp_=txt]]
-                        e_workskin:               [div, id='workskin']
-                        e_chapters:               [_in, e_workskin, div, id=chapters, role=article]
-                        e_chapter:                [_in, e_chapters, div, class="chapter"]
-                        e_chapter_preface:        [_in, e_chapter, div, class="chapter preface group"]
-                        ev_chroni:                [_in, e_chapter_preface, h3, [a, .txt]]
-                        ev_chrono:                [_in, e_chapter_preface, h3, [_not, a, .txt, '2:']]
-                        ev_txt:                   [_in, e_chapter, div, class="userstuff module", [h3, id="work", .txt]]
-                    actions:
-                        init:
-                            do:
-                            - [ e_tos, _exists]
-                            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                            - [_wait(2), e_w_dl, _exists]
-                            - [e_w_author, _exists]
-                        content:
-                            do:
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                        crawl:
-                        do:
-                        - []
-                c_chapter:
-                    cnfg: [d, works, _work(parent;part;title)_, chapters, _chapter(node;part)_, {show_comments: true, view_adult: true}]
-                    actions:
-                        init:
-                            do:
-                            - [ e_tos, _exists]
-                            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                            - [_wait(2), e_w_dl, _exists]
-                            - [e_w_author, _exists]
-                        content:
-                            do:
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                        crawl:
-                        do:
-                        - []
-            _misc:
-                m_login:
-                    cnfg: [d, users, login]
-                    actions:
-                        init:
-                            do:
-                            - []
-                        content:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-                        payload: 
-                        user[login]: _usr_ 
-                        user[password]: _pwd_
-                        user[remeber_me]: 0 
-                        commit: "Log+in" 
-                        authenticity_token: g_token_value
-        elements:
-            e_tos :                   [body, [div, id=tos_prompt]]
-            e_tos_accept:             [_css, '#accept_tos']
-            e_tos_agree:              [_css, '#tos_agree']
-            e_tos_agree2:             [_css, '#data_processing_agree']
-            e_w_dl:                   [_css, '#main > ul.work.navigation.actions > li.download > a']
-            e_w_dl2:                  [_css, '#main > ul.work.navigation.actions > li.download > ul > li:nth-child(4) > a']
-            #--------work
+                elements: {}
+                payload: 
+                    user[login]: _usr_ 
+                    user[password]: _pwd_
+                    user[remeber_me]: 0 
+                    commit: "Log+in" 
+                    authenticity_token: g_token_value
+    elements:
+        e_tos :                   [body, [div, id=tos_prompt]]
+        e_tos_accept:             [_css, '#accept_tos']
+        e_tos_agree:              [_css, '#tos_agree']
+        e_tos_agree2:             [_css, '#data_processing_agree']
+        e_w_dl:                   [_css, '#main > ul.work.navigation.actions > li.download > a']
+        e_w_dl2:                  [_css, '#main > ul.work.navigation.actions > li.download > ul > li:nth-child(4) > a']
 
-            #titles
-            e_user:                   [_css, '#user_login']
-            e_remeber_me:             [_css, '#user_remeber_me']
-            e_password:               [_css, '#user_password']
-            e_submit:                 [_css, '#input.submit']
-            e_token:                  [input, name='authenticity_token']
-            e_csrf:                   [meta, meta, name=csrf-token, content]
-            e_splash_titles:          [ol, class="work index group"]
-            evv_splash_serie:         [_in, e_splash_tites,li, [div, [h4,[a,.href]]]]
-            ev_splash_title_tags:     [_in, e_splash_tites,ul, class="tags comma", [_for, li, [a,.txt]]]
-            #series
-            e_splash_series:        [ul, class="series index group"]
-            e_splash_series:         [_in, e_splash_series, li, [div, [h4,[a,.href]]]]
-            e_splash_series_tags:  [_in, e_splash_series, ul, class="tags comma",[_for, li, [a,.txt]]]
-            #Profile
-            e_usr_profile:              [div, class="user home profile"]
-            e_usr_stats:               [_in, e_profile, dl, [_for, [_hash, [dt,.txt], [dd,[_exists, a, .txt]]]]]
-            e_usr_bio:                 [_in, e_profile, div, class='bio module',[blockquote, .txt]]
-
-
-
-
+        #titles
+        e_user:                   [_css, '#user_login']
+        e_remeber_me:             [_css, '#user_remeber_me']
+        e_password:               [_css, '#user_password']
+        e_submit:                 [_css, '#input.submit']
+        e_token:                  [input, name='authenticity_token']
+        e_csrf:                   [meta, meta, name=csrf-token, content]
+        e_splash_titles:          [ol, class="work index group"]
+        evv_splash_serie:         [_in, e_splash_tites,li, [div, [h4,[a,.href]]]]
+        ev_splash_title_tags:     [_in, e_splash_tites,ul, class="tags comma", [_for, li, [a,.txt]]]
+        #series
+        e_splash_series:        [ul, class="series index group"]
+        e_splash_series:         [_in, e_splash_series, li, [div, [h4,[a,.href]]]]
+        e_splash_series_tags:  [_in, e_splash_series, ul, class="tags comma",[_for, li, [a,.txt]]]
+        #Profile
+        e_usr_profile:              [div, class="user home profile"]
+        e_usr_stats:               [_in, e_profile, dl, [_for, [_hash, [dt,.txt], [dd,[_exists, a, .txt]]]]]
+        e_usr_bio:                 [_in, e_profile, div, class='bio module',[blockquote, .txt]]
 sofurry:
-    url:
-        dmn:
-            d:
-                hstns:               [www,'']
-                hstn_var:            null
-                tlds:                [com]
-            u:
-                hstns:               []
-                hstn_var:            _user(node;author)_
-                tlds:                [com]
+    params:
+        login:   False
+        init:    False
+        content: False
+        crawl:   False
+    dmns:
+        d:
+            hstns:               [www,'']
+            hstn_var:            null
+            tlds:                [com]
+        u:
+            hstns:               []
+            hstn_var:            _user(parent;_tbd;author)_
+            tlds:                [com]
+    urec: {}
+    urls:
         _usr:
-            u_usr:                   [u]
-        _content:
-            c_view:                  [d, view, _view_]
-        _listing: 
-            l_folder:                [d, browse, folder, stories, {by: _usr_uid(attr;author;attr=uid)_, folder: _folder_uid(node;attr;uid)_}]
-            l_listing:               [d, browse, user, stories, {by: _usr_uid(attr;author;uid)_, stories-page: _page(content;iter;1)_}]
-            l_listing2:              [u, stories, {convert_after_fetch: 'l_listing'},{}]
-        _misc: 
-            m_login:                 [d, user, login]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        dmns:
-            d:
-                hstns:               [www,'']
-                hstn_var:            null
-                tlds:                [com]
-            u:
-                hstns:               []
-                hstn_var:            _user(node;author)_
-                tlds:                [com]
-        paths: {}
-        urls:
-            _usr:
-                u_usr:
-                    cnfg:
-                    actions:
-                        init:
-                            do:
-                            - []
-                        contnt:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-            _listings:
-                l_folder:
-                    cnfg: [d, browse, folder, stories, {by: _usr_uid(attr;author;attr=uid)_, folder: _folder_uid(node;attr;uid)_}]
-                    actions:
-                        init:
-                            do:
-                            - []
-                        contnt:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-                l_listing:
-                    cnfg: [d, browse, user, stories, {by: _usr_uid(attr;author;uid)_, stories-page: _page(content;iter;1)_}]
-                    actions:
-                        init:
-                            do:
-                            - []
-                        contnt:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-                l_listing2:
-                    cnfg: [u, stories, {convert_after_fetch: 'l_listing'},{}]
-                    actions:
-                        init:
-                            do:
-                            - []
-                        contnt:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-            _contents:
-                c_view:
-                    cnfg: [d, view, _view_]
-                    actions:
-                        init:
-                            do:
-                            - []
-                        contnt:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-            _misc:
-                m_login:
-                    cnfg: [d, user, login]
-                    actions:
-                        init:
-                            do:
-                            - []
-                        content:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-                    pwd: LoginForm[sfLoginPassword]
-                    usr: LoginForm[sfLoginUsername]
-                    token: null
-        _elements:
-                e_author:        [span, class="sf-username sfTextMedium"]
-                e_title:         [span, id='sfContentTitle', itemprop='name'] 
-                e_chrons:        [div, class="section sf-storyfolder-link"]
-                e_chrono_:       [div, class='section-content-list']
-                e_chroni_:       [span, class='sfTextMedium']
-                e_tag_of_:       [div class="section-title", text==Official Tags]
-                e_tag_uf_:       [div class="section-title", text==UnOfficial Tags]
-                e_tag:           [a class='sf-tag',<text>]
-                e_content_:      [div, id="sf-viewcontent-content"]
-                e_content_txt:   [div, id="sfContentBody"]
-                e_dscr:          [div, 'id=sfContentDescription']
-                e_joined_:       [span, class="user-stats sfTextMedLight"]
-                e_stats_:        [div, class='section-content']
-                e_folders_:      [div, class="sfBrowseListFolders"]
-                e_folder_link_:  [a, class='sfTextMedium']
-                e_content_image_: [div, id="sfContentImage]
-                e_titles_:        [span class='sf-browse-shortlist-title']
-
-
-itch:
-    url :
-        dmn:
-            d:
-                hstns:    ['', www]
-                hstn_var: null
-                tlds:     [io]
-            u:
-                hstns:    []
-                hstn_var: _usr_
-                tlds:     [io]
-        _usr:
-            u_usr:        [u]
-        _content:
-            c_work:       [u, _work_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-                w:     
-                - a_init
-                - a_post, a_content
-        actions: 
-                a_init:
-                        url :           [_url]
-                        wkfl_vars:      [g_csrf_token]
-                a_post:
-                        url :           [_url, '/file/7456108?source=view_game&as_props=1&after_download_lightbox=true']
-                        payload: 
-                                csrf_token:   [g_csrf_token]
-                a_content:
-                        url :           [g_post_rsp_url]
-                a_init_purchase:
-                        url :           [_url, /purchase]
-                        wkfl_vars:      [g_csrf_token]
-                a_post_purchase:
-                        url :           [_url, /download_url]
-                        payload: 
-                                csrf_token:   [g_csrf_token]
-        elements:
-                e_head_title:     [[head, title], [_text_]]
-                e_dscr_raw:       [div,  class, formatted_description user_formatted]
-                e_dls_class:      [div,  class, uploads]
-                e_dl_class:       [div,  class, upload]
-                e_dl_info_class:  [div,  class, info_column]
-                e_dl_button:      [a,    class, button download_btn]
-                e_comments:       [div,  class, game_comments_widget base_widget]
-                e_csrf_token:     [meta, name,  csrf_token]
-                e_view_more:      [a,    class, action_btn view_more]
-                e_more_games:     [div,  class, game_grid_widget base_widget user_game_grid]
-                e_other_game:     [a,    class, title game_link]
-                e_dl_direct:      [a,    class, direct_download_btn]
-
-
-furaffinity:
-    url:
-        dmn:
-            d:
-                hstns: [www,'']
-                hstn_var:  null
-                tlds:      [net]
-        _user:
-            u_user:       [d, user, _user_]
-        _listings:
-            l_work:       [d, gallery, _author_, _iter(iter-1)_, '\?']
-            l_work2:       [d, gallery, _author_, _iter(iter-1)_]
-        _content:
-            c_work:       [d, view, _work_uid_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-        actions:
-            a_login:
-                url: https://www.furaffinity.net/login
-                usr: name
-                pwd: pass
-                token: null
-        elements:
-            AUTHOR:          [e_author, {text}]
-            AUTHOR_STATS:    [e_joined, [where, [strong>, {text}]]]
-            TITLE:           [e_title, {text}]
-            TAGS:            [[and, e_tag_of, e_tag_ef], [for, e_tag, {text}]]
-            DSCR:            [e_content,e_dscr]
-            PDF:             [s_pdf]
-            TXT:             [e_content, e_txt, {text}]
-            CHRONO:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
-            CHRONI:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
-            STATS:           [e_stat_header, e_stats, [by, line, ['[7:],views[:3],faves[:1],comments[:1],vote[:1]']]]
-            IMAGE:           [in, s_art for, w_work, where, e_contentimage]
-            FOLDER_IMAGE:    [in s_art, in, e_folders for, e_folder_link]
-            TITLES:          [in, s_titles for, w_work, where, e_titles]
-            FOLDER_TITLES:   [in, s_titles, in, e_folders for, e_folder_link]
-            JOURNALS:        [in, s_journals, for w_work]
-            e_info: [div.info]
-            e_tag2: [div, class='section-ody info",[div,[strong],[span]]]
-            e_tag:  [section, class='tags-mobile',[span,  class='tags', [a]]]
-            e_tag2: [section, class="folders-moile",[div,[div,[a]]]]
-            e_joined: [span, class="hideonmoile" >registered<]
-            e_text:     [div, class="submission-content"]
-            e_title:    [.submission-title]
-            e_author:   [a]
-            e_views:    [div, class='views']
-            e_favs:     [div, class='favorites']
-            e_comments: [div, class='comments']
-            e_rating:   [div, class='rating']
-            e_date: [.popup_date]
-            e_stats: [div, class='table',[div, class='highlight']]
-            e_titles: [figcaption, [p ,[a]]]
-
-
-blokfort:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [com]
-        _content:
-            c_work:       [d, _work_]
+            u_usr:
+                cnfg: [u]
+                actions:
+                    init:
+                        do:
+                        - []
+                    contnt:
+                        do:
+                        - []
+                    crawl:
+                        do:
+                        - []
+                elements: {}
         _listing:
-            l_works:      [d, nsfw-comics]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            _w:
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-        elements:
-
-
-catbox:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [moe]
-            f:
-                hstns: [files]
-                hstn_var:  null
-                tlds:      [moe]
-        _bin:
-            b_collection: [d, c, _collection_]
+            l_folder:
+                cnfg: [d, browse, folder, stories, {by: _usr_uid(attr;author;attr=uid)_, folder: _folder_uid(node;attr;uid)_}]
+                actions:
+                    init:
+                        do:
+                        - []
+                    contnt:
+                        do:
+                        - []
+                    crawl:
+                        do:
+                        - []
+                elements: {}
+            l_listing:
+                cnfg: [d, browse, user, stories, {by: _usr_uid(attr;author;uid)_, stories-page: _page(content;iter;1)_}]
+                actions:
+                    init:
+                        do:
+                        - []
+                    contnt:
+                        do:
+                        - []
+                    crawl:
+                        do:
+                        - []
+                elements: {}
+            l_listing2:
+                cnfg: [u, stories]
+                actions:
+                    init:
+                        do:
+                        - []
+                    contnt:
+                        do:
+                        - []
+                    crawl:
+                        do:
+                        - []
+                elements: {}
         _content:
-            c_file:       [f, _file_._file_fxt_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-        elements: 
-
-
-google:
-    url:
-        dmn:
-            d:
-                hstns: [www,'']
-                hstn_var:  null
-                tlds:      [com]
-            f:
-                hstns: [drive]
-                hstn_var:  null
-                tlds:      [com]
-            w:
-                hstns: [docs]
-                hstn_var:  null
-                tlds:      [com]
-        _content:
-            c_doc:        [w, document, d, _doc_]
-            c_doc_edit:   [w, document, d, _doc_, edit]
-            c_doc_pub:    [w, document, d, e, _doc_, pub]
-            c_file:       [f, file, d, _file_]
-            c_file_view:  [f, file, d, _file_, view]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: [a_init, a_content]
-        actions:
-            a_init:
-            a_content:
-        get:
-        elements:
-
-
-fiction:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [live]
-        _user:
-            u_user:       [d, user, _user_]
-        _flash:
-            f_flash:      [d, stories, _work_, _work_uid_]
-        _content:
-            c_part:       [d, stories, _work_, _work_uid_, _part_, _part_uid_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: [a_init, a_content]
-        actions:
-            a_init:
-                url: [_url]
-        elements:
-
-ghostbin:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [com]
-        path:
-            p_folders:    [_folder_uid_]
-        _content:
-            c_work:      [d, p_folders, _work_uid_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-                w: [a_init, a_content]
-        actions:
-                a_init:
-                        url: [_url]
-        elements:
-
-
-git:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [io]
-        _content:
-            work:      [d, _work_uid_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-                w: [a_init, a_content]
-        actions:
-                a_init:
-                        url: [_url]
-                a_content:
-                        url: [IMAGES]
-        get:
-        elements:
-
-
-hardbin:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [com]
-        _content:
-            work:          [d, ipfs, _work_uid_]
-    fetch:
-        params:
-            enabled: False
-            login:   False
-        workflows:
-                w: [a_init, a_content]
-        actions:
-                a_init:
-                        url: [_url]
-                a_content:
-                        url: [IMAGES]
-        get:
-        elements:
-
-
-literotica:
-    url:
-        dmn:
-            d:
-                hstns: [www,'']
-                hstn_var:  null
-                tlds:      [net,com]
-        _content:
-            c_page:      [d, s, _work_, {page: _page(iter-1)_}]
-            c_page_none: [d, s, _work_]
-        _listing:
-            l_work:      [d, _usr_, works, stories, all]
-        _usr:
-            u_usr:      [d, users, _usr_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w:
-            - a_init
-            - a_content
-        actions:
-            a_login:
-            a_content:
-            a_init:
-                url: [_url]
-                do:
-            a_content:
-                url: [_url]
-                do:
-        elements:
-
-
-mcstories:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [com]
-        _content:
-            c_work: [d, _work_, _work_._work_fxt_]
-        _flash:
-            f_work: [d, _work_, index.html]
-        _listing:
-            l_usr: [d, users, index.html]
-        _usr:
-            u_usr: [d, users, _usr_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content_txt
-        actions:
-            a_content:
-            a_init:
-                url: [_url]
-            a_content:
-                url: [_url]
-        elements:
-
-
-mega:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [nz]
-        path:
-            p_folders: [folder,  _folder_uid_]
-        _listing:
-            l_work: [d, p_folders]
-        _content:
-            c_work: [d, p_folders, file, _work_uid_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_login:
-            a_content:
-            a_init:
-                url: [_url]
-            a_content:
-                url: [_url]
-        elements:
-
-
-pastebin:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [com]
-        _content:
-            c_work:       [d, _work_]
-        _listing:
-            l_work:       [d, u, _usr_]
-        _usr:
-            u_user:       [d, u, _usr_]
+            c_view:
+                cnfg: [d, view, _view_]
+                elements:
+                    e_author:                [span, class="sf-username sfTextMedium"]
+                    e_title:                 [span, id='sfContentTitle', itemprop='name'] 
+                    e_chrons:                [div, class="section sf-storyfolder-link"]
+                    e_chrono_:               [div, class='section-content-list']
+                    e_chroni_:               [span, class='sfTextMedium']
+                    e_tag_of_:               [div class="section-title", text==Official Tags]
+                    e_tag_uf_:               [div class="section-title", text==UnOfficial Tags]
+                    e_tag:                   [a class='sf-tag',<text>]
+                    e_content_:              [div, id="sf-viewcontent-content"]
+                    e_content_txt:           [div, id="sfContentBody"]
+                    e_dscr:                  [div, 'id=sfContentDescription']
+                    e_joined_:               [span, class="user-stats sfTextMedLight"]
+                    e_stats_:                [div, class='section-content']
+                    e_folders_:              [div, class="sfBrowseListFolders"]
+                    e_folder_link_:          [a, class='sfTextMedium']
+                    e_content_image_:        [div, id="sfContentImage]
+                    e_titles_:               [span class='sf-browse-shortlist-title']
+                    e_w_usr_uid:             ["#sf-userinfo-outer",_usr_uid_=href,_uhost]
+                    e_w_name:                [span, id=sfContentTitle, _work_name_=text]
+                    e_w_dscp:                [div, id=sfContentDescription, _work_dscp_=text]
+                    e_w_text:                [div id=sfContentBody,_work_text_=text]
+                    e_w_tags:                [div, id=submission_tags, [_for, a, class=sf-tag,_work_tag_=text]] 
+                    e_w_work_stats:          [div, class=section-title, text=Stats,[_for, text, _work_stat_=text]]
+                    e_w_dl_btn:              [a, href=Download ePub]
+                    e_lwf:                   [div, class=section sf-storyfolder-link]
+                    e_lwf_name:              [_in, e_lwf, [div, class=section-title-highlight, _folder_name_=text]]
+                    e_lwf_work_list:         [div, class=section sf-storyfolder-link]
+                    e_lwf_work_list_iter:    [_in, e_lwf_work_list, [_for, div, class=section-content-counter]]
+                    e_lwf_work_idx:          [_in, e_lwf_work_iter, [div, class=section-content-counter,[span, _work_idx_=text]]]
+                    e_lwf_work_name:         [_in, e_lwf_work_iter, [div, class=section-content-list]  ,[a, _work_name_=text]]
+                    e_lwf_work_uid:          [_in, e_lwf_work_iter, [div, class=section-content-list]  ,[a, _work_uid_=href,_ubase]]
+                actions:
+                    init:
+                        do:
+                        - []
+                    contnt:
+                        do:
+                        - []
+                    crawl:
+                        do:
+                        - []
         _misc:
-            m_login:      [d, login]
+            m_login:
+                cnfg: [d, user, login]
+                actions:
+                    init:
+                        do:
+                        - []
+                    content:
+                        do:
+                        - []
+                    crawl:
+                        do:
+                        - []
+                pwd: LoginForm[sfLoginPassword]
+                usr: LoginForm[sfLoginUsername]
+                token: null
+    elements:
+            e_author:        [span, class="sf-username sfTextMedium"]
+            e_title:         [span, id='sfContentTitle', itemprop='name'] 
+            e_chrons:        [div, class="section sf-storyfolder-link"]
+            e_chrono_:       [div, class='section-content-list']
+            e_chroni_:       [span, class='sfTextMedium']
+            e_tag_of_:       [div class="section-title", text==Official Tags]
+            e_tag_uf_:       [div class="section-title", text==UnOfficial Tags]
+            e_tag:           [a class='sf-tag',<text>]
+            e_content_:      [div, id="sf-viewcontent-content"]
+            e_content_txt:   [div, id="sfContentBody"]
+            e_dscr:          [div, 'id=sfContentDescription']
+            e_joined_:       [span, class="user-stats sfTextMedLight"]
+            e_stats_:        [div, class='section-content']
+            e_folders_:      [div, class="sfBrowseListFolders"]
+            e_folder_link_:  [a, class='sfTextMedium']
+            e_content_image_: [div, id="sfContentImage]
+            e_titles_:        [span class='sf-browse-shortlist-title']
+itch:
+    params:
+        login:   False
+        init:    False
+        content: False
+        crawl:   False
+    dmns:
+        d:
+            hstns:    ['', www]
+            hstn_var: null
+            tlds:     [io]
+        u:
+            hstns:    []
+            hstn_var: _usr_
+            tlds:     [io]
+    urec: {}
+    urls:
+        _usr:
+            u_usr:       
+                cnfg: [u]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_work:      
+                cnfg: [u, _work_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements:
+            e_head_title:     [[head, title], [_text_]]
+            e_dscr_raw:       [div,  class, formatted_description user_formatted]
+            e_dls_class:      [div,  class, uploads]
+            e_dl_class:       [div,  class, upload]
+            e_dl_info_class:  [div,  class, info_column]
+            e_dl_button:      [a,    class, button download_btn]
+            e_comments:       [div,  class, game_comments_widget base_widget]
+            e_csrf_token:     [meta, name,  csrf_token]
+            e_view_more:      [a,    class, action_btn view_more]
+            e_more_games:     [div,  class, game_grid_widget base_widget user_game_grid]
+            e_other_game:     [a,    class, title game_link]
+            e_dl_direct:      [a,    class, direct_download_btn]
+furaffinity:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [net]
+    urec:
+    urls:
+        _user:
+            u_user:      
+                cnfg: [d, user, _user_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _listings:
+            l_work:      
+                cnfg: [d, gallery, _author_, _iter(iter-1)_, '\?']
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            l_work2:      
+                cnfg: [d, gallery, _author_, _iter(iter-1)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_work:      
+                cnfg: [d, view, _work_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements:
+        AUTHOR:          [e_author, {text}]
+        AUTHOR_STATS:    [e_joined, [where, [strong>, {text}]]]
+        TITLE:           [e_title, {text}]
+        TAGS:            [[and, e_tag_of, e_tag_ef], [for, e_tag, {text}]]
+        DSCR:            [e_content,e_dscr]
+        PDF:             [s_pdf]
+        TXT:             [e_content, e_txt, {text}]
+        CHRONO:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
+        CHRONI:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
+        STATS:           [e_stat_header, e_stats, [by, line, ['[7:],views[:3],faves[:1],comments[:1],vote[:1]']]]
+        IMAGE:           [in, s_art for, w_work, where, e_contentimage]
+        FOLDER_IMAGE:    [in s_art, in, e_folders for, e_folder_link]
+        TITLES:          [in, s_titles for, w_work, where, e_titles]
+        FOLDER_TITLES:   [in, s_titles, in, e_folders for, e_folder_link]
+        JOURNALS:        [in, s_journals, for w_work]
+        e_info: [div.info]
+        e_tag2: [div, class='section-ody info",[div,[strong],[span]]]
+        e_tag:  [section, class='tags-mobile',[span,  class='tags', [a]]]
+        e_tag2: [section, class="folders-moile",[div,[div,[a]]]]
+        e_joined: [span, class="hideonmoile" >registered<]
+        e_text:     [div, class="submission-content"]
+        e_title:    [.submission-title]
+        e_author:   [a]
+        e_views:    [div, class='views']
+        e_favs:     [div, class='favorites']
+        e_comments: [div, class='comments']
+        e_rating:   [div, class='rating']
+        e_date: [.popup_date]
+        e_stats: [div, class='table',[div, class='highlight']]
+        e_titles: [figcaption, [p ,[a]]]
+blokfort:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    urec: {}
+    urls:
+        _content:
+            c_work:      
+                cnfg: [d, _work_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _listing:
+            l_works:     
+                cnfg: [d, nsfw-comics]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+catbox:
+    params:
+        enabled: False
+        login: False
+    dmn:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [moe]
+        f:
+            hstns: [files]
+            hstn_var:  null
+            tlds:      [moe]
+    urec: {}
+    urls:
+        _bin:
+            b_collection:
+                cnfg: [d, c, _collection_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_file:      
+                cnfg: [f, _file_._file_fxt_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+google:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [com]
+        f:
+            hstns: [drive]
+            hstn_var:  null
+            tlds:      [com]
+        w:
+            hstns: [docs]
+            hstn_var:  null
+            tlds:      [com]
+    urec: {}
+    urls:
+        _content:
+            c_doc:       
+                cnfg: [w, document, d, _doc_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            c_doc_edit:  
+                cnfg: [w, document, d, _doc_, edit]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            c_doc_pub:   
+                cnfg: [w, document, d, e, _doc_, pub]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            c_file:      
+                cnfg: [f, file, d, _file_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            c_file_view: 
+                cnfg: [f, file, d, _file_, view]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+fiction:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [live]
+    urec: {}
+    urls:
+        _user:
+            u_user:      
+                cnfg: [d, user, _user_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _flash:
+            f_flash:     
+                cnfg: [d, stories, _work_, _work_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_part:      
+                cnfg: [d, stories, _work_, _work_uid_, _part_, _part_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+ghostbin:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    urec:
+        p_folders:    [_folder_uid_]
+    urls:
+        _content:
+            c_work:     
+                cnfg: [d, p_folders, _work_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+git:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [io]
+    urec: {}
+    urls:
+        _content:
+            work:     
+                cnfg: [d, _work_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+hardbin:
+    params:
+        enabled: False
+        login:   False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    urec: {}
+    urls:
+        _content:
+            work:         
+                cnfg: [d, ipfs, _work_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
     fetch:
-        params:
-            enabled: True
-            login: False
         workflows:
-            w:
-                - a_init
-                #- a_content
-        get:
-            g_init :           [_bool, False]
-            g_logged_in :      [_bool, False]
-            g_csrf-param:      [e_csrf-param]
-            g_csrf-param_name: [e__csrf-param_name]
+                w: [a_init, a_content]
         actions:
-            a_init:
-                url: [_url]
-                do:
-                - [e_w_dl, _exists]
-                #- [e_content_txt, _exists]
-            a_content:
-                url: [_url]
-                do:
-                - [e_w_dl, _click(0)]
-            a_login:
-                payload:
-                    LoginForm[username]: _usr
-                    LoginForm[password]: _pwd
-                    g_csrf-param_name: g_csrf-param
-                do: 
-                - [g_csrf-param_name, _get]
-                - [g_csrf-param, _get]
-                - [e_login_pwd, _type]
-                - [e_login_usr, _type]
-                - [e_login_btn_submit, _click]
-                - [_set, g_logged_in, True]
+                a_init:
+                        url: [_url]
+                a_content:
+                        url: [IMAGES]
+    elements: {}
+literotica:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [net,com]
+    urec: {}
+    urls:
+        _usr:
+            u_usr:     
+                cnfg: [d, users, _usr_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _listing:
+            l_work:     
+                cnfg: [d, _usr_, works, stories, all]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_page:     
+                cnfg: [d, s, _work_, {page: _page(iter-1)_}]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            c_page_none:
+                cnfg: [d, s, _work_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+mcstories:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    urec: {}
+    urls:
+        _usr:
+            u_usr:
+                cnfg: [d, users, _usr_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _listing:
+            l_usr:
+                cnfg: [d, users, index.html]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _flash:
+            f_work:
+                cnfg: [d, _work_, index.html]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_work:
+                cnfg: [d, _work_, _work_._work_fxt_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+mega:
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [nz]
+    urec:
+        p_folders: [folder,  _folder_uid_]
+    urls:
+        _listing:
+            l_work:
+                cnfg: [d, p_folders]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_work:
+                cnfg: [d, p_folders, file, _work_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
+pastebin:
+    params:
+        enabled: True
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    urec: {}
+    urls:
+        _content:
+            c_work:      
+                cnfg: [d, _work_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _listing:
+            l_work:      
+                cnfg: [d, u, _usr_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _usr:
+            u_user:      
+                cnfg: [d, u, _usr_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _misc:
+            m_login:     
+                cnfg: [d, login]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
         elements:
             e_w_dl:             [a, class=btn -small,txt=download]
             e_content_txt_area: [div, class=source text, [ol, class=text]]
@@ -821,271 +998,349 @@ pastebin:
 
             e_csrf-param_name:  [meta, name=csrf-param, content]
             e_csrf-param:       [meta, name:=g_csrf-param, content]
-
-
 pastefs:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [com]
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    urec: {}
+    urls:
         _content:
-            c_work:       [d, pid, _work_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-                do:
-            a_content:
-                url: [_url]
-                do:
-        elements:
-
-
+            c_work:      
+                cnfg: [d, pid, _work_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 psstaudio:
-    url:
-        dmn:
-            d:
-                hstns:     ['',www]
-                hstn_var:  null
-                tlds:      [com]
-            p:
-                hstns:     [pastes]
-                hstn_var:  null
-                tlds:      [com]
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns:     ['',www]
+            hstn_var:  null
+            tlds:      [com]
+        p:
+            hstns:     [pastes]
+            hstn_var:  null
+            tlds:      [com]
+    urec: {}
+    urls:
         _content:
-            c_work: [p, post, _work_uid_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-                do:
-            a_content:
-                url: [_url]
-                do:
-        elements:
-
-
+            c_work:
+                cnfg: [p, post, _work_uid_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 poneb:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [in]
+    params:
+        enabled: False
+        login: False
+    dmn:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [in]
+    urec:
+    urls:
         _content:
-            c_work: [d, _work_]
+            c_work:
+                cnfg: [d, _work_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
         _listing:
-            l_work: [d, u, _usr_, user]
+            l_work:
+                cnfg: [d, u, _usr_, user]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
         _usr:
-            u_usr: [d, u, _usr_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-                w: 
-                - a_init
-                - a_content
-        actions:
-                a_init:
-                        url: [_url]
-                        do:
-                a_content:
-                        url: [_url]
-                        do:
-        elements:
-
-
+            u_usr:
+                cnfg: [d, u, _usr_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 githubusercontent:
-    url:
-        dmn:
-            d:
-                hstns:     ['',www]
-                hstn_var:  null
-                tlds:      [com]
-            f:
-                hstns:     [raw]
-                hstn_var:  null
-                tlds:      [com]
-        path:
-            p_folders:     [_folders_]
-        _bin:
-            b_repo:        [f, _usr_, _repo_, _version_]
-        _content:
-            c_work:        [f, _usr_, _repo_, _version_, p_folders, _work_._work_fxt_]
-            c_work2:        [f, _usr_, _repo_, _version_, p_folders, _work_]
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns:     ['',www]
+            hstn_var:  null
+            tlds:      [com]
+        f:
+            hstns:     [raw]
+            hstn_var:  null
+            tlds:      [com]
+    urec:
+        p_folders:     [_folders_]
+    urls: 
         _usr:
-            u_usr:         [f, _usr_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-            a_content:
-                url: [_url]
-        elements:
-
-
+            u_usr:        
+                cnfg: [f, _usr_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _bin:
+            b_repo:       
+                cnfg: [f, _usr_, _repo_, _version_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_work:       
+                cnfg: [f, _usr_, _repo_, _version_, p_folders, _work_._work_fxt_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            c_work2:       
+                cnfg: [f, _usr_, _repo_, _version_, p_folders, _work_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements:
 rentry:
-    url:
-        dmn:
-            d:
-                hstns: ['', www]
-                hstn_var:  null
-                tlds:      [org, co]
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: ['', www]
+            hstn_var:  null
+            tlds:      [org, co]
+    urec: {}
+    urls:
         _content:
-            c_work: [d, _work_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-            a_content:
-                url: [_url]
-        elements:
-
+            c_work:
+                cnfg: [d, _work(node;title)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 snekguy:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [com]
-        path:
-            p_group:        [_group_]
-        _content:
-            c_work:         [d, stories, p_group, _work_]
-            c_work_edition: [d, stories, p_group, _work_, _edition_]
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    urec:
+        p_group:        [_group(parent;title;work)_]
+    urls:
         _listing:
-            l_work:         [d, stories]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-            a_content:
-                url: [_url]
-        elements:
-
-
+            l_work:        
+                cnfg: [d, stories]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_work:        
+                cnfg: [d, stories, p_group, _work(node;title)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+            c_work_edition:
+                cnfg: [d, stories, p_group, _work(node;title)_, _edition(attr;title;edition)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 snootgame:
-    url:
-        dmn:
-            d:
-                hstns: ['',www]
-                hstn_var:  null
-                tlds:      [xyz]
+    params:
+        enabled: False
+        login: False
+
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [xyz]
+    urec: {}
+    urls:
         _content:
-            c_work:       [d, en, bin, _work_uid_.zip]
+            c_work:      
+                cnfg: [d, en, bin, _work_uid_(node;title).zip]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
         _flash:
-            f_flash:      [d]
+            f_flash:     
+                cnfg: [d]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
         _listing:
-            l_downloads:  [d, en, download.html]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w:
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-            a_content:
-                url: [_url]
-        elements:
-
-
+            l_downloads: 
+                cnfg: [d, en, download.html]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 fanfiction:
-    url:
-        dmn:
-            d:
-                hstns: [www,'']
-                hstn_var:  null
-                tlds:      [net]
-        _content:
-            c_part:       [d, s, _work_uid_, _part_, _work_]
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [net]
+    urec: {}
+    urls:
         _usr:
-            u_user:       [d, u, _user_uid_, _user_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-            a_content:
-                url: [_url]
-        elements:
-
-
+            u_user:
+                cnfg:  [d, u, _user_uid(attr;author;uid)_, _user(node;author)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_part:
+                cnfg:   [d, s, _work_uid(attr;title;uid)_, _part(node;part)_, _work(parent;part;title)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 reddit:
-    url:
-        dmn:
-            d:
-                hstns: [www,'']
-                hstn_var:  null
-                tlds:      [com]
-        _bin:
-            b_sub:        [d, r, _sub_]
-        _content:
-            c_work:       [d, r, _sub_, comments, _work_uid_, _work_]
+    params:
+        enabled: False
+        login: False
+    dmns:
+        d:
+            hstns:        [www,'']
+            hstn_var:     null
+            tlds:         [com]
+    urec: {}
+    urls:
         _usr:
-            u_user:       [d, user, _user_]
-    fetch:
-        params:
-            enabled: False
-            login: False
-        workflows:
-            _w: 
-            - a_init
-            - a_content
-        actions:
-            a_init:
-                url: [_url]
-                do:
-            a_content:
-                url: [_url]
-                do:
-        elements:
+            u_user:
+                cnfg:     [d, user, _user(node;author)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _listing:
+            l_sub:
+                cnfg:     [d, r, _sub(node;sub)_]
+                actions:
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        _content:
+            c_work:
+                cnfg:     [d, r, _sub(parent;title;sub)_, comments, _work_uid(attr;title;uid)_, _work(node;title)_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
 

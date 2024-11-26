@@ -64,8 +64,7 @@ class OhmfaUrl():
             self.sld = domain_frags[0]
 
         #get config
-        self.ucnfg  = sld_configs[self.sld]['url']
-        self.fcnfg  = sld_configs[self.sld]['fetch']
+        self.cnfg  = sld_configs[self.sld]
 
 
 
@@ -78,8 +77,8 @@ class OhmfaUrl():
 
         # domain
         self.resl_dmn()
-        self.gen_dmn_bp()
-        self.gen_url_bp()
+        self.gen_dmn_bps()
+        self.gen_url_bps()
         self.resl_path()
         self.resl_query()
         self.update_url()
@@ -90,7 +89,7 @@ class OhmfaUrl():
     def resl_query(self):
         self.logthis(1,f"{'':>4}>resl_query()")
 
-        query_bp  = self.ucnfg[self.group][self.url_type]['query']
+        query_bp  = self.cnfg['urls'][self.group][self.url_type]['cnfg']['query']
         query     = self.url.query
         query     =  parse_qs(query)
 
@@ -101,18 +100,15 @@ class OhmfaUrl():
 
         self.logthis(2,f"{'':>8}...resolving queries: {query}")
         for k,v in query_bp.items():
-            vrnm, arg = self.get_vrnm(v)
             self.logthis(2,f"{'':>8}?{k}={v}")
+            vrnm, vr = self.get_vr(v)
             if vrnm: 
                 self.logthis(2,f"{'':>12}bp value  '{v}' is var '{vrnm}'")
-                if arg:
-                    self.logthis(2,f"{'':>12}bp var    '{vrnm}' has arg '{arg}'")
-                    if arg[:5] == 'iter-':
-                        start_iter=arg[5:]
-                        self.logvar(12,vrnm,start_iter)
-                        self.vrs[vrnm]    = start_iter
-                        self.iters[vrnm]  = {'start_iter': start_iter}
-                        arg = 'iter'
+                #if 'subclass' in vr and vr['subclass'] == 'iter':
+                if  vr['subclass'] == 'iter':
+                    start_iter=vr['val']
+                    self.logvar(12,vrnm,start_iter)
+                    self.set_vr(vr,start_iter)
 
                 if k not in query:
                     self.logthis(1,f"{'':>12}!Warning: bp key '{k}' is not in query")
@@ -120,25 +116,25 @@ class OhmfaUrl():
                         string = f"{'':>12}!ERROR: Bp var '{vrnm}' not in vrs"
                         sys.exit(string)
                     self.logthis(2,f"{'':>12}Bp var    '{vrnm}' is in vrs")
-                    v = self.vrs[vrnm]
+                    v = self.vrs[vrnm]['val']
                     self.logthis(2,f"{'':>12}query key '{k}' created")
                 else:
                     self.logthis(2,f"{'':>12}bp key    '{k}' is in query")
                     if vrnm in self.vrs:
                         self.logthis(2,f"{'':>12}bp var    '{vrnm}' is in vrs")
-                        if query[k] != self.vrs[vrnm]:
-                            if arg == 'iter':
-                                string = f"{'':>12}!WARNING: Query mismatch at '{k}' bp: '{self.vrs[vrnm]}' url: '{query[k][0]}'"
+                        if query[k] != self.vrs[vrnm]['val']:
+                            if vr['subclass'] == 'iter':
+                                string = f"{'':>12}!WARNING: Query mismatch at '{k}' bp: '{self.vrs[vrnm]['val']}' url: '{query[k][0]}'"
                                 self.logthis(1,string)
                             else:
-                                string = f"{'':>12}!ERROR: Query mismatch at '{k}' bp: '{self.vrs[vrnm]}' url: '{query[k][0]}'"
+                                string = f"{'':>12}!ERROR: Query mismatch at '{k}' bp: '{self.vrs[vrnm]['val']}' url: '{query[k][0]}'"
                                 sys.exit(string)
                         else:
                             self.logthis(2,f"{'':>12}key '{k}' have identical values in both bp and query")
                     else:
                         self.logthis(2,f"{'':>12}bp var    '{vrnm}' is not in vrs")
                         self.logvar(12,vrnm,query[k])
-                        self.vrs[vrnm] = query[k]
+                        self.set_vr(vr,query[k])
                         v = query[k] 
             else:
                 self.logthis(1,f"{'':>12}bp value  '{v}' is constant")
@@ -164,11 +160,10 @@ class OhmfaUrl():
         hstn, sld, tld   = None,None,None
         dmn_type         = None
         dmn_frags        = self.dmn.split('.')
-        dmn_cnfgs        = self.ucnfg['dmn']
+        dmn_cnfgs        = self.cnfg['dmns']
         if len(dmn_frags) == 2:
             dmn_frags = [''] + dmn_frags
         self.logthis(1,f"{'':>8}dmn_frags:     ['{dmn_frags[0]}', '{dmn_frags[1]}', '{dmn_frags[2]}']")
-        vrs = {}
         hstn, sld, tld = dmn_frags
         self.logthis(2,f"{'':>8}...looping through domain configs")
 
@@ -207,11 +202,11 @@ class OhmfaUrl():
                 self.hstn = new_hstn
 
             else:
-                vrnm = cnfg['hstn_var']
+                vrnm, vr  = self.get_vr(cnfg['hstn_var'])
                 self.logthis(2,f"{'':>12}hstn in config is var '{vrnm}' ")
 
                 self.logvar(12,vrnm,hstn) 
-                self.vrs[vrnm] = hstn
+                self.set_vr(vr,hstn)
                 self.hstn = hstn
 
             self.dmn_type = dmn_type
@@ -388,7 +383,7 @@ class OhmfaUrl():
                     _r.start               = _m.idx
                     _r.active              = True
 
-                    _r.val                 = self.ucnfg['path'][bp_item]
+                    _r.val                 = self.cnfg['urec'][bp_item]
                     self.logthis(2,f"{'':>32}_r.val:    {_r.val}")
 
                     _r.val                 = self.process_ar(_r.val)
@@ -422,11 +417,12 @@ class OhmfaUrl():
                         bp_item  = _m.bp[_m.idx]
                         self.logthis(2,f"{'':>32}!new_bp_item: {bp_item}")
 
-                vrnm = self.get_vrnm(bp_item)[0]
+                vrnm, vr = self.get_vr(bp_item)
 
                 if vrnm:
-
-                    vrs[vrnm] = item
+                    del vr['name']
+                    vr['val'] = item
+                    vrs[vrnm] = vr
                     self.logthis(2,f"{'':>32}!bp_item is var - {vrnm}: {item}")
 
                 elif item != bp_item:
@@ -464,11 +460,12 @@ class OhmfaUrl():
         self.logthis(2,f"{'':>8}...starting url resolving")
         for group in url_groups:
             self.logthis(2,f"{'':>12}group: {group}")
-            if group not in self.ucnfg:
+            if group not in self.cnfg['urls']:
                 self.logthis(2,f"{'':>12}!not found in ucnfg")
                 continue
-            url_cnfgs = self.ucnfg[group]
+            url_cnfgs = self.cnfg['urls'][group]
             for url_type, cnfg in url_cnfgs.items():
+                cnfg = cnfg['cnfg']
                 self.logthis(2,f"{'':>16}url_type: {url_type}")
                 self.logthis(2,f"{'':>20}dmn_type:      {self.dmn_type}")
                 self.logthis(2,f"{'':>20}cnfg_dmn_type: {cnfg['dmn_type']}")
@@ -500,7 +497,8 @@ class OhmfaUrl():
                     self.path_ar  = path_ar
                     self.bp       = bp
                     for k,v in vrs.items():
-                        self.logvar(8,k,v)
+                        val = v['val']
+                        self.logvar(8,k,val)
                     self.vrs.update(vrs)
 
                     break
@@ -517,9 +515,9 @@ class OhmfaUrl():
 
     def process_item(self, item):
         retu = None
-        vrnm = self.get_vrnm(item)[0]
-        if vrnm and self.vrs[vrnm]:
-            retu = self.vrs[vrnm]
+        vrnm = self.get_vr(item)[0]
+        if vrnm in self.vrs:
+            retu = self.vrs[vrnm]['val']
         else:
             retu = item
         return retu
@@ -527,7 +525,7 @@ class OhmfaUrl():
 
 
     def url_from_cnfg(self, group, url_type):
-        cnfg = self.ucnfg[group][url_type]
+        cnfg = self.cnfg['urls'][group][url_type]['cnfg']
         url = self.url_from_bp(cnfg['bp'])
         return url
 
@@ -535,11 +533,6 @@ class OhmfaUrl():
 
 
     def url_from_bp(self,url_bp):
-        if self.get_vrnm(url_bp[0])[0]:
-            vrnms = [x for i,x in enumerate(url_bp) if not i%2]
-        else:
-            vrnms = [x for i,x in enumerate(url_bp) if i%2]
-        vrnms = vrnms.uniq()
         url_ar = []
         for item in url_bp:
             item = self.process_item(item)
@@ -550,12 +543,12 @@ class OhmfaUrl():
 
 
 
-    def gen_dmn_bp(self):
-        self.logthis(2,f"{'':>4}>gen_dmn_bp()")
-        if 'bp' not in self.ucnfg['dmn']['d']:
-            dmn_cnfgs = self.ucnfg['dmn']
+    def gen_dmn_bps(self):
+        self.logthis(2,f"{'':>4}>gen_dmn_bps()")
+        dmn_cnfgs = self.cnfg['dmns']
+        if 'bp' not in dmn_cnfgs['d']:
             self.logthis(2,f"{'':>8}...generating bps")
-            for dmn_type,cnfg in dmn_cnfgs.items():
+            for dmn_type, cnfg in dmn_cnfgs.items():
                 #TLD
                 tld = cnfg['tlds'][0]
         
@@ -585,12 +578,12 @@ class OhmfaUrl():
 
 
 
-    def gen_url_bp(self): 
+    def gen_url_bps(self): 
         self.logthis(2,f"{'':>4}>gen_url_bp()")
-        url_groups = [x for x in self.ucnfg if x[0] == '_'] 
         self.logthis(2,f"{'':>8}...generating bps")
-        for group in url_groups: 
-            for url_type, cnfg in self.ucnfg[group].items():
+        for group in self.cnfg['urls']: 
+            for url_type, cnfg in self.cnfg['urls'][group].items():
+                cnfg = cnfg['cnfg']
                 if isinstance(cnfg,dict):
                     self.logthis(2,f"{'':>8}Already Done!")
                     break
@@ -603,19 +596,19 @@ class OhmfaUrl():
                     query=url_bp[-1]
                     url_bp = url_bp[:-1]
 
-                self.logthis(2,f"{'':>12}group: {group}")
-                self.logthis(2,f"{'':>16}url_type: {url_type}")
+                self.logthis(2,f"{'':>12}group:      {group}")
+                self.logthis(2,f"{'':>16}url_type:   {url_type}")
                 self.logthis(2,f"{'':>20}dmn_type:   {dmn_type}")
                 self.logthis(2,f"{'':>20}url_bp:     {url_bp}")
                 self.logthis(2,f"{'':>20}query:      {query}")
 
                 new_url_bp = self.process_ar(url_bp)
-                domain_bp = self.ucnfg['dmn'][dmn_type]['bp']
+                domain_bp = self.cnfg['dmns'][dmn_type]['bp']
                 self.logthis(2,f"{'':>20}new_url_bp: {new_url_bp}")
                 self.logthis(2,f"{'':>20}domain_bp:  {domain_bp}")
                 new_url_bp = domain_bp + ['/'] + new_url_bp
                 self.logthis(2,f"{'':>20}new_url_bp: {new_url_bp}")
-                self.ucnfg[group][url_type] = {
+                self.cnfg['urls'][group][url_type]['cnfg'] = {
                     'bp':       new_url_bp,
                     'query':    query,
                     'dmn_type': dmn_type,
@@ -658,18 +651,10 @@ class OhmfaUrl():
 
 
 
-
-
-
-
-
-
-        
-        
-
-    def get_vrnm(self, string):
+    def get_vr(self, string):
         vrnm = None
-        arg  = None
+        var = {}
+
         if isinstance(string,str):
             if string[0] == '_' and string[-1] == '_':
                 vrnm = string[1:-1]
@@ -677,9 +662,25 @@ class OhmfaUrl():
                     sys.exit('ERROR: Varible Name but be of nonzero length "'+string+'"')
                 else:
                     if vrnm[-1] == ')':
-                        z = vrnm.find('(')
-                        arg = vrnm[(z+1):-1]
-        return vrnm, arg
+                        z        = vrnm.find('(')
+                        arg      = vrnm[(z+1):-1]
+                        vrnm     = vrnm[:z]
+                        arg_ar   = arg.split(';')
+                        if arg_ar[0] in ['node','parent','child','attr']:
+                            var['class']     = 'tree'
+                            var['subclass'] = arg_ar[0]
+                            var['node_type'] = arg_ar[1]
+                            if arg_ar[0] == 'node':
+                                var['type']      = arg_ar[0]
+                            else:
+                                var['type']      = arg_ar[2]
+                        else:
+                            var['class'] = arg_ar[0]
+                            var['subclass'] = arg_ar[1]
+                            var['val'] = arg_ar[2]
+                        var['name'] = vrnm
+                        var['val']  = None
+        return vrnm, var
 
 
 
@@ -705,3 +706,9 @@ class OhmfaUrl():
                     self.logthis(1,f"{'':>{ind}}_{name}_: '{value}'")
                 else: 
                     self.logthis(1,f"{'':>{ind}}_{name}_: '{self.vrs[name]}' -> '{value}'")
+    
+    def set_vr(self, vr:dict, val):
+        vrnm = vr['name']
+        del vr['name']
+        vr['val']=val
+        self.vrs[vrnm] = vr
