@@ -611,10 +611,10 @@ class Fetcher():
                 self.durls[u.sld]={}
             if u.node_type not in self.durls[u.sld]:
                 self.durls[u.sld][u.node_type]={}
-            if u.url_type not in self.durls[u.sld][u.node_type]:
-                self.durls[u.sld][u.node_type][u.url_type]=[]
-            self.durls[u.sld][u.node_type][u.url_type].append(u)
-            if len(self.durls[u.sld][u.node_type][u.url_type]) < mx:
+            if u.path_type not in self.durls[u.sld][u.node_type]:
+                self.durls[u.sld][u.node_type][u.path_type]=[]
+            self.durls[u.sld][u.node_type][u.path_type].append(u)
+            if len(self.durls[u.sld][u.node_type][u.path_type]) < mx:
                 qc_batch.append(u)
         for u in qc_batch:
             for line in u.log:

@@ -217,7 +217,7 @@ archiveofourown:
                     e_chapter_content:      [_in, e_chapter_body, [_for, p, _content_(chapter)_=text]]
                     e_ch_imgs:              [_in, e_chapter_body, [_for, img, src]]
     login:
-        cnfg: [d, users, login]
+        bp_cnfg: [d, users, login]
         elements: {}
         payload: 
             user[login]: _usr_ 
@@ -368,6 +368,19 @@ sofurry:
                         do:
                         - []
                 elements: {}
+            listings_alt:
+                bp_cnfg:    [_dmns(u), stories, {by: _uid(view)_, stories-page: _page_}]
+                actions:
+                    init:
+                        do:
+                        - []
+                    contnt:
+                        do:
+                        - []
+                    crawl:
+                        do:
+                        - []
+                elements: {}
         folder:
             folder:
                 bp_cnfg: [_dmns(d), browse, folder, stories, {by: _uid(user)_, folder: _uid_}]
@@ -412,7 +425,7 @@ sofurry:
                         - []
                 elements: {}
     login:
-        cnfg: [d, user, login]
+        bp_cnfg: [d, user, login]
         pwd: LoginForm[sfLoginPassword]
         usr: LoginForm[sfLoginUsername]
         token: null
@@ -460,7 +473,7 @@ itch:
     urls:
         user:
             user:       
-                cnfg: [_dmns(u)]
+                bp_cnfg: [_dmns(u)]
                 actions: 
                     init:
                     - []
@@ -471,7 +484,7 @@ itch:
                 elements: {}
         work:
             work:      
-                cnfg: [_dmns(u), _name_]
+                bp_cnfg: [_dmns(u), _name_]
                 actions: 
                     init:
                     - []
@@ -524,7 +537,7 @@ furaffinity:
     urls:
         user:
             user:      
-                cnfg: [_dmns(d), user, _name_]
+                bp_cnfg: [_dmns(d), user, _name_]
                 actions: 
                     init:
                     - []
@@ -534,7 +547,7 @@ furaffinity:
                     - []
                 elements: {}
             work_listing:      
-                cnfg: [_dmns(d), gallery, _name_, _page_, "_try(?)_"]
+                bp_cnfg: [_dmns(d), gallery, _name_, _page_, "_try(?)_"]
                 actions: 
                     init:
                     - []
@@ -545,7 +558,7 @@ furaffinity:
                 elements: {}
         view:
             view:      
-                cnfg: [_dmns(d), view, _uid_]
+                bp_cnfg: [_dmns(d), view, _uid_]
                 actions: 
                     init:
                     - []
@@ -613,7 +626,7 @@ blokfort:
     urls:
         work:
             work:      
-                cnfg: [_dmns(d), _name_]
+                bp_cnfg: [_dmns(d), _name_]
                 actions: 
                     init:
                     - []
@@ -624,7 +637,7 @@ blokfort:
                 elements: {}
         user:
             work_listing:     
-                cnfg: [_dmns(d), nsfw-comics]
+                bp_cnfg: [_dmns(d), nsfw-comics]
                 actions: 
                     init:
                     - []
@@ -638,7 +651,7 @@ catbox:
     params:
         enabled: False
         login: False
-    dmn:
+    dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
@@ -671,7 +684,7 @@ catbox:
     urls:
         collection:
             collection:
-                cnfg: [_dmns(d), c, _name_]
+                bp_cnfg: [_dmns(d), c, _name_]
                 actions: 
                     init:
                     - []
@@ -682,7 +695,7 @@ catbox:
                 elements: {}
         file:
             file:      
-                cnfg: [_dmns(f), _file_, _try(. ; _fxt_)]
+                bp_cnfg: [_dmns(f), [_delim(.), _file_, _try(_fxt_)]]
                 actions: 
                     init:
                     - []
@@ -725,7 +738,7 @@ google:
     urls:
         file:
             doc:       
-                cnfg: [_dmns(w), document, d, _uid_, _try(edit)_]
+                bp_cnfg: [_dmns(w), document, d, _uid_, _try(edit)]
                 actions: 
                     init:
                     - []
@@ -735,7 +748,7 @@ google:
                     - []
                 elements: {}
             pub_doc:   
-                cnfg: [_dmns(w), document, d, e, _uid_, pub]
+                bp_cnfg: [_dmns(w), document, d, e, _uid_, pub]
                 actions: 
                     init:
                     - []
@@ -745,7 +758,7 @@ google:
                     - []
                 elements: {}
             drive_file: 
-                cnfg: [_dmns(f), file, d, _name_, _try(view)_]
+                bp_cnfg: [_dmns(f), file, d, _name_, _try(view)]
                 actions: 
                     init:
                     - []
@@ -767,7 +780,7 @@ fiction:
     urls:
         _user:
             u_user:      
-                cnfg: [d, user, _user_]
+                bp_cnfg: [_dmns(d), user, _user_]
                 actions: 
                     init:
                     - []
@@ -778,7 +791,7 @@ fiction:
                 elements: {}
         _flash:
             f_flash:     
-                cnfg: [d, stories, _work_, _work_uid_]
+                bp_cnfg: [_dmns(d), stories, _work_, _work_uid_]
                 actions: 
                     init:
                     - []
@@ -789,7 +802,7 @@ fiction:
                 elements: {}
         _content:
             c_part:      
-                cnfg: [d, stories, _work_, _work_uid_, _part_, _part_uid_]
+                bp_cnfg: [_dmns(d), stories, _work_, _work_uid_, _part_, _part_uid_]
                 actions: 
                     init:
                     - []
@@ -830,7 +843,7 @@ ghostbin:
     urls:
         paste:
             paste:     
-                cnfg: [_dmns(d), _try(_uid(folder)_), _uid_]
+                bp_cnfg: [_dmns(d), _try(_uid(folder)_), _uid_]
                 actions: 
                     init:
                     - []
@@ -867,7 +880,7 @@ git:
     urls:
         file:
             file:     
-                cnfg: [_dmns(d), _uid_]
+                bp_cnfg: [_dmns(d), _uid_]
                 actions: 
                     init:
                     - []
@@ -903,7 +916,7 @@ hardbin:
     urls:
         paste:
             paste:         
-                cnfg: [_dmns(d), ipfs, _uid_]
+                bp_cnfg: [_dmns(d), ipfs, _uid_]
                 actions: 
                     init:
                     - []
@@ -951,7 +964,7 @@ literotica:
     urls:
         user:
             user:     
-                cnfg: [_dmns(d), users, _name_]
+                bp_cnfg: [_dmns(d), users, _name_]
                 actions: 
                     init:
                     - []
@@ -961,7 +974,7 @@ literotica:
                     - []
                 elements: {}
             work_listing:     
-                cnfg: [_dmns(d), _name_, works, stories, all]
+                bp_cnfg: [_dmns(d), _name_, works, stories, all]
                 actions: 
                     init:
                     - []
@@ -972,7 +985,7 @@ literotica:
                 elements: {}
         work:
             work:     
-                cnfg: [_dmns(d), s, _name_, {page: _page_}]
+                bp_cnfg: [_dmns(d), s, _name_, {page: _page_}]
                 actions: 
                     init:
                     - []
@@ -1009,7 +1022,7 @@ mcstories:
     urls:
         domain:
             user_listing:
-                bp_cnfg: [_dmns(d), users, index.html]
+                bp_cnfg: [_dmns(d), users, [_delim(.), index,html]]
                 actions: 
                     init:
                     - []
@@ -1031,7 +1044,7 @@ mcstories:
                 elements: {}
         work:
             flash:
-                bp_cnfg: [_dmns(d), _name_, index.html]
+                bp_cnfg: [_dmns(d), _name_, [_delim(.), index, html]]
                 actions: 
                     init:
                     - []
@@ -1041,7 +1054,7 @@ mcstories:
                     - []
                 elements: {}
             work:
-                bp_cnfg: [_dmns(d), _name_, _name_, _try(.;_fxt_)]
+                bp_cnfg: [_dmns(d), _name_, [_delim(.), _name_, _try(_fxt_)]]
                 actions: 
                     init:
                     - []
@@ -1083,7 +1096,7 @@ mega:
     urls:
         domain:
             work_listing:
-                cnfg: [_dmns(d), try_(folder; _uid(folder)_)]
+                bp_cnfg: [_dmns(d), _try(folder;_uid(folder))]
                 actions: 
                     init:
                     - []
@@ -1094,7 +1107,7 @@ mega:
                 elements: {}
         work:
             work:
-                cnfg: [_dmns(d), try_(folder; _uid(folder)_), file, _uid_]
+                bp_cnfg: [_dmns(d), _try(folder;_uid(folder), file, _uid_]
                 actions: 
                     init:
                     - []
@@ -1113,7 +1126,6 @@ pastebin:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-
     node_framwork:
             user:
                 class: node
@@ -1136,7 +1148,7 @@ pastebin:
     urls:
         user:
             user:      
-                cnfg: [_dmns(d), u, _name_]
+                bp_cnfg: [_dmns(d), u, _name_]
                 actions: 
                     init:
                     - []
@@ -1147,7 +1159,7 @@ pastebin:
                 elements: {}
         folder:
             folder:      
-                cnfg: [_dmns(d), u, _name(user)_, '1' , _uid_]
+                bp_cnfg: [_dmns(d), u, _name(user)_, '1' , _uid_]
                 actions: 
                     init:
                     - []
@@ -1158,7 +1170,7 @@ pastebin:
                 elements: {}
         paste:
             paste:      
-                cnfg: [_dmns(d), _uid_]
+                bp_cnfg: [_dmns(d), _uid_]
                 actions: 
                     init:
                     - []
@@ -1167,17 +1179,17 @@ pastebin:
                     crawl:
                     - []
                 elements: {}
-        elements:
-            e_w_dl:             [a, class=btn -small,txt=download]
-            e_content_txt_area: [div, class=source text, [ol, class=text]]
-            e_content_txt:      [_in, e_content_txt_area, [_for, li, txt]]
+    elements:
+        e_w_dl:             [a, class=btn -small,txt=download]
+        e_content_txt_area: [div, class=source text, [ol, class=text]]
+        e_content_txt:      [_in, e_content_txt_area, [_for, li, txt]]
 
-            e_login_usr:        [_css, "#loginform-username"]
-            e_login_pwd:        [_css, "#loginform-password"]
-            e_login_btn_submit: [button, type=submit, class=btn-big]
+        e_login_usr:        [_css, "#loginform-username"]
+        e_login_pwd:        [_css, "#loginform-password"]
+        e_login_btn_submit: [button, type=submit, class=btn-big]
 
-            e_csrf-param_name:  [meta, name=csrf-param, content]
-            e_csrf-param:       [meta, name:=g_csrf-param, content]
+        e_csrf-param_name:  [meta, name=csrf-param, content]
+        e_csrf-param:       [meta, name:=g_csrf-param, content]
 pastefs:
     params:
         enabled: False
@@ -1205,7 +1217,7 @@ pastefs:
     urls:
         paste:
             paste:      
-                cnfg: [_dmns(d), pid, _uid_]
+                bp_cnfg: [_dmns(d), pid, _uid_]
                 actions: 
                     init:
                     - []
@@ -1246,7 +1258,7 @@ psstaudio:
     urls:
         paste:
             paste:
-                cnfg: [p, post, _uid_]
+                bp_cnfg: [_dmns(p), post, _uid_]
                 actions: 
                     init:
                     - []
@@ -1260,7 +1272,7 @@ poneb:
     params:
         enabled: False
         login: False
-    dmn:
+    dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
@@ -1283,7 +1295,7 @@ poneb:
     urls:
         user:
             user:
-                cnfg: [_dmns(d), u, _name_]
+                bp_cnfg: [_dmns(d), u, _name_]
                 actions: 
                     init:
                     - []
@@ -1293,7 +1305,7 @@ poneb:
                     - []
                 elements: {}
             paste_listing:
-                cnfg: [_dmns(d), u, _name_, user]
+                bp_cnfg: [_dmns(d), u, _name_, user]
                 actions: 
                     init:
                     - []
@@ -1304,7 +1316,7 @@ poneb:
                 elements: {}
         paste:
             paste:
-                cnfg: [_dmns(d), _name_]
+                bp_cnfg: [_dmns(d), _name_]
                 actions: 
                     init:
                     - []
@@ -1350,7 +1362,8 @@ githubusercontent:
     urls: 
         work:
             work:       
-                cnfg: [f, _name(user)_, _repo_, _branch_, _try(_name(folder)_), _name_, _try(.;_fxt_)]
+                bp_cnfg: [_dmns(f), _name(user)_, _repo_, _branch_, _try(_name(folder)_), [_delim(.), _name_, _try(_fxt_)]]
+                #bp_cnfg: [_dmns(f), _name(user)_, _repo_, _branch_, _try(_name(folder)_), _uid_]
                 actions: 
                     init:
                     - []
@@ -1387,7 +1400,7 @@ rentry:
     urls:
         work:
             work:
-                cnfg: [d, _uid_]
+                bp_cnfg: [_dmns(d), _uid_]
                 actions: 
                     init:
                     - []
@@ -1427,7 +1440,7 @@ snekguy:
     urls:
         user:
             work_listing:        
-                cnfg: [_dmns(d), stories]
+                bp_cnfg: [_dmns(d), stories]
                 actions: 
                     init:
                     - []
@@ -1438,7 +1451,7 @@ snekguy:
                 elements: {}
         work:
             work:
-                cnfg: [_dmns(d), stories, _try(_name(folder)_), _name_, _edition_]
+                bp_cnfg: [_dmns(d), stories, _try(_name(folder)_), _name_, _edition_]
                 actions: 
                     init:
                     - []
@@ -1475,7 +1488,7 @@ snootgame:
     urls:
         user:
             user:     
-                cnfg: [_dmns(d)]
+                bp_cnfg: [_dmns(d)]
                 actions: 
                     init:
                     - []
@@ -1485,7 +1498,7 @@ snootgame:
                     - []
                 elements: {}
             work_listing: 
-                cnfg: [_dmns(d), en, download.html]
+                bp_cnfg: [_dmns(d), en, download.html]
                 actions: 
                     init:
                     - []
@@ -1496,7 +1509,7 @@ snootgame:
                 elements: {}
         work:
             work:      
-                cnfg: [_dmns(d), en, bin, _name_.zip]
+                bp_cnfg: [_dmns(d), en, bin, _name_.zip]
                 actions: 
                     init:
                     - []
@@ -1538,7 +1551,7 @@ fanfiction:
     urls:
         user:
             user:
-                cnfg:  [_dmns(d), u, _uid_, _name_]
+                bp_cnfg:  [_dmns(d), u, _uid_, _name_]
                 actions: 
                     init:
                     - []
@@ -1549,7 +1562,7 @@ fanfiction:
                 elements: {}
         part:
             part:
-                cnfg:   [_dmns(d), s, _uid(work)_, _name_, _name(work)_]
+                bp_cnfg:   [_dmns(d), s, _uid(work)_, _name_, _name(work)_]
                 actions: 
                     init:
                     - []
@@ -1592,7 +1605,7 @@ reddit:
     urls:
         user:
             user:
-                cnfg:     [_dmns(d), user, _name_]
+                bp_cnfg:     [_dmns(d), user, _name_]
                 actions: 
                     init:
                     - []
@@ -1603,7 +1616,7 @@ reddit:
                 elements: {}
         sub:
             sub:
-                cnfg:     [_dmns(d), r, _name_]
+                bp_cnfg:     [_dmns(d), r, _name_]
                 actions:
                     init:
                     - []
@@ -1614,7 +1627,7 @@ reddit:
                 elements: {}
         post:
             post:
-                cnfg:     [_dmns(d), r, _name(sub)_, comments, _uid_, _name_]
+                bp_cnfg:     [_dmns(d), r, _name(sub)_, comments, _uid_, _name_]
                 actions: 
                     init:
                     - []

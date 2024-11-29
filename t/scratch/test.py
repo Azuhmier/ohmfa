@@ -15,39 +15,39 @@ o.select_ohmfa_dir(OHMFA_DIR)
 o.load_urls(URLS_FILE)
 f = Fetcher('/home/azuhmier/progs/ohmfa/t/scratch/lib/frameworks/domains_config.yml')
 oslds = [
-    #'ghostbin',
-    #'hardbin',
-    #'git',
-    #'githubusercontent',
-    #'itch',
-    #'catbox',
-    #'pastebin',
+    'ghostbin',
+    'hardbin',
+    'git',
+    'githubusercontent',
+    'itch',
+    'catbox',
+    'pastebin',
     'archiveofourown',
     'sofurry',
-    #'fiction',
-    #'poneb',
-    #'fanfiction',
-    #'literotica',
-    #'furaffinity',
-    #'mega',
-    #'google',
-    #'fiction',
-    #'rentry',
-    #'blokfort',
-    #'snekguy',
-    #'snootgame',
-    #'google',
-    #'reddit',
-    #'psstaudio',
-    #'pastefs',
+    'fiction',
+    'poneb',
+    'fanfiction',
+    'literotica',
+    'furaffinity',
+    'mega',
+    'google',
+    'fiction',
+    'rentry',
+    'blokfort',
+    'snekguy',
+    'snootgame',
+    'google',
+    'reddit',
+    'psstaudio',
+    'pastefs',
     'mcstories',
 ]
 test_urls = [
     'https://archiveofourown.org/works/60729490',
-    #'https://baron03.sofurry.com/',
-    #'https://baron03.sofurry.com/stories',
-    #'https://www.sofurry.com/browse/user/stories?by=213418&stories-page=3',
-    #'https://www.sofurry.com/browse/folder/stories?by=213418&folder=21225',
+    'https://baron03.sofurry.com/',
+    'https://baron03.sofurry.com/stories',
+    'https://www.sofurry.com/browse/user/stories?by=213418&stories-page=3',
+    'https://www.sofurry.com/browse/folder/stories?by=213418&folder=21225',
     'https://archiveofourown.org/series/2533186',
     'https://archiveofourown.org/users/testy/pseuds/testy/series',
     'https://archiveofourown.org/users/Morbane/pseuds/Morbane',
@@ -61,8 +61,8 @@ test_urls = [
     'https://archiveofourown.org/users/PapaDelta/profile',
     'https://mcstories.com/RehabilitationAkaece/RehabilitationAkaece.html',
 ]
-#o.urls = test_urls + o.urls
-o.urls = test_urls
+o.urls = test_urls + o.urls
+#o.urls = test_urls
 f.load_urls(o.urls,slds=oslds,verbose=2,mx=2,prnt=True)
 #f.load_urls(o.urls,verbose=1)
 #f.get_passwords('/home/azuhmier/.pwds')

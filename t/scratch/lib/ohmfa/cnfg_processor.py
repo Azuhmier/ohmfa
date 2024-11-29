@@ -37,17 +37,20 @@ class CnfgProcessor(Ohmfa):
         """
         arg_ar = []
         nmstr  = None
-        z = item.find('(')
-        if z:
-            e   = item.rfind(')')
-            arg_str =  item[(z+1):e]
-            arg_ar  = arg_str.split(';')
-            nmstr = item[1:z]
+        if item_type == 'ar':
+            arg_ar = item 
         else:
-            if item_type == 'vr':
-              nmstr = item[1:-1]
-            elif item_type == 'op':
-              nmstr = item[1:]
+            z = item.find('(')
+            if z:
+                e   = item.rfind(')')
+                arg_str =  item[(z+1):e]
+                arg_ar  = arg_str.split(';')
+                nmstr = item[1:z]
+            else:
+                if item_type == 'vr':
+                    nmstr = item[1:-1]
+                elif item_type == 'op':
+                    nmstr = item[1:]
         return nmstr, arg_ar
     def get_item_type(self,item):
         """_summary_
@@ -55,9 +58,11 @@ class CnfgProcessor(Ohmfa):
         item_type = None
         if item[0] == '_':
             if item[-1] == '_':
-              item_type = 'vr'
+                item_type = 'vr'
             else:
-              item_type = 'op'
+                item_type = 'op'
+        elif isinstance(item,list):
+            item_type = 'ar'
         else:
             item_type = 'ltrl'
         return item_type
