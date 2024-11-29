@@ -1,0 +1,2076 @@
+################################################################################
+url: https://archiveofourown.org/works/60729490
+dmn: archiveofourown.org
+sld: archiveofourown
+    >resl_dmn()
+        dmn_frags:     ['', 'archiveofourown', 'org']
+        ...looping through domain configs
+        dmn_type: d
+            ...searching for tld 'org' in ['org']
+            ...searching for hstn '' in ['', 'www']
+        SUCESS! at domain_type 'd'
+        new_dmn_frags: ['', 'archiveofourown', 'org']
+        new_dmn_frags: ['archiveofourown', 'org']
+        dmn_type:      d
+        dmn:           archiveofourown.org
+        dmn_ar:        ['archiveofourown', '.', 'org']
+    >gen_dmn_bps()
+        ...generating bps
+            dmn_type:     'd'
+            tld:          'org'
+            hstn:         ''
+            dmn_bp_frags: ['', 'archiveofourown', 'org']
+            dmn_bp_frags: ['archiveofourown', 'org']
+            dmn_bp_str:   archiveofourown.org
+            dmn_bp:       ['archiveofourown', '.', 'org']
+    >gen_url_bp()
+        ...generating bps
+            node_type:      user
+                url_type:   user
+                    dmn_type:   d
+                    url_bp:     ['users', '_name_', '_try(pseuds;_psued_)']
+                    query:      {}
+                    new_url_bp: ['users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                    domain_bp:  ['archiveofourown', '.', 'org']
+                    new_url_bp: ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                url_type:   profile
+                    dmn_type:   d
+                    url_bp:     ['users', '_name_', 'profile']
+                    query:      {}
+                    new_url_bp: ['users', '/', '_name_', '/', 'profile']
+                    domain_bp:  ['archiveofourown', '.', 'org']
+                    new_url_bp: ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                url_type:   work_listing
+                    dmn_type:   d
+                    url_bp:     ['users', '_name_', '_try(pseuds;_psued_)', 'works']
+                    query:      {'page': '_page_'}
+                    new_url_bp: ['users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                    domain_bp:  ['archiveofourown', '.', 'org']
+                    new_url_bp: ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                url_type:   series_listing
+                    dmn_type:   d
+                    url_bp:     ['users', '_name_', '_try(pseuds;_psued_)', 'series']
+                    query:      {'page': '_page_'}
+                    new_url_bp: ['users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                    domain_bp:  ['archiveofourown', '.', 'org']
+                    new_url_bp: ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+            node_type:      series
+                url_type:   series
+                    dmn_type:   d
+                    url_bp:     ['series', '_uid_']
+                    query:      {'page': '_page_'}
+                    new_url_bp: ['series', '/', '_uid_']
+                    domain_bp:  ['archiveofourown', '.', 'org']
+                    new_url_bp: ['archiveofourown', '.', 'org', '/', 'series', '/', '_uid_']
+            node_type:      work
+                url_type:   work
+                    dmn_type:   d
+                    url_bp:     ['works', '_uid_']
+                    query:      {'show_comments': True, 'view_adult': True, 'view_full_work': True}
+                    new_url_bp: ['works', '/', '_uid_']
+                    domain_bp:  ['archiveofourown', '.', 'org']
+                    new_url_bp: ['archiveofourown', '.', 'org', '/', 'works', '/', '_uid_']
+            node_type:      chapter
+                url_type:   chapter
+                    dmn_type:   d
+                    url_bp:     ['works', '_uid(work)_', 'chapters', '_uid_']
+                    query:      {'show_comments': True, 'view_adult': True}
+                    new_url_bp: ['works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                    domain_bp:  ['archiveofourown', '.', 'org']
+                    new_url_bp: ['archiveofourown', '.', 'org', '/', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                        url_type: user
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                Failure!
+                        url_type: profile
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                Failure!
+                        url_type: work_listing
+                            ----------------------------
+                                START
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                Failure!
+                        url_type: series_listing
+                            ----------------------------
+                                START
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                Failure!
+                        url_type: series
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'series', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'series', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<series>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<series>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                Failure!
+                        url_type: work
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    7
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    7
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '60729490']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '60729490']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '60729490']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'works', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '60729490']
+                                    ['archiveofourown', '.', 'org', '/']['<<works>>', '/', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        2
+                                    idx:          5
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     2
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', 'works', '<</>>', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', 'works', '<</>>', '60729490']
+                                    ['archiveofourown', '.', 'org', '/', 'works']['<</>>', '60729490']
+                                POSTCHECKS
+                                    or_bp:        2
+                                    idx:          5
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     2
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', 'works', '<</>>', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', 'works', '<</>>', '60729490']
+                                    ['archiveofourown', '.', 'org', '/', 'works']['<</>>', '60729490']
+                            ----------------------------
+                                START
+                                    or_bp:        1
+                                    idx:          6
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     1
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', 'works', '/', '<<_uid_>>']
+                                    ['archiveofourown', '.', 'org', '/', 'works', '/', '<<60729490>>']
+                                    ['archiveofourown', '.', 'org', '/', 'works', '/']['<<60729490>>']
+                                POSTCHECKS
+                                    or_bp:        1
+                                    idx:          6
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     1
+                                    narbf_len:    7
+                                    ['archiveofourown', '.', 'org', '/', 'works', '/', '<<_uid_>>']
+                                    ['archiveofourown', '.', 'org', '/', 'works', '/', '<<60729490>>']
+                                    ['archiveofourown', '.', 'org', '/', 'works', '/']['<<60729490>>']
+                                Sucess!
+        node_type:    work
+        url_type: work
+        bp:       ['archiveofourown', '.', 'org', '/', 'works', '/', '_uid_']
+        ar:       ['archiveofourown', '.', 'org', '/', 'works', '/', '60729490']
+################################################################################
+url: https://archiveofourown.org/users/Morbane/pseuds/Morbane
+dmn: archiveofourown.org
+sld: archiveofourown
+    >resl_dmn()
+        dmn_frags:     ['', 'archiveofourown', 'org']
+        ...looping through domain configs
+        dmn_type: d
+            ...searching for tld 'org' in ['org']
+            ...searching for hstn '' in ['', 'www']
+        SUCESS! at domain_type 'd'
+        new_dmn_frags: ['', 'archiveofourown', 'org']
+        new_dmn_frags: ['archiveofourown', 'org']
+        dmn_type:      d
+        dmn:           archiveofourown.org
+        dmn_ar:        ['archiveofourown', '.', 'org']
+    >gen_dmn_bps()
+        Already Done!
+    >gen_url_bp()
+        ...generating bps
+            node_type:      user
+                url_type:   user
+        Already Done!
+                        url_type: user
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          5
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          5
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          6
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          6
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        2
+                                    idx:          7
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        2
+                                    idx:          7
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', '_try(pseuds;_psued_)']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<_try(pseuds;_psued_)>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<_try(pseuds;_psued_)>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        -1
+                                    idx:          8
+                                    bp_mx_idx:    6
+                                    r_e:          8
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          8
+                                    bp_mx_idx:    10
+                                    r_e:          11
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', 'pseuds', '<</>>', '_psued_', '/']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          8
+                                    bp_mx_idx:    10
+                                    r_e:          11
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', 'pseuds', '<</>>', '_psued_', '/']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                Failure!
+                        url_type: profile
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          0
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          1
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          2
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          3
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          4
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          5
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          5
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          6
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          6
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        2
+                                    idx:          7
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        2
+                                    idx:          7
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', 'profile']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<profile>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<profile>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                Failure!
+                        url_type: work_listing
+                            ----------------------------
+                                START
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          5
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          5
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          6
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          6
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          7
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          7
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', '_try(pseuds;_psued_)', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          8
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<_try(pseuds;_psued_)>>', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          8
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<_try(pseuds;_psued_)>>', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          8
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<works>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          8
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<works>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          8
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<pseuds>>', '/', '_psued_', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          8
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<pseuds>>', '/', '_psued_', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          9
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     2
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '<</>>', '_psued_', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '<</>>', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds']['<</>>', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          9
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     2
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '<</>>', '_psued_', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '<</>>', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds']['<</>>', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          10
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     1
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '/', '<<_psued_>>', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', '<<Morbane>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/']['<<Morbane>>']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          10
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     1
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '/', '<<_psued_>>', '/', 'works']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', '<<Morbane>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/']['<<Morbane>>']
+                                Failure!
+                        url_type: series_listing
+                            ----------------------------
+                                START
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          5
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          5
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     6
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', '_name_', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users']['<</>>', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          6
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          6
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     5
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<_name_>>', '/', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/']['<<Morbane>>', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          7
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          7
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     4
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '<</>>', '_try(pseuds;_psued_)', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '<</>>', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane']['<</>>', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          8
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<_try(pseuds;_psued_)>>', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          8
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<_try(pseuds;_psued_)>>', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          8
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<series>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        1
+                                    idx:          8
+                                    bp_mx_idx:    8
+                                    r_e:          8
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<series>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          8
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<pseuds>>', '/', '_psued_', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          8
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     3
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', '<<pseuds>>', '/', '_psued_', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', '<<pseuds>>', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/']['<<pseuds>>', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          9
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     2
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '<</>>', '_psued_', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '<</>>', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds']['<</>>', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          9
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     2
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '<</>>', '_psued_', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '<</>>', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds']['<</>>', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          10
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     1
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '/', '<<_psued_>>', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', '<<Morbane>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/']['<<Morbane>>']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          10
+                                    bp_mx_idx:    12
+                                    r_e:          11
+                                    arbf_len:     1
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', '_name_', '/', 'pseuds', '/', '<<_psued_>>', '/', 'series']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', '<<Morbane>>']
+                                    ['archiveofourown', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/']['<<Morbane>>']
+                                Failure!
+                        url_type: series
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'series', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'series', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'series', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<series>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<series>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                Failure!
+                        url_type: work
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          0
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        6
+                                    idx:          1
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        5
+                                    idx:          2
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        4
+                                    idx:          3
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        3
+                                    idx:          4
+                                    bp_mx_idx:    6
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                Failure!
+                        url_type: chapter
+                            ----------------------------
+                                START
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        11
+                                    idx:          0
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     11
+                                    narbf_len:    11
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    []['<<archiveofourown>>', '.', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        10
+                                    idx:          1
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     10
+                                    narbf_len:    11
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown']['<<.>>', 'org', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        9
+                                    idx:          2
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     9
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', '<<org>>', '/', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '.', '<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.']['<<org>>', '/', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        8
+                                    idx:          3
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     8
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '<</>>', 'works', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org']['<</>>', 'users', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                            ----------------------------
+                                START
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                POSTCHECKS
+                                    or_bp:        7
+                                    idx:          4
+                                    bp_mx_idx:    10
+                                    r_e:          None
+                                    arbf_len:     7
+                                    narbf_len:    11
+                                    ['archiveofourown', '.', 'org', '/', '<<works>>', '/', '_uid(work)_', '/', 'chapters', '/', '_uid_']
+                                    ['archiveofourown', '.', 'org', '/', '<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                    ['archiveofourown', '.', 'org', '/']['<<users>>', '/', 'Morbane', '/', 'pseuds', '/', 'Morbane']
+                                Failure!

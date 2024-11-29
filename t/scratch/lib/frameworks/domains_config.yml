@@ -10,211 +10,293 @@ archiveofourown:
             hstns:               ['', www]
             hstn_var:            null
             tlds:                [org]
-    urec:  
-        p_psueds:                [psueds, _psued(attr;author;alias)_]
+    node_framwork:
+        items:
+            user:
+                class:    node
+                subclass: author
+                parents:  []
+                childs:   [series, work]
+            series:
+                class:    node
+                subclass: series
+                parents:  [user]
+                childs:   [work]
+            work:
+                class:    node
+                subclass: work
+                parents:  [user, series]
+                childs:   [part]
+            chapter:
+                class:    node
+                subclass: part
+                parents:  [work]
+                childs:   []
+            page:
+                class:    content
+                subclass: iter
+                val: 1
+            psued:
+                class:    attr
+                subclass: alias
+        swp:
+            up:  []
+            dwn: []
     urls:
-        _user:
-            u_user:
-                cnfg: [d, users, _user(node;author)_, p_psueds(1)]
+        user:
+            user:
+                bp_cnfg: [_dmns(d), users, _name_, _try(pseuds;_psued_)]
                 actions: 
                     init:
                         do:
-                        - [ e_tos, _exists]
-                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                        - [_wait(2), e_w_dl, _exists]
-                        - [e_w_author, _exists]
+                        - [ a_init]
                     content:
                         do:
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                        - []
                     crawl:
                         do:
                         - []
                 elements: {}
-            u_user_profile:
-                cnfg: [d, users, _user(node;author)_, profile]
+            profile:
+                bp_cnfg: [_dmns(d), users, _name_, profile]
                 actions:
                     init:
                         do:
-                        - [ e_tos, _exists]
-                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                        - [_wait(2), e_w_dl, _exists]
-                        - [e_w_author, _exists]
+                        - [ a_init]
                     content:
                         do:
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                        - []
                     crawl:
                         do:
                         - []
-                elements: {}
-        _listing:
-            l_series_listing:
-                cnfg: [d, users, _usr(node;author)_, p_psueds(1), series, {page: _page(content;iter;1)_}]
+                elements: 
+                    e_meta: [_css, .meta,[dd.pseuds, [_for, a, _alias_=text]]]
+                    e_meta: [_css, .meta,[_css, dd:nth-child(4), _stat(key)_==joined,_stat(value)_=text]]
+                    e_meta: [_css, .meta,[dd,dd:nth-child(6), _uid_=text]]
+                    e_meta: [_css, .meta]
+                    e_dash: [_css, "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[a, _stat(key)_==works,_stat(value)_=text)]]]]
+                    e_dash: [_css, "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[ a, _stat(key)_==series,_stat(value)_=text)]]]]
+                    e_dash: [_css, "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[ a, _stat(key)_==faves,_stat(value)_=text)]]]]
+            work_listing:
+                bp_cnfg: [_dmns(d), users, _name_, _try(pseuds;_psued_), works, {page: _page_}]
                 actions: 
                     init:
                         do:
-                        - [ e_tos, _exists]
-                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                        - [_wait(2), e_w_dl, _exists]
-                        - [e_w_author, _exists]
+                        - [ a_init]
+                        - [ a_listing_init]
+                        - []
                     content:
                         do:
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                        - []
                     crawl:
                         do:
                         - []
-                elements: {}
-            l_work_series_listing:
-                cnfg: [d, series, _series(node;series)_, {page: _page(content;iter;1)_}]
+                elements: 
+                    e_series_idx:             [ul, class=series,[strong, _idx(series)_=text]]
+                    e_series_uid:             [ul, class=series,[a, _uid(series)_=href,_upath]]
+                    e_series_name:            [ul, class=series,[a, _name(series)_=text]]
+                    e_likes:                  [_in, e_listing, [dl, [dd.kudos, [a, stat(key)_==likes, _stat(val)_=text]]]]
+                    e_faves:                  [_in, e_listing, [dl, [dd.bookmarks, [a, stat(key)_==faves, _stat(val)_=text]]]]
+                    e_views:                  [_in, e_listing, [dl, [dd.hits, _stat(key)_==views, _stat(val)_=text]]]
+                    # - attr
+                    e_lang:                   [_in, e_listing, [dl, [dd.language, _stat(key)_==language, _stat(val)_=text]]]
+                    e_comments:               [_in, e_listing, [dl, [dd.comments, [a, stat(key)_==comments,_stat(val)_=text]]]]
+            series_listing:
+                    bp_cnfg: [_dmns(d), users, _name_, _try(pseuds;_psued_), series, {page: _page_}]
+                    actions: 
+                        init:
+                            do:
+                            - [ a_init]
+                            - [ a_listing_init]
+                        content:
+                            do:
+                            - []
+                        crawl:
+                            do:
+                            - []
+                    elements: 
+                        e_listing:              [ul, class=series index group, [_for, li]]
+                        e_user:                 [_css, h2.heading, text,_sfind(by,1),_slice(1:)]
+                        e_works:
+        series:
+            series:
+                bp_cnfg: [_dmns(d), series, _uid_, {page: _page_}]
                 actions:
                     init:
                         do:
-                        - [ e_tos, _exists]
-                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                        - [_wait(2), e_w_dl, _exists]
-                        - [e_w_author, _exists]
+                        - [ a_init]
+                        - [ a_listing_init]
                     content:
                         do:
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                        - []
                     crawl:
                         do:
                         - []
-                elements: {}
-            l_series:
-                cnfg: [d, series, _series(node;series)_, {page: _page(content;iter;1)_}]
+                elements: 
+                    e_user:                  [_css, dl.series > dd:nth-child(2),[_for, a]]
+                    e_user_name:             [_in, e_user, _name(user)_=text]
+                    e_user_uid:              [_in, e_user, _uid(user)_=hreff,upath]
+                    e_created:               [_css, dl.series > dd:nth-child(4), _stat(key)_=Published,_stat(value)_=text]
+                    e_updated:               [_css, dl.series > dd:nth-child(6), _stat(key)_=Updated, _stat(vlaue)_=text]
+                    e_words:                 [_css, dd.words, _stat(key)_, _stat(key)_==words, _stat(value)_=text]
+                    e_works:                 [_css, dd.works, _stat(key)_,_stat(key)_==works, _stat(value)_=text]
+                    e_complete:              [_css, dl.stats:nth-child(1) > dd:nth-child(6), _stat(key)_==complete, _stat(value)_=text]
+                    e_faves:                 [_css, dd.bookmarks, _stat(key)_==faves, _stat(value)_=text]
+
+                    e_likes:                  [_in, e_listing, [dl, [dd.kudos, [a, stat(key)_==likes, _stat(val)_=text]]]]
+                    e_faves:                  [_in, e_listing, [dl, [dd.bookmarks, [a, stat(key)_==faves, _stat(val)_=text]]]]
+                    e_views:                  [_in, e_listing, [dl, [dd.hits, _stat(key)_==views, _stat(val)_=text]]]
+                    # - attr
+                    e_lang:                   [_in, e_listing, [dl, [dd.language, _stat(key)_==language, _stat(val)_=text]]]
+                    e_comments:               [_in, e_listing, [dl, [dd.comments, [a, stat(key)_==comments,_stat(val)_=text]]]]
+        work:
+            work:
+                bp_cnfg: [_dmns(d), works, _uid_, {show_comments: true, view_adult: true, view_full_work: true}]
                 actions:
                     init:
-                        do:
-                        - [ e_tos, _exists]
-                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                        - [_wait(2), e_w_dl, _exists]
-                        - [e_w_author, _exists]
+                    - [a_init]
+                    - [a_content_init]
                     content:
-                        do:
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    - [a_dl_content]
                     crawl:
-                    do:
-                        - []
-                elements: {}
-        _content:
-            c_work:
-                cnfg: [d, works, _work(node;title)_, {show_comments: true, view_adult: true, view_full_work: true}]
-                actions:
-                    init:
-                        do:
-                        - [ e_tos, _exists]
-                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                        - [_wait(2), e_w_dl, _exists]
-                        - [e_w_author, _exists]
-                    content:
-                        do:
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
-                    crawl:
-                        do:
-                        - []
+                    - []
                 elements:
-                    e_meta:                   [div, class=wrapper,[dl, class=work meta group]]
-                    ev_tags:                  [_in, e_meta, dd, class="freeform tags", [ul,[_for, li, [ a,.txt]]]]
-                    ev_stats:                 [_in, e_meta, dd, class="stats", [dl, [_for, [_hash,[ dt,.txt], [dd, [_exists, a, .txt]]]]]]
-                    e_w_preface:              [div, class=preface group]
-                    e_w_author:               [_in, e_w_preface, [h3, class=byline heading,[a,_user_=txt]]]
-                    e_title:                  [_in, e_w_preface, h2, class='title heading', _title_=txt]
-                    e_dscp:                   [_in, e_w_preface, div, class="summary module", [blockquote, _dscp_=txt]]
-                    e_workskin:               [div, id='workskin']
-                    e_chapters:               [_in, e_workskin, div, id=chapters, role=article]
-                    e_chapter:                [_in, e_chapters, div, class="chapter"]
-                    e_chapter_preface:        [_in, e_chapter, div, class="chapter preface group"]
-                    ev_chroni:                [_in, e_chapter_preface, h3, [a, .txt]]
-                    ev_chrono:                [_in, e_chapter_preface, h3, [_not, a, .txt, '2:']]
-                    ev_txt:                   [_in, e_chapter, div, class=userstuff module, [h3, id=work, .txt]]
-                    e_w_head:                 [_in, ec_area, [div, id=worksin, [div, class=preface group]]]
-                    e_w_name:                 [_in, e_w_head, [h2, class=title heading, work_name=text]]
-                    e_w_usr_name:             [_in, e_w_head, [_for, a, rel=author, usr_name=text]]
-                    # - meta
-                    e_w_meta:                 [dl, class=work meta group]
-                    e_w_meta_tags:            [_in, ec_meta, [_for, _hash,[ec_meta_tags_dt, ec_meta_tags_dd]]]
-                    e_w_meta_tags_dt:         [dt, class!=,[stats, series], text]
-                    e_w_meta_tags_dd:         [dd, class!=,[stats, series],[_for, li, text]]
-                    e_w_meta_sris:            [_in, ec_meta, [dd, class=series, [span, class=position, [a, text]]]]
-                    e_w_meta_sris_krni:       [_in, ec_meta, [dd, class=series, [span, class=position, [_not, a, text]]]]
-                    e_w_stats:                [_in, ec_meta, [dd, class=stats,[dl, [_for, _hash, [dt, text], [dd, text]]]]]
-                    # - body
-                    e_w_area:                 [div, id=worksin]
-                    e_w_area_prts:            [_in, ec_area, [div, id=chapters, [_for, div, class=chapter]]]
-                    e_w_area_prts_text:       [_in, ec_prts, [div, class=userstuff module,[_for, p, vis_text]]]
-                    e_w_area_prts_imgs:       [_in, ec_prts, [div, class=userstuff module,[_for, img, src]]]
-                    e_w_area_prts_head:       [_in, ec_prts, [div, class=chapter preface group]]
-                    e_w_area_prts_head_krno:  [_in, ec_prts_head, [div, class=title, text]]
-                    e_w_area_prts_head_krno_upath:       [_in, ec_prts_head, [div, class=title, [a, hreff]]]
-                    e_w_area_prts_head_dscp:  [_in, ec_prts_head, [_for, p, txt]]
+                    #----------- meta
+                    e_series:              [_css, dd.series,[a, _name(series)_=text]]
+                    e_series:              [_css, dd.series,[_not, a, _idx(series)_=text,_slice(5:;:-3)]]
+                    e_series:              [_css, dd.series,[_not, a, _uid_(series)_=href,_upath]]
 
-                    # - misc
-                    e_w_dl_btn:               [_css, .download, a]
-                    e_w_dl_upaths:            [_css, .download, [ul, [_for, li, [a, href]]]]
-            c_chapter:
-                cnfg: [d, works, _work(parent;part;title)_, chapters, _chapter(node;part)_, {show_comments: true, view_adult: true}]
+                    #----------- head
+                    e_usr_name:             [_css, h3.byline, _name(user)_=text]
+                    e_work_name:            [_css, h2.title, _name_=text]
+                    e_work_dscp:            [_css, .summary, [_for, p, _dscp_=text]]
+
+                    #-----------Chapter
+                    e_chapters:             [_css, '#chapters',[_for, div, class=chapter]]
+                    e_chapter_head:         [_in e_chapters,[div, class=chapter preface group]]
+                    e_chapter_name:        [_in, e_chapter_head, [_not, a, _name(chapter)_=text,_slice(2:)]]
+                    e_chapter_idx:         [_in, e_chapter_head, [a, _idx(chapter;work)_=text,_slice(8:)]]
+                    e_chapter_uid:         [_in, e_chapter_head, [a, _uid(chapter)_=href,_upath]]
+                    e_chapter_dscp:        [div, id=summary, [_for, p, _dscp(chapter)_=text]]
+                    e_chapter_body:         [_in e_chapters,[div, role=article]]
+                    e_chapter_content:     [_in, e_chapter_body, [_for, p, _content_(chapter)_=text]]
+                    e_ch_imgs:             [_in, e_chapter_body, [_for, img, src]]
+        chapter:
+            chapter:
+                bp_cnfg: [_dmns(d), works, _uid(work)_, chapters, _uid_, {show_comments: true, view_adult: true}]
                 actions:
                     init:
-                        do:
-                        - [ e_tos, _exists]
-                        - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-                        - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-                        - [_wait(2), e_w_dl, _exists]
-                        - [e_w_author, _exists]
+                    - [ a_init]
+                    - [a_content_init]
                     content:
-                        do:
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-                        - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+                    - [a_dl_content]
                     crawl:
-                        do:
-                        - []
-                elements: {}
-        _misc:
-            m_login:
-                cnfg: [d, users, login]
-                actions:
-                    init:
-                        do:
-                        - []
-                    content:
-                        do:
-                        - []
-                    crawl:
-                        do:
-                        - []
-                elements: {}
-                payload: 
-                    user[login]: _usr_ 
-                    user[password]: _pwd_
-                    user[remeber_me]: 0 
-                    commit: "Log+in" 
-                    authenticity_token: g_token_value
+                    - []
+                elements: 
+                    #-----------meta
+                    ec_chapter_index:       [a.collapsed:nth-child(2)]
+                    e_chapter_uid:         [_in, chapter_index, [select, id=select_id,[selected, _uid_=value]]]
+                    e_chapter_idx:         [_in, chapter_index, [select, id=select_id,[selected, _idx(work)_=text,_slice(0:1)]]]
+                    e_chapter_list:        [_in, chapter_index, [select, id=select_id,[_for, option]]]
+                    e_chapter_uid:         [_in, chapter_list, _uid_=value]
+                    e_chapter_idx:         [_in, chapter_list,_slice(0:1)]
+
+                    #-----------Head
+                    e_usr_name:             [_css, h3.byline, _name(user)_=text]
+                    e_work_name:            [_css, h2.title, _name_=text]
+                    e_work_dscp:            [_css, .summary, [_for, p, _dscp_=text]]
+
+                    #-----------body
+                    e_chapters:             [_css, '#chapters',[_for, div, class=chapter]]
+                    e_chapter_head:         [_in e_chapters,[div, class=chapter preface group]]
+                    e_chapter_name:        [_in, e_chapter_head, [_not, a, _name(chapter)_=text,_slice(2:)]]
+                    e_chapter_idx:         [_in, e_chapter_head, [a, _idx(chapter;work)_=text,_slice(8:)]]
+                    e_chapter_uid:         [_in, e_chapter_head, [a, _uid(chapter)_=href,_upath]]
+                    e_chapter_dscp:        [div, id=summary, [_for, p, _dscp(chapter)_=text]]
+                    e_chapter_body:          [_in e_chapters,[div, role=article]]
+                    e_chapter_content:      [_in, e_chapter_body, [_for, p, _content_(chapter)_=text]]
+                    e_ch_imgs:              [_in, e_chapter_body, [_for, img, src]]
+    login:
+        cnfg: [d, users, login]
+        elements: {}
+        payload: 
+            user[login]: _usr_ 
+            user[password]: _pwd_
+            user[remeber_me]: 0 
+            commit: "Log+in" 
+            authenticity_token: g_token_value
+    actions:
+        init:
+        - [ _name(tos), e_tos, _exists]
+        - [ _no_soup, _skipif(!tos), e_tos_agree,  _click(1)]
+        - [ _no_soup, _skipif(!tos), e_tos_agree2, _click(1)]
+        - [ _no_soup, _skipif(!tos), e_tos_accept, _click(1)]
+        listing_init:
+        - []
+        content_init:
+        - [_wait(2), e_dl, _exists]
+        - [e_author, _exists]
+        dl_content:
+        - [_no_soup, e_dl, _click(1), _wait(1)]
+        - [_no_soup, e_dl_pdf, _click(1), _wait(1)]
     elements:
-        e_tos :                   [body, [div, id=tos_prompt]]
-        e_tos_accept:             [_css, '#accept_tos']
-        e_tos_agree:              [_css, '#tos_agree']
-        e_tos_agree2:             [_css, '#data_processing_agree']
-        e_w_dl:                   [_css, '#main > ul.work.navigation.actions > li.download > a']
-        e_w_dl2:                  [_css, '#main > ul.work.navigation.actions > li.download > ul > li:nth-child(4) > a']
-
+        #####################################################
+        ### GLOBAL #########################################
+        # - tos
+        e_tos :       [body, [div, id=tos_prompt]]
+        e_tos_accept: [_css, '#accept_tos']
+        e_tos_agree:  [_css, '#tos_agree']
+        e_tos_agree2: [_css, '#data_processing_agree']
+        #####################################################
+        ### CONTENT #########################################
+        # -------- download
+        e_dl:      [_css, .download, a]
+        e_dl_pdf:  [_css, .download, [ul, [li, text=PDF]]]
+        # -------- meta
+        # - tags
+        e_rating:     [_css, dd.rating,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
+        e_rating:     [_css, dd.warning,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
+        e_category:   [_css, dd.category,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
+        e_fandom:     [_css, dd.fandom,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
+        e_rel:        [_css, dd.relationship,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
+        e_character:  [_css, dd.character,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
+        e_freeform:   [_css, dd.freeform,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
+        e_lang:       [_css, dd.language,_stat(key)_=class, _stat(val)_=text]
+        # - stats
+        e_pub:        [_css, dd.published,_stat(key)_=class,_stat(val)_=text]
+        e_status:     [_css, dd.status,_stat(key)_==updated,_stat(val)_=text]
+        e_words:      [_css, dd.words,_stat(key)_=class,_stat(val)_=text]
+        e_comments:   [_css, dd.comments,_stat(key)_=class,_stat(val)_=text]
+        e_kudos:      [_css, dd.kudos,_stat(key)_==likes,_stat(val)_=text]
+        e_bookmarks:  [_css, dd.bookmarks,_stat(key)_==faves,[a, _stat(val)_=text]]
+        e_hits:       [_css, dd.hits,_stat(key)_==views,_stat(val)_=text]
+        #####################################################
+        ### LISTINGS #########################################
+        # ------------- listing meta
+        # - tags
+        e_tags:                   [_in, e_listing, [ul, class=tag commas]]
+        e_warn_tags:              [_in, e_tags, [_for, li.warnings, _group(tag)_==warning, [a, _tag_=text]]]
+        e_rel_tags:               [_in, e_tags, [_for, li.relationships, _group(tag)_==relationship, [a, _tag_=text]]]
+        e_char_tags:              [_in, e_tags, [_for, li.charactors, _group(tag)_==charactor, [a, _tag_=text]]]
+        e_freeform_tags:          [_in, e_tags, [_for, li.freeforms, _group(tag)_==freeform, [a,_tag_=text]]]
+        # - stat
+        e_words:                  [_in, e_listing, [dl, [dd.words, _stat(key)_==words, _stat(val)_=text]]]
+        # ------------- listing head
+        e_head:                   [_in, e_listing, [div, class=header module]]
+        e_uid:                    [_in, e_work_head, [h4, [_not, a, rel=author, _uid_=href,_upath]]]
+        e_name:                   [_in, e_work_head, [h4, [_not, a, rel=author,_name_=text]]]
+        e_user_name:              [_in, e_work_head, [h4, [_for, a, rel=author, _name(user)_=text]]]
+        e_fandom_tags:            [_in, e_work_head, [h5, [_for, a,_group(tag)_==fandom, _tag_=text]]]
+        e_rating_tags:            [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(1), [span, _group(tag)_==rating,_tag_=text]]]]]]
+        e_warn_tags:              [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(2), [span, _group(tag)_==warning,_tag_=text]]]]]]
+        e_cat_tags:               [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(3), [span, _group(tag)_==category,_tag_=text,"_split(,)"]]]]]]
+        e_complete:               [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(4), [span, _stat(key)_==completed,_stat(val)_=text,_slice(9:12),_rm_trl]]]]]]
+        e_created:                [_in, e_work_head, [p, _stat(key)_==published, stat(val)_=text]]
+        e_dscp:                   [_in, e_work_head, [blockquote, [_for, p, _dscp_=text]]]
+        # ------------- iter
+        ec_next:                  [ol.pagination, [li, class=next, [a]]]
+        #####################################################
+        ### LOGIN #########################################
         #titles
         e_user:                   [_css, '#user_login']
         e_remeber_me:             [_css, '#user_remeber_me']
@@ -222,23 +304,33 @@ archiveofourown:
         e_submit:                 [_css, '#input.submit']
         e_token:                  [input, name='authenticity_token']
         e_csrf:                   [meta, meta, name=csrf-token, content]
-        e_splash_titles:          [ol, class="work index group"]
-        evv_splash_serie:         [_in, e_splash_tites,li, [div, [h4,[a,.href]]]]
-        ev_splash_title_tags:     [_in, e_splash_tites,ul, class="tags comma", [_for, li, [a,.txt]]]
-        #series
-        e_splash_series:        [ul, class="series index group"]
-        e_splash_series:         [_in, e_splash_series, li, [div, [h4,[a,.href]]]]
-        e_splash_series_tags:  [_in, e_splash_series, ul, class="tags comma",[_for, li, [a,.txt]]]
-        #Profile
-        e_usr_profile:              [div, class="user home profile"]
-        e_usr_stats:               [_in, e_profile, dl, [_for, [_hash, [dt,.txt], [dd,[_exists, a, .txt]]]]]
-        e_usr_bio:                 [_in, e_profile, div, class='bio module',[blockquote, .txt]]
 sofurry:
     params:
         login:   False
         init:    False
         content: False
         crawl:   False
+    node_framwork:
+        items:
+            user:
+                class:    node
+                subclass: user
+                parents:  []
+                childs:   [folder, view]
+            folder:
+                class:    node
+                subclass: work
+                parents:  [user]
+                childs:   [view]
+            view:
+                class:    node
+                subclass: part
+                parents:  [user,folder]
+                childs:   []
+        swp:
+            dwn: []
+            up:  
+            - [_not, _exists, _folder_]
     dmns:
         d:
             hstns:               [www,'']
@@ -246,13 +338,12 @@ sofurry:
             tlds:                [com]
         u:
             hstns:               []
-            hstn_var:            _user(parent;_tbd;author)_
+            hstn_var:            _name(user)_
             tlds:                [com]
-    urec: {}
     urls:
-        _usr:
-            u_usr:
-                cnfg: [u]
+        user:
+            user:
+                bp_cnfg: [_dmns(u)]
                 actions:
                     init:
                         do:
@@ -264,9 +355,8 @@ sofurry:
                         do:
                         - []
                 elements: {}
-        _listing:
-            l_folder:
-                cnfg: [d, browse, folder, stories, {by: _usr_uid(attr;author;attr=uid)_, folder: _folder_uid(node;attr;uid)_}]
+            listings:
+                bp_cnfg:    [_dmns(d), browse, user, stories, {by: _uid(view)_, stories-page: _page_}]
                 actions:
                     init:
                         do:
@@ -278,8 +368,9 @@ sofurry:
                         do:
                         - []
                 elements: {}
-            l_listing:
-                cnfg: [d, browse, user, stories, {by: _usr_uid(attr;author;uid)_, stories-page: _page(content;iter;1)_}]
+        folder:
+            folder:
+                bp_cnfg: [_dmns(d), browse, folder, stories, {by: _uid(user)_, folder: _uid_}]
                 actions:
                     init:
                         do:
@@ -290,55 +381,25 @@ sofurry:
                     crawl:
                         do:
                         - []
-                elements: {}
-            l_listing2:
-                cnfg: [u, stories]
-                actions:
-                    init:
-                        do:
-                        - []
-                    contnt:
-                        do:
-                        - []
-                    crawl:
-                        do:
-                        - []
-                elements: {}
-        _content:
-            c_view:
-                cnfg: [d, view, _view_]
+                elements: 
+                    e_lwf:                    [div, class=section sf-storyfolder-link]
+                    e_lwf_work_list:          [div, class=section sf-storyfolder-link]
+                    e_lwf_work_list_iter:     [_in, e_lwf_work_list, [_for, div, class=section-content-counter]]
+                    ev_name:                  [_in, e_lwf, [div, class=section-title-highlight,                   _name(folder)_=text]]
+                    ev_view_idx:              [_in, e_lwf_work_iter, [div, class=section-content-counter,[span,   _idx(view;folder)_=text]]]
+                    ev_view_name:             [_in, e_lwf_work_iter, [div, class=section-content-list]  ,[a,      _name(view)_=text]]
+                    ev_view_uid:              [_in, e_lwf_work_iter, [div, class=section-content-list]  ,[a,      _uid(view)_=href,_ubase]]
+        view:
+            view:
+                bp_cnfg: [_dmns(d), view, _uid_]
                 elements:
-                    e_author:                [span, class="sf-username sfTextMedium"]
-                    e_title:                 [span, id='sfContentTitle', itemprop='name'] 
-                    e_chrons:                [div, class="section sf-storyfolder-link"]
-                    e_chrono_:               [div, class='section-content-list']
-                    e_chroni_:               [span, class='sfTextMedium']
-                    e_tag_of_:               [div class="section-title", text==Official Tags]
-                    e_tag_uf_:               [div class="section-title", text==UnOfficial Tags]
-                    e_tag:                   [a class='sf-tag',<text>]
-                    e_content_:              [div, id="sf-viewcontent-content"]
-                    e_content_txt:           [div, id="sfContentBody"]
-                    e_dscr:                  [div, 'id=sfContentDescription']
-                    e_joined_:               [span, class="user-stats sfTextMedLight"]
-                    e_stats_:                [div, class='section-content']
-                    e_folders_:              [div, class="sfBrowseListFolders"]
-                    e_folder_link_:          [a, class='sfTextMedium']
-                    e_content_image_:        [div, id="sfContentImage]
-                    e_titles_:               [span class='sf-browse-shortlist-title']
-                    e_w_usr_uid:             ["#sf-userinfo-outer",_usr_uid_=href,_uhost]
-                    e_w_name:                [span, id=sfContentTitle, _work_name_=text]
-                    e_w_dscp:                [div, id=sfContentDescription, _work_dscp_=text]
-                    e_w_text:                [div id=sfContentBody,_work_text_=text]
-                    e_w_tags:                [div, id=submission_tags, [_for, a, class=sf-tag,_work_tag_=text]] 
-                    e_w_work_stats:          [div, class=section-title, text=Stats,[_for, text, _work_stat_=text]]
-                    e_w_dl_btn:              [a, href=Download ePub]
-                    e_lwf:                   [div, class=section sf-storyfolder-link]
-                    e_lwf_name:              [_in, e_lwf, [div, class=section-title-highlight, _folder_name_=text]]
-                    e_lwf_work_list:         [div, class=section sf-storyfolder-link]
-                    e_lwf_work_list_iter:    [_in, e_lwf_work_list, [_for, div, class=section-content-counter]]
-                    e_lwf_work_idx:          [_in, e_lwf_work_iter, [div, class=section-content-counter,[span, _work_idx_=text]]]
-                    e_lwf_work_name:         [_in, e_lwf_work_iter, [div, class=section-content-list]  ,[a, _work_name_=text]]
-                    e_lwf_work_uid:          [_in, e_lwf_work_iter, [div, class=section-content-list]  ,[a, _work_uid_=href,_ubase]]
+                    ev_user_uid:            [_css, "#sf-userinfo-outer",                         _uid(user)_=href, _uhost]
+                    ev_title:               [span, id=sfContentTitle,                            _name(view)_=text]
+                    ev_dscp:                [div,  id=sfContentDescription,                      _dscp(view)_=text]
+                    ev_content:             [div,  id=sfContentBody,                             _content(view)_=text]
+                    ev_tags:                [div,  id=submission_tags, [_for, a, class=sf-tag,   _tag(view)_=text]] 
+                    ev_stats:               [div,  class=section-title, text=Stats, [_for, text, _stat(view)_=text]]
+                    ec_dl_btn:              [a, href=Download ePub]
                 actions:
                     init:
                         do:
@@ -349,46 +410,44 @@ sofurry:
                     crawl:
                         do:
                         - []
-        _misc:
-            m_login:
-                cnfg: [d, user, login]
-                actions:
-                    init:
-                        do:
-                        - []
-                    content:
-                        do:
-                        - []
-                    crawl:
-                        do:
-                        - []
-                pwd: LoginForm[sfLoginPassword]
-                usr: LoginForm[sfLoginUsername]
-                token: null
-    elements:
-            e_author:        [span, class="sf-username sfTextMedium"]
-            e_title:         [span, id='sfContentTitle', itemprop='name'] 
-            e_chrons:        [div, class="section sf-storyfolder-link"]
-            e_chrono_:       [div, class='section-content-list']
-            e_chroni_:       [span, class='sfTextMedium']
-            e_tag_of_:       [div class="section-title", text==Official Tags]
-            e_tag_uf_:       [div class="section-title", text==UnOfficial Tags]
-            e_tag:           [a class='sf-tag',<text>]
-            e_content_:      [div, id="sf-viewcontent-content"]
-            e_content_txt:   [div, id="sfContentBody"]
-            e_dscr:          [div, 'id=sfContentDescription']
-            e_joined_:       [span, class="user-stats sfTextMedLight"]
-            e_stats_:        [div, class='section-content']
-            e_folders_:      [div, class="sfBrowseListFolders"]
-            e_folder_link_:  [a, class='sfTextMedium']
-            e_content_image_: [div, id="sfContentImage]
-            e_titles_:        [span class='sf-browse-shortlist-title']
+                elements: {}
+    login:
+        cnfg: [d, user, login]
+        pwd: LoginForm[sfLoginPassword]
+        usr: LoginForm[sfLoginUsername]
+        token: null
+    actions:
+        init:
+            do:
+            - []
+        contnt:
+            do:
+            - []
+        crawl:
+            do:
+            - []
+    elements: {}
 itch:
     params:
         login:   False
         init:    False
         content: False
         crawl:   False
+    node_framwork:
+        items:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+            work:
+                class: node
+                subclass: work
+                parents: []
+                childs: [work]
+        swp:
+            dwn: []
+            up: []
     dmns:
         d:
             hstns:    ['', www]
@@ -396,13 +455,12 @@ itch:
             tlds:     [io]
         u:
             hstns:    []
-            hstn_var: _usr_
+            hstn_var: _name(user)_
             tlds:     [io]
-    urec: {}
     urls:
-        _usr:
-            u_usr:       
-                cnfg: [u]
+        user:
+            user:       
+                cnfg: [_dmns(u)]
                 actions: 
                     init:
                     - []
@@ -411,9 +469,9 @@ itch:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_work:      
-                cnfg: [u, _work_]
+        work:
+            work:      
+                cnfg: [_dmns(u), _name_]
                 actions: 
                     init:
                     - []
@@ -444,11 +502,29 @@ furaffinity:
             hstns: [www,'']
             hstn_var:  null
             tlds:      [net]
-    urec:
+    node_framwork:
+        items:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [view]
+            view:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+            page:
+                class: content
+                subclass: iter
+                val: 1
+        swp:
+            up: []
+            dwn: []
     urls:
-        _user:
-            u_user:      
-                cnfg: [d, user, _user_]
+        user:
+            user:      
+                cnfg: [_dmns(d), user, _name_]
                 actions: 
                     init:
                     - []
@@ -457,9 +533,8 @@ furaffinity:
                     crawl:
                     - []
                 elements: {}
-        _listings:
-            l_work:      
-                cnfg: [d, gallery, _author_, _iter(iter-1)_, '\?']
+            work_listing:      
+                cnfg: [_dmns(d), gallery, _name_, _page_, "_try(?)_"]
                 actions: 
                     init:
                     - []
@@ -468,19 +543,9 @@ furaffinity:
                     crawl:
                     - []
                 elements: {}
-            l_work2:      
-                cnfg: [d, gallery, _author_, _iter(iter-1)_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-        _content:
-            c_work:      
-                cnfg: [d, view, _work_uid_]
+        view:
+            view:      
+                cnfg: [_dmns(d), view, _uid_]
                 actions: 
                     init:
                     - []
@@ -529,11 +594,26 @@ blokfort:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    urec: {}
+    node_framwork:
+        items:
+            user:
+                class: node
+                subclass: work
+                parents: []
+                childs: [work]
+                name: blokfort
+            work:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+        swp:
+            dwn: []
+            up: []
     urls:
-        _content:
-            c_work:      
-                cnfg: [d, _work_]
+        work:
+            work:      
+                cnfg: [_dmns(d), _name_]
                 actions: 
                     init:
                     - []
@@ -542,9 +622,9 @@ blokfort:
                     crawl:
                     - []
                 elements: {}
-        _listing:
-            l_works:     
-                cnfg: [d, nsfw-comics]
+        user:
+            work_listing:     
+                cnfg: [_dmns(d), nsfw-comics]
                 actions: 
                     init:
                     - []
@@ -567,11 +647,31 @@ catbox:
             hstns: [files]
             hstn_var:  null
             tlds:      [moe]
-    urec: {}
+    node_framwork:
+        items: 
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [collection,file]
+            collection:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: [file]
+            file:
+                class: node
+                subclass: part
+                parents: [user,collection]
+                childs: []
+        swp:
+            up: []
+            dwn: 
+            - _not, _collection_
     urls:
-        _bin:
-            b_collection:
-                cnfg: [d, c, _collection_]
+        collection:
+            collection:
+                cnfg: [_dmns(d), c, _name_]
                 actions: 
                     init:
                     - []
@@ -580,9 +680,9 @@ catbox:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_file:      
-                cnfg: [f, _file_._file_fxt_]
+        file:
+            file:      
+                cnfg: [_dmns(f), _file_, _try(. ; _fxt_)]
                 actions: 
                     init:
                     - []
@@ -609,11 +709,23 @@ google:
             hstns: [docs]
             hstn_var:  null
             tlds:      [com]
-    urec: {}
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [file]
+            file:
+                class: node
+                subclass: work
+                parents: [user]
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_doc:       
-                cnfg: [w, document, d, _doc_]
+        file:
+            doc:       
+                cnfg: [_dmns(w), document, d, _uid_, _try(edit)_]
                 actions: 
                     init:
                     - []
@@ -622,8 +734,8 @@ google:
                     crawl:
                     - []
                 elements: {}
-            c_doc_edit:  
-                cnfg: [w, document, d, _doc_, edit]
+            pub_doc:   
+                cnfg: [_dmns(w), document, d, e, _uid_, pub]
                 actions: 
                     init:
                     - []
@@ -632,28 +744,8 @@ google:
                     crawl:
                     - []
                 elements: {}
-            c_doc_pub:   
-                cnfg: [w, document, d, e, _doc_, pub]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-            c_file:      
-                cnfg: [f, file, d, _file_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-            c_file_view: 
-                cnfg: [f, file, d, _file_, view]
+            drive_file: 
+                cnfg: [_dmns(f), file, d, _name_, _try(view)_]
                 actions: 
                     init:
                     - []
@@ -672,7 +764,6 @@ fiction:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [live]
-    urec: {}
     urls:
         _user:
             u_user:      
@@ -717,12 +808,29 @@ ghostbin:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    urec:
-        p_folders:    [_folder_uid_]
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [paste]
+            folder:
+                class: node
+                subclass: folder
+                parents: [user]
+                childs: [paste]
+            paste:
+                class: node
+                subclass: work
+                parents: [user,folder]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_work:     
-                cnfg: [d, p_folders, _work_uid_]
+        paste:
+            paste:     
+                cnfg: [_dmns(d), _try(_uid(folder)_), _uid_]
                 actions: 
                     init:
                     - []
@@ -741,11 +849,25 @@ git:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [io]
-    urec: {}
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [file]
+            file:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            work:     
-                cnfg: [d, _work_uid_]
+        file:
+            file:     
+                cnfg: [_dmns(d), _uid_]
                 actions: 
                     init:
                     - []
@@ -764,11 +886,24 @@ hardbin:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    urec: {}
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [paste]
+            paste:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            work:         
-                cnfg: [d, ipfs, _work_uid_]
+        paste:
+            paste:         
+                cnfg: [_dmns(d), ipfs, _uid_]
                 actions: 
                     init:
                     - []
@@ -795,11 +930,28 @@ literotica:
             hstns: [www,'']
             hstn_var:  null
             tlds:      [net,com]
-    urec: {}
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+            work:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+            page:
+                class: content
+                subclass: iter
+                val: 1
+    swp:
+        dwn: []
+        up: []
     urls:
-        _usr:
-            u_usr:     
-                cnfg: [d, users, _usr_]
+        user:
+            user:     
+                cnfg: [_dmns(d), users, _name_]
                 actions: 
                     init:
                     - []
@@ -808,9 +960,8 @@ literotica:
                     crawl:
                     - []
                 elements: {}
-        _listing:
-            l_work:     
-                cnfg: [d, _usr_, works, stories, all]
+            work_listing:     
+                cnfg: [_dmns(d), _name_, works, stories, all]
                 actions: 
                     init:
                     - []
@@ -819,19 +970,9 @@ literotica:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_page:     
-                cnfg: [d, s, _work_, {page: _page(iter-1)_}]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-            c_page_none:
-                cnfg: [d, s, _work_]
+        work:
+            work:     
+                cnfg: [_dmns(d), s, _name_, {page: _page_}]
                 actions: 
                     init:
                     - []
@@ -850,11 +991,25 @@ mcstories:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    urec: {}
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+            work:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _usr:
-            u_usr:
-                cnfg: [d, users, _usr_]
+        domain:
+            user_listing:
+                bp_cnfg: [_dmns(d), users, index.html]
                 actions: 
                     init:
                     - []
@@ -863,9 +1018,9 @@ mcstories:
                     crawl:
                     - []
                 elements: {}
-        _listing:
-            l_usr:
-                cnfg: [d, users, index.html]
+        user:
+            user:
+                bp_cnfg: [_dmns(d), users, _name_]
                 actions: 
                     init:
                     - []
@@ -874,9 +1029,9 @@ mcstories:
                     crawl:
                     - []
                 elements: {}
-        _flash:
-            f_work:
-                cnfg: [d, _work_, index.html]
+        work:
+            flash:
+                bp_cnfg: [_dmns(d), _name_, index.html]
                 actions: 
                     init:
                     - []
@@ -885,9 +1040,8 @@ mcstories:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_work:
-                cnfg: [d, _work_, _work_._work_fxt_]
+            work:
+                bp_cnfg: [_dmns(d), _name_, _name_, _try(.;_fxt_)]
                 actions: 
                     init:
                     - []
@@ -906,12 +1060,30 @@ mega:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [nz]
-    urec:
-        p_folders: [folder,  _folder_uid_]
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+            folder:
+                class: node
+                subclass: folder
+                parents: [user,folder]
+                childs: [folder]
+            work:
+                class: node
+                subclass: work
+                parents: [user,folder]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _listing:
-            l_work:
-                cnfg: [d, p_folders]
+        domain:
+            work_listing:
+                cnfg: [_dmns(d), try_(folder; _uid(folder)_)]
                 actions: 
                     init:
                     - []
@@ -920,9 +1092,9 @@ mega:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_work:
-                cnfg: [d, p_folders, file, _work_uid_]
+        work:
+            work:
+                cnfg: [_dmns(d), try_(folder; _uid(folder)_), file, _uid_]
                 actions: 
                     init:
                     - []
@@ -941,11 +1113,30 @@ pastebin:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    urec: {}
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work,folder]
+            folder:
+                class: node
+                subclass: folder
+                parents: [user]
+                childs: [paste]
+            paste:
+                class: node
+                subclass: paste
+                parents: [user,folder]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_work:      
-                cnfg: [d, _work_]
+        user:
+            user:      
+                cnfg: [_dmns(d), u, _name_]
                 actions: 
                     init:
                     - []
@@ -954,9 +1145,9 @@ pastebin:
                     crawl:
                     - []
                 elements: {}
-        _listing:
-            l_work:      
-                cnfg: [d, u, _usr_]
+        folder:
+            folder:      
+                cnfg: [_dmns(d), u, _name(user)_, '1' , _uid_]
                 actions: 
                     init:
                     - []
@@ -965,20 +1156,9 @@ pastebin:
                     crawl:
                     - []
                 elements: {}
-        _usr:
-            u_user:      
-                cnfg: [d, u, _usr_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-        _misc:
-            m_login:     
-                cnfg: [d, login]
+        paste:
+            paste:      
+                cnfg: [_dmns(d), _uid_]
                 actions: 
                     init:
                     - []
@@ -1007,11 +1187,25 @@ pastefs:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    urec: {}
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [paste]
+            paste:
+                class: node
+                subclass: paste
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_work:      
-                cnfg: [d, pid, _work_]
+        paste:
+            paste:      
+                cnfg: [_dmns(d), pid, _uid_]
                 actions: 
                     init:
                     - []
@@ -1034,11 +1228,25 @@ psstaudio:
             hstns:     [pastes]
             hstn_var:  null
             tlds:      [com]
-    urec: {}
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [paste]
+            paste:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_work:
-                cnfg: [p, post, _work_uid_]
+        paste:
+            paste:
+                cnfg: [p, post, _uid_]
                 actions: 
                     init:
                     - []
@@ -1057,11 +1265,25 @@ poneb:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [in]
-    urec:
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [paste]
+            paste:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_work:
-                cnfg: [d, _work_]
+        user:
+            user:
+                cnfg: [_dmns(d), u, _name_]
                 actions: 
                     init:
                     - []
@@ -1070,9 +1292,8 @@ poneb:
                     crawl:
                     - []
                 elements: {}
-        _listing:
-            l_work:
-                cnfg: [d, u, _usr_, user]
+            paste_listing:
+                cnfg: [_dmns(d), u, _name_, user]
                 actions: 
                     init:
                     - []
@@ -1081,9 +1302,9 @@ poneb:
                     crawl:
                     - []
                 elements: {}
-        _usr:
-            u_usr:
-                cnfg: [d, u, _usr_]
+        paste:
+            paste:
+                cnfg: [_dmns(d), _name_]
                 actions: 
                     init:
                     - []
@@ -1106,44 +1327,30 @@ githubusercontent:
             hstns:     [raw]
             hstn_var:  null
             tlds:      [com]
-    urec:
-        p_folders:     [_folders_]
+    node_framwork:
+        items:
+            user:
+                class: node
+                subclass: user
+                childs: []
+                parents: []
+            folder:
+                class: node
+                subclass: folder 
+                childs: [work,folder]
+                parents: [user,folder]
+            work:
+                class: node
+                subclass: work
+                childs: []
+                parents: [folder,user]
+        swp:
+            up: []
+            dwn: []
     urls: 
-        _usr:
-            u_usr:        
-                cnfg: [f, _usr_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-        _bin:
-            b_repo:       
-                cnfg: [f, _usr_, _repo_, _version_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-        _content:
-            c_work:       
-                cnfg: [f, _usr_, _repo_, _version_, p_folders, _work_._work_fxt_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-            c_work2:       
-                cnfg: [f, _usr_, _repo_, _version_, p_folders, _work_]
+        work:
+            work:       
+                cnfg: [f, _name(user)_, _repo_, _branch_, _try(_name(folder)_), _name_, _try(.;_fxt_)]
                 actions: 
                     init:
                     - []
@@ -1162,11 +1369,25 @@ rentry:
             hstns: ['', www]
             hstn_var:  null
             tlds:      [org, co]
-    urec: {}
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+            work:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_work:
-                cnfg: [d, _work(node;title)_]
+        work:
+            work:
+                cnfg: [d, _uid_]
                 actions: 
                     init:
                     - []
@@ -1182,12 +1403,31 @@ snekguy:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    urec:
-        p_group:        [_group(parent;title;work)_]
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work,folder]
+                val: snekguy
+            folder:
+                class: node
+                subclass: folder
+                parents: [user]
+                childs: [work]
+            work:
+                class: node
+                subclass: work
+                parents: [user,folder]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _listing:
-            l_work:        
-                cnfg: [d, stories]
+        user:
+            work_listing:        
+                cnfg: [_dmns(d), stories]
                 actions: 
                     init:
                     - []
@@ -1196,19 +1436,9 @@ snekguy:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_work:        
-                cnfg: [d, stories, p_group, _work(node;title)_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-            c_work_edition:
-                cnfg: [d, stories, p_group, _work(node;title)_, _edition(attr;title;edition)_]
+        work:
+            work:
+                cnfg: [_dmns(d), stories, _try(_name(folder)_), _name_, _edition_]
                 actions: 
                     init:
                     - []
@@ -1222,17 +1452,30 @@ snootgame:
     params:
         enabled: False
         login: False
-
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [xyz]
-    urec: {}
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+                val: caveman anon
+            work:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _content:
-            c_work:      
-                cnfg: [d, en, bin, _work_uid_(node;title).zip]
+        user:
+            user:     
+                cnfg: [_dmns(d)]
                 actions: 
                     init:
                     - []
@@ -1241,9 +1484,8 @@ snootgame:
                     crawl:
                     - []
                 elements: {}
-        _flash:
-            f_flash:     
-                cnfg: [d]
+            work_listing: 
+                cnfg: [_dmns(d), en, download.html]
                 actions: 
                     init:
                     - []
@@ -1252,9 +1494,9 @@ snootgame:
                     crawl:
                     - []
                 elements: {}
-        _listing:
-            l_downloads: 
-                cnfg: [d, en, download.html]
+        work:
+            work:      
+                cnfg: [_dmns(d), en, bin, _name_.zip]
                 actions: 
                     init:
                     - []
@@ -1273,11 +1515,30 @@ fanfiction:
             hstns: [www,'']
             hstn_var:  null
             tlds:      [net]
-    urec: {}
+
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work,part]
+            work:
+                class: node
+                subclass: work
+                parents: [user]
+                childs: [part]
+            part:
+                class: node
+                subclass: part
+                parents: [user,work]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _usr:
-            u_user:
-                cnfg:  [d, u, _user_uid(attr;author;uid)_, _user(node;author)_]
+        user:
+            user:
+                cnfg:  [_dmns(d), u, _uid_, _name_]
                 actions: 
                     init:
                     - []
@@ -1286,9 +1547,9 @@ fanfiction:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_part:
-                cnfg:   [d, s, _work_uid(attr;title;uid)_, _part(node;part)_, _work(parent;part;title)_]
+        part:
+            part:
+                cnfg:   [_dmns(d), s, _uid(work)_, _name_, _name(work)_]
                 actions: 
                     init:
                     - []
@@ -1300,18 +1561,38 @@ fanfiction:
     elements: {}
 reddit:
     params:
-        enabled: False
-        login: False
+        login:   False
+        init:    False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns:        [www,'']
             hstn_var:     null
             tlds:         [com]
-    urec: {}
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+            sub:
+                class: node
+                subclass: group
+                parents: []
+                childs: [comment]
+            comment:
+                class: node
+                subclass: work
+                parents: [user,sub]
+                childs: []
+    swp:
+        dwn: []
+        up: []
     urls:
-        _usr:
-            u_user:
-                cnfg:     [d, user, _user(node;author)_]
+        user:
+            user:
+                cnfg:     [_dmns(d), user, _name_]
                 actions: 
                     init:
                     - []
@@ -1320,9 +1601,9 @@ reddit:
                     crawl:
                     - []
                 elements: {}
-        _listing:
-            l_sub:
-                cnfg:     [d, r, _sub(node;sub)_]
+        sub:
+            sub:
+                cnfg:     [_dmns(d), r, _name_]
                 actions:
                     init:
                     - []
@@ -1331,9 +1612,9 @@ reddit:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_work:
-                cnfg:     [d, r, _sub(parent;title;sub)_, comments, _work_uid(attr;title;uid)_, _work(node;title)_]
+        post:
+            post:
+                cnfg:     [_dmns(d), r, _name(sub)_, comments, _uid_, _name_]
                 actions: 
                     init:
                     - []
@@ -1343,4 +1624,3 @@ reddit:
                     - []
                 elements: {}
     elements: {}
-
