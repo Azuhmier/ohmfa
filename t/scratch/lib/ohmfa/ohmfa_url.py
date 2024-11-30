@@ -61,6 +61,7 @@ class OhmfaUrl(Ohmfa):
         self.logthis(1,f"sld: {self.sld}")
         self.logthis(1,f"bp:  {self.uproc.bp[0]}")
         self.logthis(1,f"ar:  {self.uproc.ar[0]}")
+        self.logthis(1,f"ar:  {self.uproc.bp_hold}")
 
         #self.resl_query()
         #self.update_url()

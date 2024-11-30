@@ -24,6 +24,7 @@ class UrlProcessor(CnfgProcessor):
     bp_item  = None
     abrf     = None
     delim    = None
+    bp_hold  = None
 
     def __init__(self,u,verbose=0,prnt=0):
         """_summary_
@@ -552,11 +553,33 @@ class UrlProcessor(CnfgProcessor):
                     continue
 
             elif item_type == 'ar':
-                op = bp_item.pop(0)
+                tbp_item = copy.deepcopy(bp_item)
+                op = tbp_item.pop(0)
                 nmstr, item_type, arg_ar = self.process_item(op)
-                if not self._m(bp_item, item,arg_ar[0]):
+                mm = False
+                tbp_item = '.'.join(tbp_item)
+                tbp_item = self._split_by_dot(tbp_item)
+                
+                if not isinstance(item,list):
+                    mm = self._m(tbp_item, [item],arg_ar[0])
+                else:
+                    mm = self._m(tbp_item, item,arg_ar[0])
+                if isinstance(item,list):
+                    item[0:0] = self.ar[self.depth+1]
+                self.bp_hold = copy.deepcopy(self.bp[self.depth-1])
+                self.r_val.pop(-1)
+                self.r_e.pop(-1)
+                self.r_active.pop(-1)
+                self.idx.pop(-1)
+                self.bp.pop(-1)
+                self.arbf.pop(-1)
+                self.ar.pop(-1)
+                if not mm:
+                    if self.r_active[self.depth]:
+                        if self._r():
+                            continue
+                        break
                     break
-                item.append(self.ar[self.depth+1])
 
             elif item_type == 'vr':
                 pass
@@ -602,11 +625,20 @@ class UrlProcessor(CnfgProcessor):
         else:
             self.logthis(2,f"{'':>32}Failure! Depth:{self.depth}")
 
+
+
         self.depth -= 1
+
         return retu
 
 
     def _r(self):
+        """_summary_
+        
+
+        Returns:
+            _type_: _description_
+        """
         #self.logthis(2,f"{'':>32}>r()")
 
         retu = False

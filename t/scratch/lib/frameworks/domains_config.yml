@@ -1637,3 +1637,68 @@ reddit:
                     - []
                 elements: {}
     elements: {}
+reddit:
+    params:
+        login:   False
+        init:    False
+        content: False
+        crawl:   False
+    dmns:
+        d:
+            hstns:        [www,'']
+            hstn_var:     null
+            tlds:         [com]
+    node_framwork:
+            user:
+                class: node
+                subclass: user
+                parents: []
+                childs: [work]
+            sub:
+                class: node
+                subclass: group
+                parents: []
+                childs: [comment]
+            comment:
+                class: node
+                subclass: work
+                parents: [user,sub]
+                childs: []
+    swp:
+        dwn: []
+        up: []
+    urls:
+        user:
+            user:
+                bp_cnfg:     [_dmns(d), user, _name_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        sub:
+            sub:
+                bp_cnfg:     [_dmns(d), r, _name_]
+                actions:
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+        post:
+            post:
+                bp_cnfg:     [_dmns(d), r, _name(sub)_, comments, _uid_, _name_]
+                actions: 
+                    init:
+                    - []
+                    content:
+                    - []
+                    crawl:
+                    - []
+                elements: {}
+    elements: {}
