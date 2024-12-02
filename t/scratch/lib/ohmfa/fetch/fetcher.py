@@ -5,7 +5,7 @@ import json
 import time
 import yaml
 
-from lib.ohmfa.ohmfa_url import OhmfaUrl
+from t.scratch.lib.ohmfa.url.ohmfa_url import OhmfaUrl
 from bs4 import BeautifulSoup
 
 # ------- requests
@@ -600,6 +600,8 @@ class Fetcher():
 
 
     def load_urls(self, urls, slds=[],verbose=0, mx=1,prnt=False):
+        cnt = 0
+        mx_cnt = 0
         qc_batch = []
         for url in urls:
             u = OhmfaUrl(url,self.dspt,verbose,prnt)
@@ -616,9 +618,18 @@ class Fetcher():
             self.durls[u.sld][u.node_type][u.path_type].append(u)
             if len(self.durls[u.sld][u.node_type][u.path_type]) < mx:
                 qc_batch.append(u)
+            cnt += u.uproc.cnt
+            if u.uproc.cnt > mx_cnt:
+                mx_cnt = u.uproc.cnt
         for u in qc_batch:
             for line in u.log:
                 print(line)
+        print("################################################################################")
+        print(f"Total Urls:                {len(urls)}")
+        print(f"average:                   {cnt/len(urls)}")
+        print(f"Max Count:                 {mx_cnt}")
+        print(f"Total Iteration Count:     {cnt}")
+        print(f"Max Total Iteration Count: {mx_cnt*len(urls)}")
 
 
 

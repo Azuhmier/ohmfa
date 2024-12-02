@@ -1363,7 +1363,6 @@ githubusercontent:
         work:
             work:       
                 bp_cnfg: [_dmns(f), _name(user)_, _repo_, _branch_, _try(_name(folder)_), [_delim(.), _name_, _try(_fxt_)]]
-                #bp_cnfg: [_dmns(f), _name(user)_, _repo_, _branch_, _try(_name(folder)_), _uid_]
                 actions: 
                     init:
                     - []

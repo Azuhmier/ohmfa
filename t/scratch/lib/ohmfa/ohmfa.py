@@ -3,14 +3,19 @@
 class Ohmfa:
     """_summary_
     """
+
     verbose: False
     prnt:    False
+
+
     def __init__(self,verbose=0,prnt=0):
         """_summary_
         """
         self.log=[]
         self.verbose=verbose
         self.prnt=prnt
+
+
     def logthis(self, lvl, string):
         """_summary_
 
@@ -22,6 +27,8 @@ class Ohmfa:
             self.log.append(string)
             if self.prnt :
                 print(string)
+
+
     def dump(self):
         """_summary_
         """
