@@ -1,45 +1,44 @@
 """_summary_
 """
-from .utils import CnfgProcessor
 from urllib.parse import urlparse, parse_qs
+from ohmfa.url.path_resolver import PathResolver
+from ohmfa.ohmfa import Ohmfa
 import sys
 import copy
 
 
-class UrlProcessor(CnfgProcessor):
+class Processor(Ohmfa):
     """_summary_
 
     Args:
         CnfgProcessor (_type_): _description_
     """
-    bp       = None
-    ar       = None
-    cnt      = 0
-
+    vrs = None
+    bp  = None
+    ar  = None
 
     def __init__(self,u,verbose=0,prnt=0):
         """_summary_
         """
-        super().__init__(u.cnfg,verbose,prnt)
+        super().__init__(verbose,prnt)
         self.u = u
-        self.states = []
+        self.pr = PathResolver(verbose=verbose,prnt=prnt)
 
 
     def resl_dmn(self):
         """_summary_
         """
-        self._gen_dmn_bps()
-        self.logthis(1,f"{'':>4}>resl_dmn()")
+        self.logthis(2,f"{'':>4}>resl_dmn()")
 
         hstn, sld, tld   = None,None,None
         dmn_type         = None
         dmn_frags        = self.u.dmn.split('.')
-        dmn_cnfgs        = self.cnfg['dmns']
+        dmn_cnfgs        = self.u.cnfg['dmns']
 
         if len(dmn_frags) == 2:
             dmn_frags = [''] + dmn_frags
 
-        self.logthis(1,f"{'':>8}dmn_frags:     ['{dmn_frags[0]}', '{dmn_frags[1]}', '{dmn_frags[2]}']")
+        self.logthis(2,f"{'':>8}dmn_frags:     ['{dmn_frags[0]}', '{dmn_frags[1]}', '{dmn_frags[2]}']")
 
         hstn, sld, tld = dmn_frags
         self.logthis(3,f"{'':>8}...looping through domain configs")
@@ -86,6 +85,7 @@ class UrlProcessor(CnfgProcessor):
             break
 
         else:
+            self.dump()
             sys.exit('ERROR: Domain "',self.u.dmn,'" Could not Be Resoled!')
 
         new_dmn_frags   = [self.u.hstn, self.u.sld, self.u.tld]
@@ -94,7 +94,7 @@ class UrlProcessor(CnfgProcessor):
         new_dmn_frags   = [x for x in new_dmn_frags if x]
 
         self.logthis(3,f"{'':>8}new_dmn_frags: {new_dmn_frags}")
-        self.logthis(1,f"{'':>8}dmn_type:      {self.u.dmn_type}")
+        self.logthis(2,f"{'':>8}dmn_type:      {self.u.dmn_type}")
 
 
     def resl_path(self): 
@@ -109,34 +109,51 @@ class UrlProcessor(CnfgProcessor):
         self._gen_path_bps()
 
 
-        for node_type, nd_cnfg in self.cnfg['urls'].items():
+        for node_type, nd_cnfg in self.u.cnfg['urls'].items():
 
+            self.logthis(2,f"{'':>4}node_type: {node_type}")
             for path_type, url_cnfg in nd_cnfg.items():
 
+                self.logthis(2,f"{'':>8}path_type: {path_type}")
                 bp_cnfg     = url_cnfg['bp_cnfg']
-                bp_dmn_type = bp_cnfg['dmn_type']
+                bp_dmn_type = url_cnfg['domain_type']
 
                 if bp_dmn_type != self.u.dmn_type:
 
-                    self.logthis(3,f"{'':>20}!dmn_type doesn't match bp's")
+                    self.logthis(3,f"{'':>12}!dmn_type doesn't match bp's")
 
                     continue
 
-                self.logthis(2,f"{'':>24}path_type: {path_type}")
-                arbf = self._process_ar(self.u.url.path.split('/'))
+                ar = [self.u.url.path]
                 bp   = copy.deepcopy(bp_cnfg['bp'])
-                self.logthis(2,f"{'':>24}bp: {bp}")
-                self.logthis(2,f"{'':>24}arbf: {arbf}")
-                suc, bp, ar = self._m(bp,arbf,'/',0)
-                if suc:
+                if ar[0][-1] == '/':
+                    if len(ar[0]) > 1:
+                        ar[0] = ar[0][:-1]
+                    else:
+                        ar.pop(0)
+                if len(ar): 
+                    if ar[0][0] == '/':
+                        if len(ar[0]) > 1:
+                            ar[0] = ar[0][1:]
+                        else:
+                            ar.pop(0)
+                self.logthis(2,f"{'':>16}ar: {ar}")
+                self.logthis(2,f"{'':>16}bp: {bp}")
+                res, bp, nar, nvrs = self.pr.start_recursion(bp,ar)
+                self.log.extend(self.pr.log)
+                self.logthis(2,f"{'':>16}{res}")
 
-                    self.logthis(1,f"{'':>8}node_type:    {node_type}")
-                    self.logthis(1,f"{'':>8}path_type:    {path_type}")
-                    self.logthis(1,f"{'':>8}bp:           {bp}")
-                    self.logthis(1,f"{'':>8}ar:           {ar}")
+                
+                if res:
 
+                    self.vrs = nvrs
                     self.bp = bp
-                    self.ar = ar
+                    self.ar = nar
+                    self.logthis(2,f"{'':>8}node_type:    {node_type}")
+                    self.logthis(2,f"{'':>8}path_type:    {path_type}")
+                    self.logthis(2,f"{'':>8}bp:           {bp}")
+                    self.logthis(2,f"{'':>8}ar:           {nar}")
+
                     self.u.node_type  = node_type
                     self.u.path_type = path_type
 
@@ -148,6 +165,7 @@ class UrlProcessor(CnfgProcessor):
             break
 
         else:
+            self.dump()
             sys.exit('ERROR: Could not resolv url "'+str(self.u.url.geturl())+'"')
 
 
@@ -213,7 +231,7 @@ class UrlProcessor(CnfgProcessor):
 
 
     def url_from_cnfg(self, group, path_type):
-        cnfg = self.cnfg['urls'][group][path_type]['cnfg']
+        cnfg = self.u.cnfg['urls'][group][path_type]['cnfg']
         url = self.url_from_bp(cnfg['bp'])
         return url
 
@@ -226,93 +244,40 @@ class UrlProcessor(CnfgProcessor):
         url = ''.join(url_ar)
         return url
 
-    def _gen_dmn_bps(self):
-        """_summary_
-        """
-        self.logthis(2,f"{'':>4}>gen_dmn_bps()")
-
-
-        if 'bp' not in self.cnfg['dmns']['d']:
-
-            self.logthis(3,f"{'':>8}...generating bps")
-
-            for dmn_type, dmn_cnfg in self.cnfg['dmns'].items():
-
-                #TLD
-                tld = dmn_cnfg['tlds'][0]
-
-                #HSTN
-                if not dmn_cnfg['hstn_var']:
-                    hstn = dmn_cnfg['hstns'][0]
-
-                else:
-                    hstn = dmn_cnfg['hstn_var']
-
-                self.logthis(3,f"{'':>12}dmn_type:     '{dmn_type}'")
-                self.logthis(3,f"{'':>12}tld:          '{tld}'")
-                self.logthis(3,f"{'':>12}hstn:         '{hstn}'")
-        
-                dmn_bp_frags   = [hstn, self.u.sld, tld]
-                self.logthis(3,f"{'':>12}dmn_bp_frags: {dmn_bp_frags}")
-
-                dmn_bp_frags    = [x for x in dmn_bp_frags if x]
-                dmn_bp_str      = '.'.join(dmn_bp_frags)
-                dmn_bp          = self._split_by_dot(dmn_bp_str)
-                dmn_cnfg['bp']  = dmn_bp
-
-                self.logthis(3,f"{'':>12}dmn_bp_frags: {dmn_bp_frags}")
-                self.logthis(3,f"{'':>12}dmn_bp_str:   {dmn_bp_str}")
-                self.logthis(3,f"{'':>12}dmn_bp:       {dmn_bp}")
-
-        else:
-            self.logthis(2,f"{'':>8}Already Done!")
-
 
     def _gen_path_bps(self): 
         """_summary_
         """
 
-        self.logthis(2,f"{'':>8}>gen_url_bp()")
+        self.logthis(3,f"{'':>8}>gen_url_bp()")
+        self.logthis(4,f"{'':>8}...generating bps")
 
-        self.logthis(3,f"{'':>8}...generating bps")
-        for node_type, node_cnfg in self.cnfg['urls'].items(): 
-
+        for node_type, node_cnfg in self.u.cnfg['urls'].items(): 
             for path_type, path_cnfg in node_cnfg.items():
-
-                path_bp_cnfg = path_cnfg['bp_cnfg']
-
-                if isinstance(path_bp_cnfg,dict):
-                    self.logthis(3,f"{'':>8}Already Done!")
+                if isinstance(path_cnfg['bp_cnfg'],dict):
+                    self.logthis(4,f"{'':>8}...alrady done!")
                     break
 
-                self.logthis(2,f"{'':>12}node_type:  {node_type}")
-                self.logthis(2,f"{'':>16}path_type:   {path_type}")
+                path_bp = path_cnfg['bp_cnfg']
 
-                nmstr, item_type, arg_ar = self.process_item(path_bp_cnfg[0])
-                dmn_type    = arg_ar[0]
+                self.logthis(4,f"{'':>12}node_type:  {node_type}")
+                self.logthis(4,f"{'':>16}path_type:  {path_type}")
 
-                path_bp     = path_bp_cnfg[1:]
                 query       = {}
                 if len(path_bp) and isinstance(path_bp[-1],dict):
                     query   = path_bp[-1]
                     path_bp = path_bp[:-1]
 
-                new_path_bp = self._process_ar(path_bp)
+                self.logthis(4,f"{'':>20}new_path_bp: {path_bp}")
+                self.logthis(4,f"{'':>20}query:       {query}")
 
-                self.logthis(3,f"{'':>20}new_path_bp: {new_path_bp}")
-                self.logthis(3,f"{'':>20}dmn_type:    {dmn_type}")
-                self.logthis(3,f"{'':>20}query:       {query}")
-
-                self.cnfg['urls'][node_type][path_type]['bp_cnfg'] = {
-                    'bp':       new_path_bp,
+                self.u.cnfg['urls'][node_type][path_type]['bp_cnfg'] = {
+                    'bp':       path_bp,
                     'query':    query,
-                    'dmn_type': dmn_type,
-                    'cnfg':     path_bp_cnfg,
+                    'cnfg':     path_cnfg,
                 }
-
             else:
                 continue
-
             break
 
 

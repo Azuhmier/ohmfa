@@ -1,0 +1,333 @@
+tatu:
+atu:
+uwu:
+    site:
+        superclass: node
+        class: non-tgt
+        subclass: site
+        carrier: null
+        enabled_for: _mi()
+        val:
+            tscope:
+                - _mi(-m;i)
+            tuniq:
+                - _mi(0;i)
+            uuniq:
+                - _mi(0;0)
+            type: _type(str)
+    user:
+        superclass: node
+        class: non-tgt
+        subclass: user
+        carrier: null
+        enabled_for: 
+            - _mi(-1[subclass=site];0)
+        val:
+            tscope:
+                - _mi(-m;i)
+            tuniq:
+                - _mi(0;i)
+            uuniq:
+                - _mi(0;1)
+            type: _type(str)
+    bin:
+        superclass: node
+        class: tgt
+        subclass: bin
+        carrier: null
+        enabled_for: 
+            - _mi(-1[subclass*=user];0)
+            - _mi(1[subclass=work];0)
+        val:
+            tscope:
+                - _mi(-m;i)
+            tuniq:
+                - _mi(0;i)
+            uuniq:
+                - _mi(0;0)
+            type: _type(str)
+    work:
+        superclass: node
+        class: tgt
+        subclass: work
+        carrier: null
+        enabled_for: 
+            - _mi(-1[sublcass*=user];0)
+        val:
+            tscope:
+                - _mi(-m;i)
+            tuniq:
+                - _mi(0;i)
+            uuniq:
+                - _mi(0;0)
+            type: _type(str)
+    part:
+        superclass: node
+        class: tgt
+        subclass: part
+        carrier: null
+        enabled_for:
+            - _mi(-1[subclass=work];0)
+        val:
+            tscope:
+                - _mi(-m;i)
+            tuniq:
+                - _mi(0;i)
+            uuniq:
+                - _mi(0;1)
+            type: _type(str)
+    src:
+        superclass: node
+        class: tgt
+        subclass: src
+        enabled_for: 
+            _mi(-1[subclass=src,page];0)
+        carrier: null
+        val:
+            tscope:
+                - _mi(m;i)
+            tuniq:
+                - _mi(0;i)
+            uuniq:
+                - _mi(0;1)
+            type: _type(str)
+    page:
+        superclass: node
+        class: tgt
+        subclass: page
+        enabled_for:
+            - _mi(-1[subclass=src];0)
+        carrier: null
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;0)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    content:
+        superclass: node
+        class: tgt
+        subclass: content
+        enabled_for:
+            - _mi(-1[subclass*=page];0)
+        carrier: null
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;i)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    # properties
+    redirect:
+        superclass: prop
+        class: use
+        subclass: redirect
+        enabled_for: 
+            - _mi(-1[subclass=src];0)
+        carrier: {}
+        key:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;i)
+            uuniq: _mi(0;1)
+            type: _type(list;str)
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;i)
+            uuniq: _mi(0;1)
+            type: _type(list;str)
+    url:
+        superclass: prop
+        class: use
+        subclass: url
+        enabled_for: 
+            - _mi(-1[subclass=src,page,content];0)
+        carrier: null
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;0)
+            uscope: _mi(m;i)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    derived_from:
+        superclass: prop
+        class: use
+        subclass: derived_from
+        enabled_for: 
+            - _mi(-1;0)
+        carrier: null
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;0)
+            uscope: _mi(m;i)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    media:
+        superclass: prop
+        class: value
+        subclass: media
+        enabled_for:
+            _mi(-1[subclass=content];0)
+        carrier: null
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;1)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    fext:
+        superclass: prop
+        class: value
+        subclass: fext
+        enabled_for: 
+            _mi(-1[subclass=src,page,content];0)
+        carrier: null
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;1)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    core:
+        superclass: prop
+        class: column
+        subclass: core
+        enabled_for: 
+            - _mi(-1[subclass=src];0)
+        carrier: null
+        val:
+            tscope: _mi(m;i)
+            tuniq: _mi(0;i)
+            uuniq: _mi(0;1)
+            type: _type(bool)
+    idx:
+        superclass: prop
+        class: use
+        subclass: idx
+        carrier: null
+        enabled_for: 
+            - _mi(-1[subclass=bin,work,src];0)
+        val:
+            uscope: 
+              - [_mi(-1[subclass=bin]);0), _mi(0|1[subclass=work])]
+              - [_mi(-1[subclass=work]);0), _mi(0|1[subclass=part])]
+              - [_mi(-1[subclass=src]);0), _mi(0|1[subclass=page])]
+            uuniq: 
+              - _mi(0;1)
+            type: _type(int)
+    name:
+        superclass: prop
+        class: value
+        subclass: name
+        carrier: null
+        enabled_for: 
+            - _mi(-1[subclass=site,user,bin,work,part];0)
+        val: 
+            tscope: _mi(-1;i)
+            tuniq: _mi(0;0)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    alias:
+        superclass: prop
+        class: value
+        subclass: alias
+        enabled_for: 
+            - _mi(-1[name@prop];0)
+        carrier: []
+        val: 
+            tscope: _mi(-1;i)
+            tuniq: _mi(0;0)
+            uuniq: _mi(0;1)
+            type: _type(str)
+    # attributes
+    tag:
+        superclass: attr
+        class: value
+        subclass: tag
+        carrier: []
+        enabled_for: 
+            - _mi(-1,[subclass=bin;work;part];0)
+        val:
+            tscope:
+                - _mi(m,i)
+            tuniq:
+                - _mi(0;i)
+            uuniq: 
+                - _mi(0;1)
+            type: _type(str)
+    dscp:
+        superclass: column
+        class: value
+        subclass: tag
+        carrier: null
+        enabled_for: 
+            - _mi(-1[subclass=bin;work;part];0)
+        val:
+            tscope:
+                - _mi(m,i)
+            tuniq:
+                - _mi(0;0)
+            uuniq:
+                - _mi(0;0)
+            type: _type(str)
+    group:
+        superclass: attr
+        class: value
+        subclass: group
+        enabled_for: 
+            - _mi(-1[subclass!=group];0)
+        carrier: null
+        val:
+            tscope: 
+                - _mi(-1,i)
+            tuniq:
+                - _mi(0;i)
+            uuniq: 
+                - _mi(0;1)
+            type: _type(str)
+    stat:
+        superclass: attr
+        class: value
+        subclass: stat
+        enabled_for: 
+            - _mi(subclass=bin,work,part];0)
+        carrier: 
+            date_created: _type(date)
+            date_updated: _type(date)
+            faves: _type(int)
+            likes: _type(int)
+            views: _type(int)
+            words: _type(int)
+        key: 
+            tscope: 
+                - _mi(m,i)
+            tuniq:
+                - _mi(0;i)
+            uuniq: 
+                - _mi(0;1)
+        val:
+            tscope: 
+                - _mi(m,i)
+            tuniq:
+                - _mi(0;0)
+            uuniq: 
+                - _mi(0;0)
+            type: predefined
+    user_stat:
+        superclass: attr
+        class: value
+        subclass: stat
+        enabled_for: 
+            - _mi(-1[subclass=usr];0)
+        carrier: 
+            joined: _type(date)
+        key:
+            tscope:
+                - _mi(m,i)
+            tuniq:
+                - _mi(0;i)
+            uuniq: 
+                - _mi(0;1)
+        val:
+            tscope:
+                - _mi(m,i)
+            tuniq:
+                - _mi(0;0)
+            uuniq:
+                - _mi(0;0)
+            type: predefined

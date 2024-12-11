@@ -1,8 +1,8 @@
 
 import sys
 sys.path.append(  '/home/azuhmier/progs/ohmfa/t/scratch/lib' )
-from lib.ohmfa.main import Main
-from t.scratch.lib.ohmfa.fetch.fetcher import Fetcher
+from ohmfa.main import Main
+from ohmfa.url.fetcher import Fetcher
 
 OHMFA_DIR = '/home/azuhmier/progs/ohmfa/t/scratch/empty_dir'
 URLS_FILE = '/home/azuhmier/hmofa/hmofa/.ohm/output/paged_lists/objs/plain/url.txt'
@@ -63,7 +63,7 @@ test_urls = [
 ]
 o.urls = test_urls + o.urls
 #o.urls = test_urls
-f.load_urls(o.urls,slds=oslds,verbose=2,mx=2,prnt=False)
+f.load_urls(o.urls,slds=oslds,verbose=1,mx=2,prnt=0)
 #f.load_urls(o.urls,verbose=1)
 #f.get_passwords('/home/azuhmier/.pwds')
 #f.start_session()

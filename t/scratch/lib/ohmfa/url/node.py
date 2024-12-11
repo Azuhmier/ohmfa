@@ -9,34 +9,28 @@ import copy
 import sys
 import urllib
 from urllib.parse import urlparse, parse_qs
-from .url_processor import UrlProcessor
-from .ohmfa import Ohmfa
+from ohmfa.url.processor import Processor
+from ohmfa.ohmfa import Ohmfa
 
 
 
 
-class OhmfaUrl(Ohmfa):
+class Node(Ohmfa):
     # domain
     dmn_type    = None
     hstn        = None
     tld         = None
     sld         = None
-
-
     node_type   = None
-
-    path_type    = None
-
-    uproc = None
-    query  = None
+    path_type   = None
+    uproc       = None
+    query       = None
 
 
     def __init__(self, url, sld_configs, verbose=0,prnt=0):
+        super().__init__(verbose,prnt)
         self.url       = urlparse(url)
         self.dmn       = self.url.netloc
-        self.log       = []
-        self.verbose   = verbose
-        self.prnt      = prnt
 
         # Determine sld
         domain_frags = self.dmn.split('.')
@@ -53,15 +47,16 @@ class OhmfaUrl(Ohmfa):
         self.logthis(1,f"url: {self.url.geturl()}")
 
         # domain
-        self.uproc = UrlProcessor(self,self.verbose,self.prnt)
+        self.uproc = Processor(self,self.verbose,self.prnt)
         self.uproc.resl_dmn()
         self.uproc.resl_path()
+        self.log.extend(self.uproc.log)
 
         self.logthis(1,f"dmn: {self.dmn}")
         self.logthis(1,f"sld: {self.sld}")
-        self.logthis(1,f"bp:  {self.uproc.bp}")
-        self.logthis(1,f"ar:  {self.uproc.ar}")
-        self.logthis(1,f"cnt:  {self.uproc.cnt}")
+        self.logthis(1,f"vrs: {self.uproc.vrs}")
+        self.logthis(1,f"ar: {self.uproc.ar}")
+        self.logthis(1,f"bp: {self.uproc.bp}")
 
         #self.resl_query()
         #self.update_url()

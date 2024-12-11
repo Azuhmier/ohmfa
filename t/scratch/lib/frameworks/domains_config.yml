@@ -1,5 +1,6 @@
 
 archiveofourown:
+    redirect: False
     params:
         login:   False
         init:    False
@@ -10,42 +11,23 @@ archiveofourown:
             hstns:               ['', www]
             hstn_var:            null
             tlds:                [org]
-    node_framwork:
-        items:
-            user:
-                class:    node
-                subclass: author
-                parents:  []
-                childs:   [series, work]
-            series:
-                class:    node
-                subclass: series
-                parents:  [user]
-                childs:   [work]
-            work:
-                class:    node
-                subclass: work
-                parents:  [user, series]
-                childs:   [part]
-            chapter:
-                class:    node
-                subclass: part
-                parents:  [work]
-                childs:   []
-            page:
-                class:    content
-                subclass: iter
-                val: 1
-            psued:
-                class:    attr
-                subclass: alias
-        swp:
-            up:  []
-            dwn: []
+    site_defs:
+        chapter:
+            superclass: node
+            class: tgt
+            subclass: part
+        psued:
+            superclass: prop
+            class: value
+            subclass: alias
     urls:
         user:
             user:
-                bp_cnfg: [_dmns(d), users, _name_, _try(pseuds;_psued_)]
+                node: True
+                bp_cnfg: [users, _val(name)_, _try(pseuds;_psued()_|1|0)]
+                query: {}
+                domain_type: d
+                alt_bp_cnfgs: {}
                 actions: 
                     init:
                         do:
@@ -54,11 +36,16 @@ archiveofourown:
                         do:
                         - []
                     crawl:
-                        do:
-                        - []
+                        - profile
+                        - series_listing
+                        - work_listing
                 elements: {}
             profile:
-                bp_cnfg: [_dmns(d), users, _name_, profile]
+                node: False
+                bp_cnfg: [users, _val(name)_, profile]
+                query: {}
+                domain_type: d
+                alt_bp_cnfgs: {}
                 actions:
                     init:
                         do:
@@ -66,19 +53,21 @@ archiveofourown:
                     content:
                         do:
                         - []
-                    crawl:
-                        do:
-                        - []
+                    crawl: null
                 elements: 
-                    e_meta: [_css, .meta,[dd.pseuds, [_for, a, _alias_=text]]]
-                    e_meta: [_css, .meta,[_css, dd:nth-child(4), _stat(key)_==joined,_stat(value)_=text]]
-                    e_meta: [_css, .meta,[dd,dd:nth-child(6), _uid_=text]]
-                    e_meta: [_css, .meta]
-                    e_dash: [_css, "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[a, _stat(key)_==works,_stat(value)_=text)]]]]
-                    e_dash: [_css, "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[ a, _stat(key)_==series,_stat(value)_=text)]]]]
-                    e_dash: [_css, "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[ a, _stat(key)_==faves,_stat(value)_=text)]]]]
+                    e_pseudes: [_css(), .meta,[dd.pseuds, [_for(), a,     _val(pseuds)_+=text]]]
+                    e_joined:  [_css(), .meta,[_css(), dd:nth-child(4), _val(stat|joined)_=text]]
+                    e_uid:     [_css(), .meta,[dd,dd:nth-child(6),      _uid()_=text]]
+                    e_works:   [_css(), "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[a,  _val(stat|works)_=text)]]]]
+                    e_series:  [_css(), "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[ a, _val(stat|series)_=text)]]]]
+                    e_faves:   [_css(), "#dashboard",[_css, ul.navigation,[_css,nth-child(1),[ a, _val(stat|faves)_=text)]]]]
             work_listing:
-                bp_cnfg: [_dmns(d), users, _name_, _try(pseuds;_psued_), works, {page: _page_}]
+                node: False
+                bp_cnfg: [users, _val(name)_, _try(pseuds;_psued()_|1|0), works]
+                query:
+                    page: _val(page;;1)_
+                domain_type: d
+                alt_bp_cnfgs: {}
                 actions: 
                     init:
                         do:
@@ -89,38 +78,46 @@ archiveofourown:
                         do:
                         - []
                     crawl:
+                        - work
+                elements: 
+                    e_series_idx:             [ul, class=series,[strong,               _idx(series)_=text]]
+                    e_series_uid:             [ul, class=series,[a,                    _uid(series)_=href,_upath()]]
+                    e_series_name:            [ul, class=series,[a,                    _name(series)_=text]]
+                    e_likes:                  [_in(e_listing), [dl, [dd.kudos, [a,     _val(stat|likes)_=text]]]]
+                    e_faves:                  [_in(e_listing), [dl, [dd.bookmarks, [a, _val(stat|faves)_=text]]]]
+                    e_views:                  [_in(e_listing), [dl, [dd.hits,          _val(stat|views)_=text]]]
+                    e_lang:                   [_in(e_listing), [dl, [dd.language,      _val(stat|lang)_=text]]]
+                    e_comments:               [_in(e_listing), [dl, [dd.comments, [a,  _val(stat|comments)_=text]]]]
+                    e_listing:
+            series_listing:
+                node: False
+                bp_cnfg: [users, _name()_, _try(pseuds;_psued()_|1|0), series]
+                query:
+                    page: _val(page;;1)_
+                domain_type: d
+                alt_bp_cnfgs: {}
+                actions: 
+                    init:
+                        do:
+                        - [ a_init]
+                        - [ a_listing_init]
+                    content:
                         do:
                         - []
+                    crawl:
+                        - series
                 elements: 
-                    e_series_idx:             [ul, class=series,[strong, _idx(series)_=text]]
-                    e_series_uid:             [ul, class=series,[a, _uid(series)_=href,_upath]]
-                    e_series_name:            [ul, class=series,[a, _name(series)_=text]]
-                    e_likes:                  [_in, e_listing, [dl, [dd.kudos, [a, stat(key)_==likes, _stat(val)_=text]]]]
-                    e_faves:                  [_in, e_listing, [dl, [dd.bookmarks, [a, stat(key)_==faves, _stat(val)_=text]]]]
-                    e_views:                  [_in, e_listing, [dl, [dd.hits, _stat(key)_==views, _stat(val)_=text]]]
-                    # - attr
-                    e_lang:                   [_in, e_listing, [dl, [dd.language, _stat(key)_==language, _stat(val)_=text]]]
-                    e_comments:               [_in, e_listing, [dl, [dd.comments, [a, stat(key)_==comments,_stat(val)_=text]]]]
-            series_listing:
-                    bp_cnfg: [_dmns(d), users, _name_, _try(pseuds;_psued_), series, {page: _page_}]
-                    actions: 
-                        init:
-                            do:
-                            - [ a_init]
-                            - [ a_listing_init]
-                        content:
-                            do:
-                            - []
-                        crawl:
-                            do:
-                            - []
-                    elements: 
-                        e_listing:              [ul, class=series index group, [_for, li]]
-                        e_user:                 [_css, h2.heading, text,_sfind(by,1),_slice(1:)]
-                        e_works:
+                    e_listing:              [ul, class=series index group, [_for(|series), li]]
+                    e_user:                 [_css(), h2.heading, text,_sfind(by,1),_slice(1:)]
+                    e_works:
         series:
             series:
-                bp_cnfg: [_dmns(d), series, _uid_, {page: _page_}]
+                node: True
+                bp_cnfg: [series, _val()_]
+                query:
+                    page: _val(page;;1)_
+                domain_type: d
+                alt_bp_cnfgs: {}
                 actions:
                     init:
                         do:
@@ -130,28 +127,33 @@ archiveofourown:
                         do:
                         - []
                     crawl:
-                        do:
-                        - []
+                        - works
                 elements: 
-                    e_user:                  [_css, dl.series > dd:nth-child(2),[_for, a]]
-                    e_user_name:             [_in, e_user, _name(user)_=text]
-                    e_user_uid:              [_in, e_user, _uid(user)_=hreff,upath]
-                    e_created:               [_css, dl.series > dd:nth-child(4), _stat(key)_=Published,_stat(value)_=text]
-                    e_updated:               [_css, dl.series > dd:nth-child(6), _stat(key)_=Updated, _stat(vlaue)_=text]
-                    e_words:                 [_css, dd.words, _stat(key)_, _stat(key)_==words, _stat(value)_=text]
-                    e_works:                 [_css, dd.works, _stat(key)_,_stat(key)_==works, _stat(value)_=text]
-                    e_complete:              [_css, dl.stats:nth-child(1) > dd:nth-child(6), _stat(key)_==complete, _stat(value)_=text]
-                    e_faves:                 [_css, dd.bookmarks, _stat(key)_==faves, _stat(value)_=text]
-
-                    e_likes:                  [_in, e_listing, [dl, [dd.kudos, [a, stat(key)_==likes, _stat(val)_=text]]]]
-                    e_faves:                  [_in, e_listing, [dl, [dd.bookmarks, [a, stat(key)_==faves, _stat(val)_=text]]]]
-                    e_views:                  [_in, e_listing, [dl, [dd.hits, _stat(key)_==views, _stat(val)_=text]]]
-                    # - attr
-                    e_lang:                   [_in, e_listing, [dl, [dd.language, _stat(key)_==language, _stat(val)_=text]]]
-                    e_comments:               [_in, e_listing, [dl, [dd.comments, [a, stat(key)_==comments,_stat(val)_=text]]]]
+                    e_user:                  [_css(), dl.series > dd:nth-child(2),[_for(), a]]
+                    e_user_name:             [_in(e_user), _name(user)_=text]
+                    e_user_uid:              [_in(e_user), _uid(user)_=hreff,upath()]
+                    e_created:               [_css(), dl.series > dd:nth-child(4),             _val(stat|created)_=text]
+                    e_updated:               [_css(), dl.series > dd:nth-child(6),             _val(stat|updated)_=text]
+                    e_words:                 [_css(), dd.words,                                _val(stat|words)_=text]
+                    e_works:                 [_css(), dd.works,                                _val(stat|works)_=text]
+                    e_complete:              [_css(), dl.stats:nth-child(1) > dd:nth-child(6), _val(stat|complete)_=text]
+                    e_faves:                 [_css(), dd.bookmarks,                            _val(stat|faves)_=text]
+                    e_likes:                 [_in(e_listing), [dl, [dd.kudos,              [a, _val(stat|likes)_=text]]]]
+                    e_faves:                 [_in(e_listing), [dl, [dd.bookmarks,          [a, _val(stat|faves)_=text]]]]
+                    e_comments:              [_in(e_listing), [dl, [dd.comments,           [a, _val(stat|comments)_=text]]]]
+                    e_views:                 [_in(e_listing), [dl, [dd.hits,                   _val(stat|views)_=text]]]
+                    e_lang:                  [_in(e_listing), [dl, [dd.language,               _val(stat|lang)_=text]]]
+                    e_listing:
         work:
             work:
-                bp_cnfg: [_dmns(d), works, _uid_, {show_comments: true, view_adult: true, view_full_work: true}]
+                node: True
+                bp_cnfg: [works, _val()_]
+                query: 
+                    show_comments: true
+                    view_adult: true
+                    view_full_work: true
+                domain_type: d
+                alt_bp_cnfgs: {}
                 actions:
                     init:
                     - [a_init]
@@ -159,31 +161,35 @@ archiveofourown:
                     content:
                     - [a_dl_content]
                     crawl:
-                    - []
+                        - user
                 elements:
                     #----------- meta
-                    e_series:              [_css, dd.series,[a, _name(series)_=text]]
-                    e_series:              [_css, dd.series,[_not, a, _idx(series)_=text,_slice(5:;:-3)]]
-                    e_series:              [_css, dd.series,[_not, a, _uid_(series)_=href,_upath]]
-
+                    e_series:              [_css(), dd.series,[        a, _name(series)_=text]]
+                    e_series:              [_css(), dd.series,[_not(), a, _val(idx)_=text,_slice(5:;:-3)]]
+                    e_series:              [_css(), dd.series,[_not(), a, _site_uid(series)_=href,_upath()]]
                     #----------- head
-                    e_usr_name:             [_css, h3.byline, _name(user)_=text]
-                    e_work_name:            [_css, h2.title, _name_=text]
-                    e_work_dscp:            [_css, .summary, [_for, p, _dscp_=text]]
-
+                    e_usr_name:            [_css(), h3.byline,          _name(user)_=text]
+                    e_work_name:           [_css(), h2.title,           _name()_=text]
+                    e_work_dscp:           [_css(), .summary, [_for(), p, _val(dscp)_+=text]]
                     #-----------Chapter
-                    e_chapters:             [_css, '#chapters',[_for, div, class=chapter]]
-                    e_chapter_head:         [_in e_chapters,[div, class=chapter preface group]]
-                    e_chapter_name:        [_in, e_chapter_head, [_not, a, _name(chapter)_=text,_slice(2:)]]
-                    e_chapter_idx:         [_in, e_chapter_head, [a, _idx(chapter;work)_=text,_slice(8:)]]
-                    e_chapter_uid:         [_in, e_chapter_head, [a, _uid(chapter)_=href,_upath]]
-                    e_chapter_dscp:        [div, id=summary, [_for, p, _dscp(chapter)_=text]]
-                    e_chapter_body:         [_in e_chapters,[div, role=article]]
-                    e_chapter_content:     [_in, e_chapter_body, [_for, p, _content_(chapter)_=text]]
-                    e_ch_imgs:             [_in, e_chapter_body, [_for, img, src]]
+                    e_chapters:            [_css(), '#chapters',[_for(chapter), div, class=chapter]]
+                    e_chapter_body:        [_in(e_chapters), [div, role=article]]
+                    e_chapter_head:        [_in(e_chapters),[div, class=chapter preface group]]
+                    e_chapter_name:        [_in(e_chapter_head), [_not(), a,                  _name()_=text,_slice(2:)]]
+                    e_chapter_idx:         [_in(e_chapter_head), [a,                          _val(idx)_=text,_slice(8:)]]
+                    e_chapter_uid:         [_in(e_chapter_head), [a,                          _site_uid()_=href,_upath()]]
+                    e_chapter_dscp:        [_in(e_chapter_head),_div, id=summary, [_for(), p, _val(dscp)_+=text,_list()]]
+                    e_imgs:                [_in(e_chapter_body), [_for(), img,                _val(work|page;-1|src|img+)_=src]]
+                    #e_chapter_body:        [_in(e_chapter_body), [_for(), p,      _val(src|body)_+=text]]
         chapter:
             chapter:
-                bp_cnfg: [_dmns(d), works, _uid(work)_, chapters, _uid_, {show_comments: true, view_adult: true}]
+                node: True
+                bp_cnfg: [works, _val(work)_, chapters, _val()_]
+                query: 
+                    show_comments: true
+                    view_adult: true
+                domain_type: d
+                alt_bp_cnfgs: {}
                 actions:
                     init:
                     - [ a_init]
@@ -191,31 +197,29 @@ archiveofourown:
                     content:
                     - [a_dl_content]
                     crawl:
-                    - []
+                        - work
                 elements: 
                     #-----------meta
-                    ec_chapter_index:       [a.collapsed:nth-child(2)]
-                    e_chapter_uid:         [_in, chapter_index, [select, id=select_id,[selected, _uid_=value]]]
-                    e_chapter_idx:         [_in, chapter_index, [select, id=select_id,[selected, _idx(work)_=text,_slice(0:1)]]]
-                    e_chapter_list:        [_in, chapter_index, [select, id=select_id,[_for, option]]]
-                    e_chapter_uid:         [_in, chapter_list, _uid_=value]
-                    e_chapter_idx:         [_in, chapter_list,_slice(0:1)]
-
+                    ec_chapter_index:      [a.collapsed:nth-child(2)]
+                    e_chapter_uid:         [_in(ec_chapter_index), [select, id=select_id,[selected, _site_uid()_=value]]]
+                    e_chapter_idx:         [_in(ec_chapter_index), [select, id=select_id,[selected, _val(idx)_=text,  _slice(0:1)]]]
+                    e_chapter_list:        [_in(ec_chapter_index), [select, id=select_id,[_for(work), option]]]
+                    e_chapter_uid:         [_in(ec_chapter_list), _site_uid(chapter;+)_=value]
+                    e_chapter_idx:         [_in(ec_chapter_list), _val(chapter;-1|idx)_=text,_slice(0:1)]
                     #-----------Head
-                    e_usr_name:             [_css, h3.byline, _name(user)_=text]
-                    e_work_name:            [_css, h2.title, _name_=text]
-                    e_work_dscp:            [_css, .summary, [_for, p, _dscp_=text]]
-
+                    e_usr_name:            [_css(), h3.byline,            _name(user)_=text]
+                    e_work_name:           [_css(), h2.title,             _name()_=text]
+                    e_work_dscp:           [_css(), .summary, [_for(), p, _val(dscp)_=text]]
                     #-----------body
-                    e_chapters:             [_css, '#chapters',[_for, div, class=chapter]]
-                    e_chapter_head:         [_in e_chapters,[div, class=chapter preface group]]
-                    e_chapter_name:        [_in, e_chapter_head, [_not, a, _name(chapter)_=text,_slice(2:)]]
-                    e_chapter_idx:         [_in, e_chapter_head, [a, _idx(chapter;work)_=text,_slice(8:)]]
-                    e_chapter_uid:         [_in, e_chapter_head, [a, _uid(chapter)_=href,_upath]]
-                    e_chapter_dscp:        [div, id=summary, [_for, p, _dscp(chapter)_=text]]
-                    e_chapter_body:          [_in e_chapters,[div, role=article]]
-                    e_chapter_content:      [_in, e_chapter_body, [_for, p, _content_(chapter)_=text]]
-                    e_ch_imgs:              [_in, e_chapter_body, [_for, img, src]]
+                    e_chapters:            [_css(), '#chapters', [_for(chapter), div, class=chapter]]
+                    e_chapter_body:        [_in(e_chapters), [div, role=article]]
+                    e_chapter_head:        [_in(e_chapters), [div, class=chapter preface group]]
+                    e_chapter_dscp:        [_in(e_chapter_head), div, id=summary, [_for(), p, _val(dscp)_+=text]]
+                    e_chapter_name:        [_in(e_chapter_head), [_not(), a,                  _name()_=text, _slice(2:)]]
+                    e_chapter_idx:         [_in(e_chapter_head), [        a,                  _val(idx)_=text, _slice(8:)]]
+                    e_chapter_uid:         [_in(e_chapter_head), [        a,                  _site_uid()_=href, _upath()]]
+                    e_ch_imgs:             [_in(e_chapter_body), [_for(), img,                _val(page;-1|src|img;+)=src]]
+                    #e_chapter_content:     [_in(e_chapter_body), [_for(), p,   _val(pa)_+=text]]
     login:
         bp_cnfg: [d, users, login]
         elements: {}
@@ -244,93 +248,83 @@ archiveofourown:
         ### GLOBAL #########################################
         # - tos
         e_tos :       [body, [div, id=tos_prompt]]
-        e_tos_accept: [_css, '#accept_tos']
-        e_tos_agree:  [_css, '#tos_agree']
-        e_tos_agree2: [_css, '#data_processing_agree']
+        e_tos_accept: [_css(), '#accept_tos']
+        e_tos_agree:  [_css(), '#tos_agree']
+        e_tos_agree2: [_css(), '#data_processing_agree']
         #####################################################
         ### CONTENT #########################################
         # -------- download
-        e_dl:      [_css, .download, a]
-        e_dl_pdf:  [_css, .download, [ul, [li, text=PDF]]]
+        e_dl:      [_css(), .download, a]
+        e_dl_pdf:  [_css(), .download, [ul, [li, text=PDF]]]
         # -------- meta
         # - tags
-        e_rating:     [_css, dd.rating,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
-        e_rating:     [_css, dd.warning,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
-        e_category:   [_css, dd.category,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
-        e_fandom:     [_css, dd.fandom,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
-        e_rel:        [_css, dd.relationship,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
-        e_character:  [_css, dd.character,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
-        e_freeform:   [_css, dd.freeform,_group(tag)_=class,[_for, li, [a, _tag_=text]]]
-        e_lang:       [_css, dd.language,_stat(key)_=class, _stat(val)_=text]
+        e_rating:     [_css(), dd.rating,      _val(tag;>|*|group)_=class,[_for(), li, [a, _val(tag;+)_=text]]]
+        e_rating:     [_css(), dd.warning,     _val(tag;>|*|group)_=class,[_for(), li, [a, _val(tag;+)_=text]]]
+        e_category:   [_css(), dd.category,    _val(tag;>|*|group)_=class,[_for(), li, [a, _val(tag;+)_=text]]]
+        e_fandom:     [_css(), dd.fandom,      _val(tag;>|*|group)_=class,[_for(), li, [a, _val(tag;+)_=text]]]
+        e_rel:        [_css(), dd.relationship,_val(tag;>|*|group)_=class,[_for(), li, [a, _val(tag;+)_=text]]]
+        e_character:  [_css(), dd.character,   _val(tag;>|*|group)_=class,[_for(), li, [a, _val(tag;+)_=text]]]
+        e_freeform:   [_css(), dd.freeform,    _val(tag;>|*|group)_=class,[_for(), li, [a, _val(tag;+)_=text]]]
+        e_lang:       [_css(), dd.language,    _val(tag;>|*|group)_=class,                 _val(tag;+)_=text]
+
         # - stats
-        e_pub:        [_css, dd.published,_stat(key)_=class,_stat(val)_=text]
-        e_status:     [_css, dd.status,_stat(key)_==updated,_stat(val)_=text]
-        e_words:      [_css, dd.words,_stat(key)_=class,_stat(val)_=text]
-        e_comments:   [_css, dd.comments,_stat(key)_=class,_stat(val)_=text]
-        e_kudos:      [_css, dd.kudos,_stat(key)_==likes,_stat(val)_=text]
-        e_bookmarks:  [_css, dd.bookmarks,_stat(key)_==faves,[a, _stat(val)_=text]]
-        e_hits:       [_css, dd.hits,_stat(key)_==views,_stat(val)_=text]
+        e_pub:        [_css(), dd.published,    _val(stat;created)_=text]
+        e_status:     [_css(), dd.status,       _val(stat;updated)_=text]
+        e_words:      [_css(), dd.words,        _val(stat;words)_=text]
+        e_comments:   [_css(), dd.comments,     _val(stat;comments)_=text]
+        e_kudos:      [_css(), dd.kudos,        _val(stat;likes)_=text]
+        e_hits:       [_css(), dd.hits,         _val(stat;views)_=text]
+        e_bookmarks:  [_css(), dd.bookmarks,[a, _val(stat;faves)_=text]]
+
         #####################################################
         ### LISTINGS #########################################
         # ------------- listing meta
         # - tags
-        e_tags:                   [_in, e_listing, [ul, class=tag commas]]
-        e_warn_tags:              [_in, e_tags, [_for, li.warnings, _group(tag)_==warning, [a, _tag_=text]]]
-        e_rel_tags:               [_in, e_tags, [_for, li.relationships, _group(tag)_==relationship, [a, _tag_=text]]]
-        e_char_tags:              [_in, e_tags, [_for, li.charactors, _group(tag)_==charactor, [a, _tag_=text]]]
-        e_freeform_tags:          [_in, e_tags, [_for, li.freeforms, _group(tag)_==freeform, [a,_tag_=text]]]
-        # - stat
-        e_words:                  [_in, e_listing, [dl, [dd.words, _stat(key)_==words, _stat(val)_=text]]]
+        e_tags:                   [_in(e_listing), [ul, class=tag commas]]
+        e_words:                  [_in(e_listing), [dl, [dd.words, _val(stat|words)_=text]]]
+        e_warn_tags:              [_in(e_tags), [_for(), li.warnings,      _val(tag;>|group)_==warning,      [a, _val(tag;+)_=text]]]
+        e_rel_tags:               [_in(e_tags), [_for(), li.relationships, _val(tag;>|group)_==relationship, [a, _val(tag;+)_=text]]]
+        e_char_tags:              [_in(e_tags), [_for(), li.charactors,    _val(tag;>|group)_==charactor,    [a, _val(tag;+)_=text]]]
+        e_freeform_tags:          [_in(e_tags), [_for(), li.freeforms,     _val(tag;>|group)_==freeform,     [a, _val(tag;+)_=text]]]
         # ------------- listing head
-        e_head:                   [_in, e_listing, [div, class=header module]]
-        e_uid:                    [_in, e_work_head, [h4, [_not, a, rel=author, _uid_=href,_upath]]]
-        e_name:                   [_in, e_work_head, [h4, [_not, a, rel=author,_name_=text]]]
-        e_user_name:              [_in, e_work_head, [h4, [_for, a, rel=author, _name(user)_=text]]]
-        e_fandom_tags:            [_in, e_work_head, [h5, [_for, a,_group(tag)_==fandom, _tag_=text]]]
-        e_rating_tags:            [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(1), [span, _group(tag)_==rating,_tag_=text]]]]]]
-        e_warn_tags:              [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(2), [span, _group(tag)_==warning,_tag_=text]]]]]]
-        e_cat_tags:               [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(3), [span, _group(tag)_==category,_tag_=text,"_split(,)"]]]]]]
-        e_complete:               [_in, e_work_head, [ul, [li, [a, [_css, span:nth-child(4), [span, _stat(key)_==completed,_stat(val)_=text,_slice(9:12),_rm_trl]]]]]]
-        e_created:                [_in, e_work_head, [p, _stat(key)_==published, stat(val)_=text]]
-        e_dscp:                   [_in, e_work_head, [blockquote, [_for, p, _dscp_=text]]]
+        e_head:                   [_in(e_listing), [div, class=header module]]
+        e_uid:                    [_in(e_head), [h4, [_not(), a, rel=author, _sit_uid()_=href,_upath()]]]
+        e_name:                   [_in(e_head), [h4, [_not(), a, rel=author, _name()_=text]]]
+        e_user_name:              [_in(e_head), [h4, [_for(), a, rel=author, _name(user)_:=text]]]
+        e_fandom_tags:            [_in(e_head), [h5, [_for(), a,                                 _val(tag;+|group)_==fandom,  _val(tag;-1)_=text]]]
+        e_rating_tags:            [_in(e_head), [ul, [li, [a, [_css(), span:nth-child(1), [span, _val(tag;+|group)_==rating,  _val(tag;-1)_=text]]]]]]
+        e_warn_tags:              [_in(e_head), [ul, [li, [a, [_css(), span:nth-child(2), [span, _val(tag;+|group)_==warning, _val(tag;-1)_=text]]]]]]
+        e_cat_tags:               [_in(e_head), [ul, [li, [a, [_css(), span:nth-child(3), [span, _val(tag;+|group)_==category,_val(tag;-1)_=text,"_split(,)"]]]]]]
+        e_complete:               [_in(e_head), [ul, [li, [a, [_css(), span:nth-child(4), [span, _val(stat;completed)_=text,_slice(9:12),_rm_tr()l]]]]]]
+        e_created:                [_in(e_head), [p, _val(stat;created)_=text]]
+        e_dscp:                   [_in(e_head), [blockquote, [_for(), p, _val(dscp)_+=text,_list()]]]
         # ------------- iter
         ec_next:                  [ol.pagination, [li, class=next, [a]]]
         #####################################################
         ### LOGIN #########################################
         #titles
-        e_user:                   [_css, '#user_login']
-        e_remeber_me:             [_css, '#user_remeber_me']
-        e_password:               [_css, '#user_password']
-        e_submit:                 [_css, '#input.submit']
+        e_user:                   [_css(), '#user_login']
+        e_remeber_me:             [_css(), '#user_remeber_me']
+        e_password:               [_css(), '#user_password']
+        e_submit:                 [_css(), '#input.submit']
         e_token:                  [input, name='authenticity_token']
         e_csrf:                   [meta, meta, name=csrf-token, content]
 sofurry:
+    redirect: False
     params:
         login:   False
         init:    False
         content: False
         crawl:   False
-    node_framwork:
-        items:
-            user:
-                class:    node
-                subclass: user
-                parents:  []
-                childs:   [folder, view]
-            folder:
-                class:    node
-                subclass: work
-                parents:  [user]
-                childs:   [view]
-            view:
-                class:    node
-                subclass: part
-                parents:  [user,folder]
-                childs:   []
-        swp:
-            dwn: []
-            up:  
-            - [_not, _exists, _folder_]
+    site-defs:
+        folder:
+            superclass:    node
+            class: tgt
+            subclass: bin
+        view:
+            superclass:    node
+            class: tgt
+            subclass: work
     dmns:
         d:
             hstns:               [www,'']
@@ -343,7 +337,11 @@ sofurry:
     urls:
         user:
             user:
-                bp_cnfg: [_dmns(u)]
+                node: True
+                bp_cnfg: []
+                query: {}
+                domain_type: u
+                alt_bp_cnfgs: {}
                 actions:
                     init:
                         do:
@@ -356,20 +354,18 @@ sofurry:
                         - []
                 elements: {}
             listings:
-                bp_cnfg:    [_dmns(d), browse, user, stories, {by: _uid(view)_, stories-page: _page_}]
-                actions:
-                    init:
-                        do:
-                        - []
-                    contnt:
-                        do:
-                        - []
-                    crawl:
-                        do:
-                        - []
-                elements: {}
-            listings_alt:
-                bp_cnfg:    [_dmns(u), stories, {by: _uid(view)_, stories-page: _page_}]
+                node: False
+                bp_cnfg:    [browse, user, stories]
+                query:
+                    stories-page: _val(page;;1)_
+                domain_type: d
+                alt_bp_cnfgs: 
+                    listings_alt:
+                        bp_cnfg:    [stories]
+                        query:
+                            by: _val()_
+                            stories-page: _val(page;;1)_
+                        domain_type: u
                 actions:
                     init:
                         do:
@@ -383,7 +379,13 @@ sofurry:
                 elements: {}
         folder:
             folder:
-                bp_cnfg: [_dmns(d), browse, folder, stories, {by: _uid(user)_, folder: _uid_}]
+                node: True
+                bp_cnfg: [browse, folder, stories]
+                query:
+                    by: _site_uid(user)_
+                    folder: _site_uid()_
+                domain_type: d
+                alt_bp_cnfgs: {}
                 actions:
                     init:
                         do:
@@ -404,7 +406,11 @@ sofurry:
                     ev_view_uid:              [_in, e_lwf_work_iter, [div, class=section-content-list]  ,[a,      _uid(view)_=href,_ubase]]
         view:
             view:
-                bp_cnfg: [_dmns(d), view, _uid_]
+                node: True
+                bp_cnfg: [view, _val()_]
+                query: {}
+                domain_type: d
+                alt_bp_cnfgs: {}
                 elements:
                     ev_user_uid:            [_css, "#sf-userinfo-outer",                         _uid(user)_=href, _uhost]
                     ev_title:               [span, id=sfContentTitle,                            _name(view)_=text]
@@ -441,26 +447,13 @@ sofurry:
             - []
     elements: {}
 itch:
+    redirect: False
     params:
         login:   False
         init:    False
         content: False
         crawl:   False
-    node_framwork:
-        items:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-            work:
-                class: node
-                subclass: work
-                parents: []
-                childs: [work]
-        swp:
-            dwn: []
-            up: []
+    site_defs: {}
     dmns:
         d:
             hstns:    ['', www]
@@ -468,12 +461,16 @@ itch:
             tlds:     [io]
         u:
             hstns:    []
-            hstn_var: _name(user)_
+            hstn_var: _val(user|name)_
             tlds:     [io]
     urls:
         user:
             user:       
-                bp_cnfg: [_dmns(u)]
+                node: True
+                bp_cnfg: []
+                domain_type: u
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -484,7 +481,11 @@ itch:
                 elements: {}
         work:
             work:      
-                bp_cnfg: [_dmns(u), _name_]
+                node: True
+                bp_cnfg: [_val(name)_]
+                domain_type: u
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -507,37 +508,28 @@ itch:
             e_other_game:     [a,    class, title game_link]
             e_dl_direct:      [a,    class, direct_download_btn]
 furaffinity:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: [www,'']
             hstn_var:  null
             tlds:      [net]
-    node_framwork:
-        items:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [view]
-            view:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-            page:
-                class: content
-                subclass: iter
-                val: 1
-        swp:
-            up: []
-            dwn: []
+    site_defs:
+        view:
+            superclass: node
+            class: tgt
+            subclass: work
     urls:
         user:
             user:      
-                bp_cnfg: [_dmns(d), user, _name_]
+                node: True
+                bp_cnfg: [user, _val()_]
+                domain_type: d
                 actions: 
                     init:
                     - []
@@ -547,7 +539,11 @@ furaffinity:
                     - []
                 elements: {}
             work_listing:      
-                bp_cnfg: [_dmns(d), gallery, _name_, _page_, "_try(?)_"]
+                node: False
+                bp_cnfg: [gallery, _val()_, _val(page;;1)_, _try(?)_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -558,7 +554,11 @@ furaffinity:
                 elements: {}
         view:
             view:      
-                bp_cnfg: [_dmns(d), view, _uid_]
+                node: True
+                bp_cnfg: [view, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -599,34 +599,31 @@ furaffinity:
         e_stats: [div, class='table',[div, class='highlight']]
         e_titles: [figcaption, [p ,[a]]]
 blokfort:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    node_framwork:
-        items:
-            user:
-                class: node
-                subclass: work
-                parents: []
-                childs: [work]
-                name: blokfort
-            work:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-        swp:
-            dwn: []
-            up: []
+    site_defs:
+        user:
+            superclass: node
+            class: tgt
+            subclass: work
+            val: blokfort
     urls:
         work:
             work:      
-                bp_cnfg: [_dmns(d), _name_]
+                node: True
+                bp_cnfg: [_val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -637,7 +634,11 @@ blokfort:
                 elements: {}
         user:
             work_listing:     
-                bp_cnfg: [_dmns(d), nsfw-comics]
+                node: False
+                bp_cnfg: [nsfw-comics]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -648,9 +649,12 @@ blokfort:
                 elements: {}
     elements: {}
 catbox:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
@@ -660,31 +664,27 @@ catbox:
             hstns: [files]
             hstn_var:  null
             tlds:      [moe]
-    node_framwork:
-        items: 
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [collection,file]
-            collection:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: [file]
-            file:
-                class: node
-                subclass: part
-                parents: [user,collection]
-                childs: []
-        swp:
-            up: []
-            dwn: 
-            - _not, _collection_
+    site_defs:
+        user:
+            superclass: node
+            class: tgt
+            subclass: user
+        collection:
+            superclass: node
+            class: tgt
+            subclass: bin
+        file:
+            superclass: node
+            class: tgt
+            subclass: work
     urls:
         collection:
             collection:
-                bp_cnfg: [_dmns(d), c, _name_]
+                node: True
+                bp_cnfg: [c, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -695,7 +695,11 @@ catbox:
                 elements: {}
         file:
             file:      
-                bp_cnfg: [_dmns(f), [_delim(.), _file_, _try(_fxt_)]]
+                node: True
+                bp_cnfg: [_val()_, _try(_val(fext)_)]
+                domain_type: f
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -706,9 +710,12 @@ catbox:
                 elements: {}
     elements: {}
 google:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: [www,'']
@@ -722,23 +729,19 @@ google:
             hstns: [docs]
             hstn_var:  null
             tlds:      [com]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [file]
-            file:
-                class: node
-                subclass: work
-                parents: [user]
-    swp:
-        dwn: []
-        up: []
+    site_defs:
+        file:
+            superclass: node
+            class: tgt
+            subclass: work
     urls:
         file:
             doc:       
-                bp_cnfg: [_dmns(w), document, d, _uid_, _try(edit)]
+                node: True
+                bp_cnfg: [document, d, _val()_, _try(edit)]
+                domain_type: w
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -748,7 +751,11 @@ google:
                     - []
                 elements: {}
             pub_doc:   
-                bp_cnfg: [_dmns(w), document, d, e, _uid_, pub]
+                node: True
+                bp_cnfg: [document, d, e, _val()_, pub]
+                domain_type: w
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -758,7 +765,11 @@ google:
                     - []
                 elements: {}
             drive_file: 
-                bp_cnfg: [_dmns(f), file, d, _name_, _try(view)]
+                node: True
+                bp_cnfg: [file, d, _val()_, _try(view)]
+                domain_type: f
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -769,18 +780,26 @@ google:
                 elements: {}
     elements: {}
 fiction:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
+    site_defs: {}
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [live]
     urls:
-        _user:
-            u_user:      
-                bp_cnfg: [_dmns(d), user, _user_]
+        user:
+            user:      
+                node: True
+                bp_cnfg: [user, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -789,9 +808,13 @@ fiction:
                     crawl:
                     - []
                 elements: {}
-        _flash:
-            f_flash:     
-                bp_cnfg: [_dmns(d), stories, _work_, _work_uid_]
+        work:
+            work:     
+                node: True
+                bp_cnfg: [stories, _val(name)_, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -800,9 +823,13 @@ fiction:
                     crawl:
                     - []
                 elements: {}
-        _content:
-            c_part:      
-                bp_cnfg: [_dmns(d), stories, _work_, _work_uid_, _part_, _part_uid_]
+        part:
+            part:      
+                node: True
+                bp_cnfg: [stories, _val(work|name)_, _val(work)_, _val(name)_, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -813,37 +840,39 @@ fiction:
                 elements: {}
     elements: {}
 ghostbin:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [paste]
+    site_defs:
             folder:
-                class: node
+                superclass: node
+                class: non-tgt
                 subclass: folder
-                parents: [user]
-                childs: [paste]
-            paste:
-                class: node
-                subclass: work
-                parents: [user,folder]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+                enabled_for:   _cls(node|site)
+                childs: _cls(node|work)
+                carrier:     null
+                val:
+                    tscope:    _mi(m;i)
+                    tuniq:     _mi(0;0)
+                    uscope:    null
+                    uuniq:     _mi(0;1)
+                    type:      _type(str)
     urls:
-        paste:
-            paste:     
-                bp_cnfg: [_dmns(d), _try(_uid(folder)_), _uid_]
+        work:
+            work:     
+                node: True
+                bp_cnfg: [_try(_val(folder)_), _val_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -853,70 +882,47 @@ ghostbin:
                     - []
                 elements: {}
     elements: {}
-git:
+gitio:
+    redirect: True
     params:
         enabled: False
-        login: False
     dmns:
         d:
-            hstns: ['',www]
+            hstns:     ['',www]
             hstn_var:  null
             tlds:      [io]
+            sld:       git
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [file]
-            file:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
-        file:
-            file:     
-                bp_cnfg: [_dmns(d), _uid_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-    elements: {}
+        _unkown:
+            redirect:     
+                core: False
+                bp_cnfg: [_val(src|redirect;${dmns|sld})_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
 hardbin:
+    redirect: False
     params:
         enabled: False
         login:   False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [paste]
-            paste:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
-        paste:
-            paste:         
-                bp_cnfg: [_dmns(d), ipfs, _uid_]
+        work:
+            work:         
+                node: True
+                bp_cnfg: [ipfs, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -935,36 +941,26 @@ hardbin:
                         url: [IMAGES]
     elements: {}
 literotica:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: [www,'']
             hstn_var:  null
             tlds:      [net,com]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-            work:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-            page:
-                class: content
-                subclass: iter
-                val: 1
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
         user:
             user:     
-                bp_cnfg: [_dmns(d), users, _name_]
+                node: True
+                bp_cnfg: [users, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -974,7 +970,11 @@ literotica:
                     - []
                 elements: {}
             work_listing:     
-                bp_cnfg: [_dmns(d), _name_, works, stories, all]
+                node: False
+                bp_cnfg: [_val(user)_, works, stories, all]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -985,7 +985,12 @@ literotica:
                 elements: {}
         work:
             work:     
-                bp_cnfg: [_dmns(d), s, _name_, {page: _page_}]
+                node: True
+                bp_cnfg: [s, _val()_]
+                domain_type: d
+                query: 
+                    page: _val(page;;1)
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -996,33 +1001,27 @@ literotica:
                 elements: {}
     elements: {}
 mcstories:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-            work:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
-        domain:
+        site:
             user_listing:
-                bp_cnfg: [_dmns(d), users, [_delim(.), index,html]]
+                node: False
+                bp_cnfg: [users, [_delim(.), index,html]]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1033,7 +1032,11 @@ mcstories:
                 elements: {}
         user:
             user:
-                bp_cnfg: [_dmns(d), users, _name_]
+                node: True
+                bp_cnfg: [users, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1044,7 +1047,11 @@ mcstories:
                 elements: {}
         work:
             flash:
-                bp_cnfg: [_dmns(d), _name_, [_delim(.), index, html]]
+                node: False
+                bp_cnfg: [_val()_, [_delim(.), index, html]]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1054,7 +1061,11 @@ mcstories:
                     - []
                 elements: {}
             work:
-                bp_cnfg: [_dmns(d), _name_, [_delim(.), _name_, _try(_fxt_)]]
+                node: True
+                bp_cnfg: [_val()_, [_delim(.), _val()_, _try(_val(fext)_]]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1065,38 +1076,39 @@ mcstories:
                 elements: {}
     elements: {}
 mega:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [nz]
-
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-            folder:
-                class: node
-                subclass: folder
-                parents: [user,folder]
-                childs: [folder]
-            work:
-                class: node
-                subclass: work
-                parents: [user,folder]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs:
+        folder:
+            superclass:     node
+            class:          non-tgt
+            subclass:       site
+            enabled_for:    _cls(node|user;site) 
+            childs:         _cls(folder;work) 
+            carrier:        null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;i)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      _type(str)
     urls:
         domain:
             work_listing:
-                bp_cnfg: [_dmns(d), _try(folder;_uid(folder))]
+                node: false
+                bp_cnfg: [_try(folder;_uid(folder)_)]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1107,7 +1119,11 @@ mega:
                 elements: {}
         work:
             work:
-                bp_cnfg: [_dmns(d), _try(folder;_uid(folder), file, _uid_]
+                node: True
+                bp_cnfg: [_try(folder;_val(folder)_, file, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1118,37 +1134,39 @@ mega:
                 elements: {}
     elements: {}
 pastebin:
+    redirect: False
     params:
         enabled: True
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work,folder]
-            folder:
-                class: node
-                subclass: folder
-                parents: [user]
-                childs: [paste]
-            paste:
-                class: node
-                subclass: paste
-                parents: [user,folder]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs:
+        folder:
+            superclass:     node
+            class:          non-tgt
+            subclass:       site
+            enabled_for:    _cls(node|user;site) 
+            childs:         _cls(folder;work) 
+            carrier:        null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;i)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      _type(str)
     urls:
         user:
             user:      
-                bp_cnfg: [_dmns(d), u, _name_]
+                node: True
+                bp_cnfg: [u, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1159,7 +1177,11 @@ pastebin:
                 elements: {}
         folder:
             folder:      
-                bp_cnfg: [_dmns(d), u, _name(user)_, '1' , _uid_]
+                node: True
+                bp_cnfg: [u, _val(user)_, '1' , _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1168,9 +1190,13 @@ pastebin:
                     crawl:
                     - []
                 elements: {}
-        paste:
-            paste:      
-                bp_cnfg: [_dmns(d), _uid_]
+        work:
+            work:      
+                node: True
+                bp_cnfg: [_val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1191,33 +1217,27 @@ pastebin:
         e_csrf-param_name:  [meta, name=csrf-param, content]
         e_csrf-param:       [meta, name:=g_csrf-param, content]
 pastefs:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [paste]
-            paste:
-                class: node
-                subclass: paste
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
-        paste:
-            paste:      
-                bp_cnfg: [_dmns(d), pid, _uid_]
+        work:
+            work:      
+                node: True
+                bp_cnfg: [pid, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1228,9 +1248,12 @@ pastefs:
                 elements: {}
     elements: {}
 psstaudio:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns:     ['',www]
@@ -1241,24 +1264,15 @@ psstaudio:
             hstn_var:  null
             tlds:      [com]
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [paste]
-            paste:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
-        paste:
-            paste:
-                bp_cnfg: [_dmns(p), post, _uid_]
+        work:
+            work:
+                node: True
+                bp_cnfg: [post, _val()_]
+                domain_type: p
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1269,33 +1283,27 @@ psstaudio:
                 elements: {}
     elements: {}
 poneb:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [in]
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [paste]
-            paste:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
         user:
             user:
-                bp_cnfg: [_dmns(d), u, _name_]
+                node: True
+                bp_cnfg: [u, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1305,7 +1313,11 @@ poneb:
                     - []
                 elements: {}
             paste_listing:
-                bp_cnfg: [_dmns(d), u, _name_, user]
+                node: False
+                bp_cnfg: [u, _val()_, user]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1314,9 +1326,13 @@ poneb:
                     crawl:
                     - []
                 elements: {}
-        paste:
-            paste:
-                bp_cnfg: [_dmns(d), _name_]
+        work:
+            work:
+                node: True
+                bp_cnfg: [_val_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1327,9 +1343,12 @@ poneb:
                 elements: {}
     elements: {}
 githubusercontent:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns:     ['',www]
@@ -1339,30 +1358,53 @@ githubusercontent:
             hstns:     [raw]
             hstn_var:  null
             tlds:      [com]
-    node_framwork:
-        items:
-            user:
-                class: node
-                subclass: user
-                childs: []
-                parents: []
-            folder:
-                class: node
-                subclass: folder 
-                childs: [work,folder]
-                parents: [user,folder]
-            work:
-                class: node
-                subclass: work
-                childs: []
-                parents: [folder,user]
-        swp:
-            up: []
-            dwn: []
+    site_defs:
+        repo:
+            superclass:  node
+            class:       non-tgt 
+            subclass:    repo
+            enabled_for: _cls(node|user)
+            carrier: null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;0)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      str
+        branch:
+            superclass:  node
+            class:       non-tgt 
+            subclass:    branch
+            enabled_for: _cls(node|repo)
+            childs:      _cls(node|work)
+            carrier: null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;0)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      str
+        folder:
+            superclass:  node
+            class:       non-tgt 
+            subclass:    folder
+            enabled_for: _cls(node|branch)
+            childs:      _cls(node|work)
+            carrier: null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;0)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      str
     urls: 
         work:
             work:       
-                bp_cnfg: [_dmns(f), _name(user)_, _repo_, _branch_, _try(_name(folder)_), [_delim(.), _name_, _try(_fxt_)]]
+                node: True
+                bp_cnfg: [_val(user)_, _val(repo)_, _val(branch)_, _try(_val(folder)_), [_delim(.), _val()_, _try(_val(src|fext)_)]]
+                domain_type: f
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1373,33 +1415,27 @@ githubusercontent:
                 elements: {}
     elements:
 rentry:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['', www]
             hstn_var:  null
             tlds:      [org, co]
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-            work:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs: {}
     urls:
         work:
             work:
-                bp_cnfg: [_dmns(d), _uid_]
+                node: True
+                bp_cnfg: [_val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1410,36 +1446,57 @@ rentry:
                 elements: {}
     elements: {}
 snekguy:
+    redirect: False
+    params:
+        enabled: False
+        login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [com]
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work,folder]
-                val: snekguy
-            folder:
-                class: node
-                subclass: folder
-                parents: [user]
-                childs: [work]
-            work:
-                class: node
-                subclass: work
-                parents: [user,folder]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs:
+        user:
+            superclass:     node
+            class:          tgt
+            subclass:       user
+            val:            snekguy
+        folder:
+            superclass:     node
+            class:          non-tgt
+            subclass:       folder
+            enabled_for:    _cls(node|user;site) 
+            childs:         _cls(folder;work) 
+            carrier:        null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;i)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      _type(str)
+        edition:
+            superclass:     prop
+            class:          column
+            subclass:       edition
+            enabled_for:    _cls(node|work) 
+            carrier:        null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;0)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      _type(str)
     urls:
         user:
             work_listing:        
-                bp_cnfg: [_dmns(d), stories]
+                node: False
+                bp_cnfg: [stories]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1450,7 +1507,11 @@ snekguy:
                 elements: {}
         work:
             work:
-                bp_cnfg: [_dmns(d), stories, _try(_name(folder)_), _name_, _edition_]
+                node: True
+                bp_cnfg: [stories, _try(_val(folder)_), _val()_, _try(_val(edition)_)]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1461,33 +1522,31 @@ snekguy:
                 elements: {}
     elements: {}
 snootgame:
+    redirect: False
     params:
         enabled: False
         login: False
+        content: False
+        crawl:   False
     dmns:
         d:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [xyz]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-                val: caveman anon
-            work:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_defs:
+        user:
+            superclass:     node
+            class:          tgt
+            subclass:       user
+            val:            caveman_anon
     urls:
         user:
             user:     
-                bp_cnfg: [_dmns(d)]
+                node: true
+                bp_cnfg: []
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1497,7 +1556,11 @@ snootgame:
                     - []
                 elements: {}
             work_listing: 
-                bp_cnfg: [_dmns(d), en, download.html]
+                node: False
+                bp_cnfg: [en, download.html]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1508,7 +1571,11 @@ snootgame:
                 elements: {}
         work:
             work:      
-                bp_cnfg: [_dmns(d), en, bin, _name_.zip]
+                node: True
+                bp_cnfg: [en, bin, [_delim(.), _val()_, zip]]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1519,38 +1586,27 @@ snootgame:
                 elements: {}
     elements: {}
 fanfiction:
+    redirect: False
     params:
         enabled: False
         login: False
+                query: {}
+                alt_bp_configs: {}
     dmns:
         d:
             hstns: [www,'']
             hstn_var:  null
             tlds:      [net]
 
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work,part]
-            work:
-                class: node
-                subclass: work
-                parents: [user]
-                childs: [part]
-            part:
-                class: node
-                subclass: part
-                parents: [user,work]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    node_framwork: {}
     urls:
         user:
             user:
-                bp_cnfg:  [_dmns(d), u, _uid_, _name_]
+                node: True
+                bp_cnfg:  [u, _val()_, _val(name)_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1561,7 +1617,11 @@ fanfiction:
                 elements: {}
         part:
             part:
-                bp_cnfg:   [_dmns(d), s, _uid(work)_, _name_, _name(work)_]
+                node: True
+                bp_cnfg:   [s, _val(work)_, _val()_, _val(work|name)_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1572,6 +1632,7 @@ fanfiction:
                 elements: {}
     elements: {}
 reddit:
+    redirect: False
     params:
         login:   False
         init:    False
@@ -1582,29 +1643,33 @@ reddit:
             hstns:        [www,'']
             hstn_var:     null
             tlds:         [com]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-            sub:
-                class: node
-                subclass: group
-                parents: []
-                childs: [comment]
-            comment:
-                class: node
-                subclass: work
-                parents: [user,sub]
-                childs: []
-    swp:
-        dwn: []
-        up: []
+    site_def:
+        sub:
+            superclass:     node
+            class:          non-tgt
+            subclass:       sub
+            enabled_for:    _cls(node|site) 
+            carrier:        null
+            val:
+                tscope:    _mi(m;i)
+                tuniq:     _mi(0;i)
+                uscope:    null
+                uuniq:     _mi(0;1)
+                type:      _type(str)
+            childs:         _cls(work) 
+            multiparental:  False
+            shared_child:   False
+        work:
+            subclass:       work
+            shared_child:   True
     urls:
         user:
             user:
-                bp_cnfg:     [_dmns(d), user, _name_]
+                node: True
+                bp_cnfg:     [user, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []
@@ -1615,7 +1680,11 @@ reddit:
                 elements: {}
         sub:
             sub:
-                bp_cnfg:     [_dmns(d), r, _name_]
+                node: True
+                bp_cnfg:     [r, _val()_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions:
                     init:
                     - []
@@ -1626,72 +1695,11 @@ reddit:
                 elements: {}
         post:
             post:
-                bp_cnfg:     [_dmns(d), r, _name(sub)_, comments, _uid_, _name_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-    elements: {}
-reddit:
-    params:
-        login:   False
-        init:    False
-        content: False
-        crawl:   False
-    dmns:
-        d:
-            hstns:        [www,'']
-            hstn_var:     null
-            tlds:         [com]
-    node_framwork:
-            user:
-                class: node
-                subclass: user
-                parents: []
-                childs: [work]
-            sub:
-                class: node
-                subclass: group
-                parents: []
-                childs: [comment]
-            comment:
-                class: node
-                subclass: work
-                parents: [user,sub]
-                childs: []
-    swp:
-        dwn: []
-        up: []
-    urls:
-        user:
-            user:
-                bp_cnfg:     [_dmns(d), user, _name_]
-                actions: 
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-        sub:
-            sub:
-                bp_cnfg:     [_dmns(d), r, _name_]
-                actions:
-                    init:
-                    - []
-                    content:
-                    - []
-                    crawl:
-                    - []
-                elements: {}
-        post:
-            post:
-                bp_cnfg:     [_dmns(d), r, _name(sub)_, comments, _uid_, _name_]
+                node: True
+                bp_cnfg:     [r, _val(sub)_, comments, _val()_, _val(name)_]
+                domain_type: d
+                query: {}
+                alt_bp_configs: {}
                 actions: 
                     init:
                     - []

@@ -1,6 +1,0 @@
-
-This file started with a zero width empty line
-  Leading space
-trailing space
-  leading and trailing space
-This is the last line and it has no new line.
