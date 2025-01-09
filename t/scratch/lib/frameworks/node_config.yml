@@ -18,8 +18,44 @@ atu:
 
 fetch:
     uvar:
+        superclass: attr
+        class: dict
+        subclass: stat
+        parents: [work_bin, work, work_part] 
+        table: None
+        init: 
+        - [published, _type(datetime)]
+        - [faves, _type(int)]
+        - [likes, _type(int)]
+        - [updated, _type(datetime)]
+        - [views, _type(int)]
+        - [completed, _type(bool)]
     svar:
+        superclass: attr
+        class: dict
+        subclass: stat
+        parents: [work_bin, work, work_part] 
+        table: None
+        init: 
+        - [published, _type(datetime)]
+        - [faves, _type(int)]
+        - [likes, _type(int)]
+        - [updated, _type(datetime)]
+        - [views, _type(int)]
+        - [completed, _type(bool)]
     fvar:
+        superclass: attr
+        class: dict
+        subclass: stat
+        parents: [work_bin, work, work_part] 
+        table: None
+        init: 
+        - [published, _type(datetime)]
+        - [faves, _type(int)]
+        - [likes, _type(int)]
+        - [updated, _type(datetime)]
+        - [views, _type(int)]
+        - [completed, _type(bool)]
 
 scrape:
     url:
@@ -48,7 +84,7 @@ uwu:
         table: [site,0]
         init: 
         - [_type(str)]
-    work_bin:
+    bin:
         superclass: node
         class: bin
         parents: [user]
@@ -62,7 +98,7 @@ uwu:
         table: [site,0]
         init:
         - [_type(str)]
-    work_part:
+    part:
         superclass: node
         class: part
         parents: [work]
@@ -93,15 +129,16 @@ uwu:
         table: [-1,0]
         init:
         - [_type(str)]
-    iot_dscp:
+    dscp:
         superclass: prop
         class: dscp
         parents: [work_bin,work,work_part] 
         table: [-1,0]
         int:
         - [_type(str)]
-    tag_group:
+    group:
         superclass: prop
+        class: scalar
         subclass: group
         parents: [tag]
         table: [tag,i]
@@ -109,22 +146,30 @@ uwu:
         - [_type(str)]
 
     # attributes
-    iot_tag:
+    tag:
         superclass: attr
+        class: scalar
         class: tag
         parents: [work_bin,work,work_part]
         table: [site,0]
         init:
         - [_type(str)]
-    iot_stat:
+    stat:
         superclass: attr
+        class: dict
         subclass: stat
-        parents: [work_bin,work,work_part] 
+        parents: [work_bin, work, work_part] 
         table: None
         init: 
         - [published, _type(datetime)]
+        - [faves, _type(int)]
+        - [likes, _type(int)]
+        - [updated, _type(datetime)]
+        - [views, _type(int)]
+        - [completed, _type(bool)]
     user_stat:
         superclass: attr
+        class: dict
         subclass: stat
         parents: [user] 
         table: None
