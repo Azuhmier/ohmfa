@@ -1,0 +1,31 @@
+site_uid:
+    site_key: None
+    dmns:
+        dmn_type:
+            hstns:    []
+            hstn_var: null
+            tlds:     []
+            sld:      null
+    site_defs: {}
+    nodes:
+        node_name:
+            urls:
+                url_name:
+                    bps: {
+                        main:
+                          bp: []
+                          main: True
+                          domain_type: None
+                          query: {} 
+                          frags: {}
+                    }
+                    formats: {}
+                    regex: {}
+                    actions:
+                        checks: {}
+                        parse: {}
+                        content: {}
+                        next_page: {}
+                        crawl: {}
+
+

@@ -515,3 +515,63 @@ if __name__ == "__main__":
             print(f"{k}: Pass")
         else:
             print(f"{k}: Fail")
+
+    #def resl_query(self):
+    #    self.logthis(1,f"{'':>4}>resl_query()")
+
+    #    query_bp  = self.cnfg['urls'][self.u.node_type][self.u.path_type]['cnfg']['query']
+    #    query     = self.u.url.query
+    #    query     =  parse_qs(query)
+
+    #    self.logthis(1,f"{'':>8}bp_query: {query_bp}")
+    #    self.logthis(1,f"{'':>8}query: {query}")
+    #    
+    #    new_query = {}
+
+    #    self.logthis(2,f"{'':>8}...resolving queries: {query}")
+    #    for k,v in query_bp.items():
+    #        self.logthis(2,f"{'':>8}?{k}={v}")
+    #        vrnm, item_type, arg_ar = self.process_item(v)
+    #        if vrnm: 
+    #            self.logthis(2,f"{'':>12}bp value  '{v}' is var '{vrnm}'")
+    #            #if 'subclass' in vr and vr['subclass'] == 'iter':
+    #            if  vr['subclass'] == 'iter':
+    #                start_iter=vr['val']
+    #                self.logvar(12,vrnm,start_iter)
+    #                self.set_vr(vr,start_iter)
+
+    #            if k not in query:
+    #                self.logthis(1,f"{'':>12}!Warning: bp key '{k}' is not in query")
+    #                if vrnm not in self.vrs:
+    #                    string = f"{'':>12}!ERROR: Bp var '{vrnm}' not in vrs"
+    #                    sys.exit(string)
+    #                self.logthis(2,f"{'':>12}Bp var    '{vrnm}' is in vrs")
+    #                v = self.vrs[vrnm]['val']
+    #                self.logthis(2,f"{'':>12}query key '{k}' created")
+    #            else:
+    #                self.logthis(2,f"{'':>12}bp key    '{k}' is in query")
+    #                if vrnm in self.vrs:
+    #                    self.logthis(2,f"{'':>12}bp var    '{vrnm}' is in vrs")
+    #                    if query[k] != self.vrs[vrnm]['val']:
+    #                        if vr['subclass'] == 'iter':
+    #                            string = f"{'':>12}!WARNING: Query mismatch at '{k}' bp: '{self.vrs[vrnm]['val']}' url: '{query[k][0]}'"
+    #                            self.logthis(1,string)
+    #                        else:
+    #                            string = f"{'':>12}!ERROR: Query mismatch at '{k}' bp: '{self.vrs[vrnm]['val']}' url: '{query[k][0]}'"
+    #                            sys.exit(string)
+    #                    else:
+    #                        self.logthis(2,f"{'':>12}key '{k}' have identical values in both bp and query")
+    #                else:
+    #                    self.logthis(2,f"{'':>12}bp var    '{vrnm}' is not in vrs")
+    #                    self.logvar(12,vrnm,query[k])
+    #                    self.set_vr(vr,query[k])
+    #                    v = query[k] 
+    #        else:
+    #            self.logthis(1,f"{'':>12}bp value  '{v}' is constant")
+    #            if k not in query:
+    #                self.logthis(1,f"{'':>12}!Warning: bp key '{k}' is not in query")
+    #            self.logthis(2,f"{'':>12}query key '{k}' created")
+    #        self.logthis(2,f"{'':>12}query key '{k}' value is now '{v}'")
+    #        new_query[k] = v
+    #    self.u.query = new_query
+    #    self.logthis(1,f"{'':>8}new_query: {self.u.query}")

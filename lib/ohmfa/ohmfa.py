@@ -6,6 +6,7 @@ class Ohmfa:
 
     verbose: False
     prnt:    False
+    dcnfg: {}
 
 
     def __init__(self,verbose=0,prnt=0):
