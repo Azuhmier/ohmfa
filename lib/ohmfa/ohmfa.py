@@ -4,9 +4,9 @@ class Ohmfa:
     """_summary_
     """
 
-    verbose: False
-    prnt:    False
-    dcnfg: {}
+    verbose = False
+    prnt =    False
+    dcnfg = {}
 
 
     def __init__(self,verbose=0,prnt=0):

@@ -1,6 +1,6 @@
-012:
-    site_key: a03
+a03:
     sld:      archiveofourown
+    site_key: a03
     dmns:
         d:
             hstns:    ['', www]
@@ -14,12 +14,12 @@
             urls:
                 login:
                     bps: 
-                    - 
-                        bp: [d, users, login]
-                        main: True
-                        domain_type: d
-                        query: {}
-                        frags: {}
+                        main:
+                            bp: [d, users, login]
+                            main: True
+                            domain_type: d
+                            query: {}
+                            frags: {}
                     formats: {}
                     regex: {}
                     payload: 
@@ -32,12 +32,12 @@
             urls:
                 user:
                     bps: 
-                    - 
-                        bp: [users, _db(;name)_, _try(pseuds;_db(;alias)_|1|0)]
-                        main: true
-                        domain_type: d
-                        query: {}
-                        frags: {}
+                        main:
+                            bp: [users, _db(;name)_, _try(pseuds;_db(;alias)_|1|0)]
+                            main: true
+                            domain_type: d
+                            query: {}
+                            frags: {}
                     regex: {}
                     format: {}
                     actions: 
@@ -53,8 +53,8 @@
                             - work_listing
                 profile:
                     bps:
-                        - 
-                            bp: [users, _val(name)_, profile]
+                        main: 
+                            bp: [users, _db(;name)_, profile]
                             main: True
                             domain_type: d
                             query: {}
@@ -78,13 +78,13 @@
                         e_faves:   [_css("#dashboard"), [_css("ul.navigation"),   [        _css("nth-child(1)"),[a, _db(stat|faves)_    =text)]]]]
                 work_listing:
                     bps:
-                    - 
-                        bp: [users, _db(;name)_, _try(pseuds;_db(|;alias)_|1|0), works]
-                        main: True
-                        domain_type: d
-                        query:
-                            page: _db(page;;1)_
-                        frags: {}
+                        main: 
+                            bp: [users, _db(;name)_, _try(pseuds;_db(|;alias)_|1|0), works]
+                            main: True
+                            domain_type: d
+                            query:
+                                page: _db(page;;1)_
+                            frags: {}
                     formats: {}
                     regex: 
                         title: “^Works - [^,-]+ - \\[Archive of Our Own\\]$”
@@ -154,12 +154,12 @@
                         crawl:
                 bin_listing:
                     bps:
-                        - 
-                            bp_cnfg: [users, _name()_, _try(pseuds;_psued()_|1|0), series]
+                        main: 
+                            bp: [users, _db(;uid)_, _try(pseuds;_db(|;alias)_|1|0), series]
                             main: true
                             domain_type: d
                             query:
-                                page: _val(page;;1)_
+                                page: _db(page;;1)_
                             frags: {}
                     formats: {}
                     regex:
@@ -224,12 +224,12 @@
             urls:
                 work_listing:
                     bps:
-                        -   
+                        main:   
                             bp: [series, _db(;uid)_]
                             main: True
                             domain_type: d
                             query:
-                                page: _val(page;;1)_
+                                page: _db(page;;1)_
                             frags: {}
                     formats: {}
                     regex:
@@ -319,15 +319,15 @@
             urls:
                 work:
                     bps:
-                    - 
-                        bp: [works, _db(;uid)]
-                        main: True
-                        domain_type: d
-                        query: 
-                            show_comments: true
-                            view_adult: true
-                            view_full_work: true
-                        frags: {}
+                        main: 
+                            bp: [works, _db(;uid)_]
+                            main: True
+                            domain_type: d
+                            query: 
+                                show_comments: true
+                                view_adult: true
+                                view_full_work: true
+                            frags: {}
                     formats:
                         dscp:
                     regex:
@@ -418,8 +418,8 @@
             urls:
                 chapter:
                     bps:
-                        - 
-                            bp_cnfg: [works, _db(|work;uid)_, chapters, _db(;uid)_]
+                        main:
+                            bp: [works, _db(|work;uid)_, chapters, _db(;uid)_]
                             main: true
                             domain_type: d
                             query: 

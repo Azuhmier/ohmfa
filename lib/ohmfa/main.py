@@ -23,13 +23,18 @@ class Main(Ohmfa):
     def __init__(self,*args,**kwargs):
         super().__init__()
         with open(dcnfg_path, mode='r',encoding='utf-8' ) as infile:
-            self.dcnfg = yaml.safe_load(infile)
+            data = (yaml.safe_load(infile))
+            self.dcnfg.update(data)
         print(f"dcnfg loaded from '{dcnfg_path}'")
 
-    def load_urls(self,urls_file_path=None):
-        infile =  open(urls_file_path,'r', encoding='utf-8')
-        urls = infile.readlines()
-        infile.close()
+    def load_urls(self, urls_file_path=None, lst=False):
+        urls = None
+        if not lst:
+            infile =  open(urls_file_path,'r', encoding='utf-8')
+            urls = infile.readlines()
+            infile.close()
+        else:
+            urls = urls_file_path
         for url in urls:
             self.durls.append(OhmfaUrl(url))
 

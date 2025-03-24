@@ -94,164 +94,16 @@ def process_args(nmstr:str,item_type:str,args:list,cnfg=None):
             for ark in arg:
                 where = None
                 pl    = None
-                item = ark[0]
-                if ark[0][0] == '_':
-                    res = ark.split('=')
-                    if len(res) >= 2:
-                        pl = res[1]
-                        item = res[0]
-                if len(ark) > 1:
-                    where = ark[1]
+                item = None
             res.append([item,pl,where])
+            
 
 
     elif item_type == 'op':
 
-        if nmstr == 'mi':
-                res = []
-                if len(args) > 1:
-                    sys.exit(f"ERROR: op '{nmstr}' is requires 1 or less args, {len(args)} was supplied")
-                elif args[0][0] != '':
-                    if len(args[0]) != 2:
-                        sys.exit(f"ERROR: op '{nmstr}' requires 2 subargs, {len(args[0])} was supplied")
-                    else:
-                        res = cnfg
-                        # - m string ---------------
-                        # - m
-                        m = None
-                        mp = []
-                        m_str = args[0][0]
-                        m_e = m_str.find('[')
-                        if m_e != -1:
-                            m = m_str[:m_e]
-                        else:
-                            m = m_str
-                        # - m query
-                        if m_e != -1:
-                            m_query_e = m_str.find(']')
-                            m_query_str = m_str[m_e+1:m_query_e]
-                            m_query_strs = m_query_str.split(' ')
-                            for qstr in m_query_strs: 
-                                if '=' in qstr:
-                                    query = qstr.split('=')
-                                    if len(query) != 2:
-                                        sys.exit(f"ERROR: op '{nmstr}' requires both sides of '=' to be non-none")
-                                    qkey  = query[0]
-                                    qvals = query[1].split(',')
-                                    if qkey[-1] == '!':
-                                        qkey  = qkey[:-1]
-                                        print('        mqkey: ',qkey)
-                                        print('        mqvals: ',qvals)
-                                        res = {k:v for k,v in res.items() if v[qkey] not in qvals}
-                                    else:
-                                        new_qvals = []
-                                        for qval in qvals:
-                                            if qval[0] == '*':
-                                                qval = qval[1:]
-                                                mp.append(qval)
-                                            new_qvals.append(qval)
-                                        print('        mqkey: ',qkey)
-                                        print('        mqvals: ',new_qvals)
-                                        res = {k:v for k,v in res.items() if v[qkey] in new_qvals}
 
-                                elif '@' in qstr:
-                                    query = qstr.split('@')
-                                    if len(query) != 2:
-                                        sys.exit(f"ERROR: op '{nmstr}' requires both sides of '=' to be non-none")
-                                    else:
-                                        qkey  = query[1]
-                                        qvals = query[0].split(',')
-                                        if qvals[-1][-1] == '!':
-                                            qvals[-1]  = qvals[-1][:-1]
-                                            print('        mqkey: ',qkey)
-                                            print('        mqvals: ',qvals)
-                                            res = {k:v for k,v in res.items() if len(qvals) == len(list((set(qvals) - set(list(v[qkey].keys())))))}
-                                        else:
-                                            print('        mqkey: ',qkey)
-                                            print('        mqvals: ',qvals)
-                                            res = {k:v for k,v in res.items() if not (set(qvals) - set(list(v[qkey].keys())))}
-                        # i string --------------------
-                        # - i
-                        i = None
-                        ip = []
-                        i_str = args[0][1]
-                        i_e = i_str.find('[')
-                        if i_e != -1:
-                            i = i_str[:i_e]
-                        else:
-                            i = i_str
-                        # - i query
-                        if i_e != -1:
-                            i_query_e = i_str.find(']')
-                            i_query_str = i_str[i_e+1:i_query_e]
-                            i_query_strs = i_query_str.split(' ')
-                            for qstr in i_query_strs: 
-                                if '=' in query:
-                                    query = qstr.split('=')
-                                    if len(query) != 2:
-                                        sys.exit(f"ERROR: op '{nmstr}' requires both sides of '=' to be non-none")
-                                    else:
-                                        qkey  = query[0]
-                                        qvals = query[1].split(',')
-                                        mp = False
-                                        if qkey[-1] == '!':
-                                            qkey  = query[:-1]
-                                            print('        iqkey: ',qkey)
-                                            print('        iqvals: ',qvals)
-                                            res = {k:v for k,v in res.items() if v[qkey] not in qvals}
-                                        else:
-                                            new_qvals = []
-                                            for qval in qvals:
-                                                if qkey[0] == '*':
-                                                    qval = qval[1:]
-                                                    ip.append(qval)
-                                                new_qvals.append(qval)
-                                            
-                                            print('        iqkey: ',qkey)
-                                            print('        iqvals: ',new_qvals)
-                                            res = {k:v for k,v in res.items() if v[qkey] in new_qvals}
-                                elif '@' in query:
-                                    query = qstr.split('@')
-                                    if len(query) != 2:
-                                        sys.exit(f"ERROR: op '{nmstr}' requires both sides of '=' to be non-none")
-                                    else:
-                                        qkey  = query[1]
-                                        qvals = query[0].split(',')
-                                        if qvals[-1][-1] == '!':
-                                            qvals[-1]  = qvals[-1][:-1]
-                                            print('        iqkey: ',qkey)
-                                            print('        iqvals: ',qvals)
-                                            res = {k:v for k,v in res.items() if len(qvals) == len(list((set(qvals) - set(list(v[qkey].keys())))))}
-                                        else:
-                                            print('        iqkey: ',qkey)
-                                            print('        iqvals: ',qvals)
-                                            res = {k:v for k,v in res.items() if not (set(qvals) - set(list(v[qkey].keys())))}
 
-                        res = [[int(m),mp],[int(i),ip],res]
-                else:
-                    res=None
-
-        elif nmstr == 'type':
-            retu = None
-            for idx,arg in enumerate(args[0]):
-                x = None
-                if arg == 'list':
-                    x = []
-                elif arg == 'str':
-                    x = ''
-                elif arg == 'int':
-                    x = 0
-                elif arg == 'datetime':
-                    x = 0
-                elif arg == 'bool':
-                    x = 0
-                if idx:
-                    retu.append(x)
-                else:
-                    retu = x
-            res = retu
-
-        elif nmstr == 'in':
+        if nmstr == 'in':
             res = args
 
         elif nmstr == 'for':
