@@ -6,9 +6,15 @@ git branch
     -m <old_branch_name> <new_branch_name>
 git push
     origin
-        -u <new_branch_name>
-        --delete <old_branch_name>
+        -u <branch_name>
+        -u <> <branch_name>
+        --delete <branch_name>
 git branch 
     <new_branch_name>
 git checkout 
     <branch_name>
+git remote
+    -v
+    show origin
+git config
+    --global alias.graph "log --oneline --graph --all --decorate"
