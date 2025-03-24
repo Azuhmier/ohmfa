@@ -18,3 +18,4 @@ git remote
     show origin
 git config
     --global alias.graph "log --oneline --graph --all --decorate"
+    
