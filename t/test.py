@@ -1,7 +1,7 @@
 import sys
 sys.path.append("/home/azuhmier/progs/ohmfa/lib")
 from ohmfa.main import Main
-from ohmfa.fetch.fetcher import Fetcher
+from ohmfa.fetcher import Fetcher
 
 #o = Main()
 #o.select_ohmfa_dir(OHMFA_DIR)

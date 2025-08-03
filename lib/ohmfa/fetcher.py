@@ -5,7 +5,7 @@ import json
 import time
 import yaml
 
-from lib.ohmfa_url import Node
+from ohmfa.ohmfa_url import Node
 from bs4 import BeautifulSoup
 
 # ------- requests

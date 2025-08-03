@@ -15,7 +15,7 @@ MODEL CHARACTERISTICS:
 """
 import copy
 import sys
-from lib.config_parser import (validate_item, process_item)
+from ohmfa.config_parser import (validate_item, process_item)
 from ohmfa.ohmfa import Ohmfa
 
 class PathResolver(Ohmfa):

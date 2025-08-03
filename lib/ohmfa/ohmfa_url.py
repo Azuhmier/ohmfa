@@ -10,7 +10,7 @@ import sys
 import urllib
 from urllib.parse import urlparse, parse_qs
 from ohmfa.ohmfa import Ohmfa
-from lib.path_resolver import PathResolver
+from ohmfa.path_resolver import PathResolver
 
 
 

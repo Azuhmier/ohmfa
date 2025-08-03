@@ -3,7 +3,7 @@ import sys
 import yaml
 from pathlib import Path
 from urllib.parse import urlparse
-from lib.ohmfa_url import OhmfaUrl
+from ohmfa.ohmfa_url import OhmfaUrl
 from ohmfa.ohmfa import Ohmfa
 
 REL_DCNFG_PATH = '../../configs/domain_configs.yml'
