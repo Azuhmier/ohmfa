@@ -1,0 +1,154 @@
+
+##### TO DO #####
+1)
+  current_var_value = self.ws[var_name]
+  if isinstance(current_var_value,list):
+      self.ws[var_name].append(var_value)
+  else:
+      self.ws[var_name] = item(var_value)
+2)
+  u.iter_query_name=None
+  for query_name, query_value in u.query:
+    if query_value == '_iter':
+      if not u.iter_query_name:
+        u.iter_query_name = query_name
+      else:
+        sys.exit('ERROR: Cannot replace query_name "',query_name,'" with "',u.iter_query_name,'". Only 1 query_name can be itered per url.')
+3)
+  expand s_fs
+
+4)
+  expand fetch
+5)
+  break up eval_element
+6) 
+  clean do_actions
+7) 
+  move test to main
+8)
+  make thread fetcher
+9)
+  make crawler disable
+10)
+  fix hang on pdf page
+11)
+  fix fiction.live and pastebin
+12) 
+  grab defuals css
+13) 
+  wait for element
+14) 
+  parallel processing
+15)
+  archive db
+16) 
+  put all backups into archive db
+
+
+##### ARCHIVE #####
+
+parent
+  node [attrs]
+    tags
+    note
+
+bin binIdx
+alias
+
+nodes
+  url
+  title
+  author
+  series
+  chrono
+  chroni
+
+
+archives
+  masterbins
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    masterbins
+  thread
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    threads
+  crawl
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    crawls
+  content
+    config.yml
+    info.json
+    fetch_logs
+        strtine.log
+    lists.json
+    contents
+      a03-works{_work_uid_}chapter{_chapter_uid_}
+      sf-view{_view_uid_}
+        config.yml
+        info.json
+        strtimes
+          page_#
+            fetch.log
+            info.json
+            html
+              a03-works{_work_uid_}chapter{_chapter_uid_}.html
+            fxt
+              a03-works{_work_uid_}chapter{_chapter_uid_}.fxt
+            images
+              "use reffs from html"
+
+##### CONFIGS #####
+reffs
+  domain
+    d/u/f
+      sld:     []
+      hostname:[]
+  path
+  bp_(content, bin, listing, usr, misc, flash)
+    (d/u/f)_(work, part, series, usr, login, page, folder)
+      [,frag,{query}]
+fetch
+  params
+    enabled
+    login
+    crawl
+    dead
+  workflows
+    w_(fetch,crawl,test)
+  actions
+    a_(init,login,content,crawl)
+      url[]
+      do
+        [_(no_soup,skipif(!a,b),_wait),e_*,_(wait,exists)]
+  elements
+    e_(w,wl,f,fl,wfl,u,l,g,s,d,b,p,q)
+      [_in, e_* tgt,_(slice,index)]
+      [_css, selector tgt,_(slice,index)]
+      [_(for,hash,join,not,exists),query,setty,tgt,_(slice,index)]
+
+##### URLS ###########
+[{var_name:var},[hostname,sld,tld], [,path], {query:val}]
+{
+  'domain':[hostname,sld,tld]
+  'path':[,path]
+  'query':{query_name: query_value}
+
+}
+domain = '.'.join(domain_ar)
+path = '/'.join(path_ar)
+
+dfdafda####dafdasfda
+dfdafda
+
+##### ALOGRITHMS #########################

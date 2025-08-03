@@ -1,7 +1,21 @@
+"""
+CAVEATS:
+- All Try block items are scalars
+- Default lvl 0 delim is '/'
+- Default lvl 1 delim is '.'
+- Non Default Delim strs must be indicated at beginning of array via "_delim({delim_str})"
+- '_try' ops can not be consecutive
+- all bp arrays with lvls greater that 0, must contain 2 or more items
 
+MODEL CHARACTERISTICS:
+- all 'r' values are stored and are unique to each recursion or depth as arrays to account for 
+  multiple try blocks
+- [x, "x", [x, "x"]] == [x, x, [x, "x"]]
+
+"""
 import copy
 import sys
-from ohmfa.utils.config_parser import (validate_item, process_item)
+from lib.config_parser import (validate_item, process_item)
 from ohmfa.ohmfa import Ohmfa
 
 class PathResolver(Ohmfa):
