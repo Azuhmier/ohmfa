@@ -1,3 +1,4 @@
+### MASTER
 import os
 import csv
 import sys
@@ -320,9 +321,6 @@ class Fetcher():
         return ' > '.join(path)
 
 
-
-
-    def eval_element(self,arg_ar,u,given_soup):
 
         retu, res, retu_type = [[],[], None]
         tag, qtxt            = [None,None]

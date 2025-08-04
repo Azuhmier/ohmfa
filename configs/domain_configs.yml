@@ -1,9 +1,23 @@
 archiveofourown:
+    redirect: False
+    params:
+        enabled: False
+        login: False
+        content: False
+        crawl:   False
+    workflows:
+            w: [a_init, a_content]
+    actions:
+            a_init:
+                    url: [_url]
+            a_content:
+                    url: [IMAGES]
     dmns:
         d:
             hstns: ['', www]
             hstn_var: null
             tlds: [org]
+
     nodes:
         site:
             login:
