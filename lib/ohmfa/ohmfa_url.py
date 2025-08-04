@@ -40,6 +40,7 @@ class OhmfaUrl(Ohmfa):
         self.url       = urlparse(url)
         self.pr = PathResolver(verbose=verbose,prnt=prnt)
         self.ws = {}
+        self.actions=[[]]
 
         # Determine sld
         dmn_frags = self.url.netloc.split('.')
@@ -58,6 +59,7 @@ class OhmfaUrl(Ohmfa):
                         if self.resl_query():
                             self.update_url()
                         break
+            self.pcnfg = self.dcnfg[self.sld]
 
     def resl_dmn(self, dmn_frags, dmn_cnfgs):
         hstn, sld, tld   = None,None,None
@@ -126,6 +128,7 @@ class OhmfaUrl(Ohmfa):
                 #print(f"    ...bp_cnfg: {bp}")
                 res, bp, nar, nvrs = self.pr.start_recursion(bp,ar)
                 if res:
+                    self.fcnfg = url_cnfg 
                     self.vrs = nvrs
                     self.node_type  = node_type
                     self.url_type = url_type

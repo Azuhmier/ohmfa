@@ -1,0 +1,3 @@
+  cookies: []
+  actions: { a_init: {}, a_content: {}, a_crawl: {}}
+  elements: {}

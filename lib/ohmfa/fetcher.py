@@ -31,6 +31,8 @@ from selenium.common.exceptions import (WebDriverException,NoSuchWindowException
 from seleniumbase import Driver
 
 class Fetcher():
+
+
     s = None
     s_url = None
     s_fs_timeout = None
@@ -82,8 +84,6 @@ class Fetcher():
         self.d.set_page_load_timeout(self.d_page_wait)
 
 
-
-
     def delete_all_sessions(self):
         cmd     = "sessions.list"
         headers = {"Content-Type": "application/json"}
@@ -102,7 +102,16 @@ class Fetcher():
 
 
     def fetch_all(self, start=0, max=0):
+
         for cnt,durl in enumerate(self.durls):
+
+            if durl.sld != 'archiveofourown':
+                max = max + 1
+                continue
+            if durl.node_type != 'work':
+                max = max + 1
+                continue
+
             u = durl.url.geturl()
             u_dname = u.replace("/","_")
             u_dir = os.path.join(self.archive_path,u_dname)
@@ -111,9 +120,9 @@ class Fetcher():
             u_path = os.path.join(u_dir,u_fname)
 
             print(f"{cnt}: {u}")
-            self.fetch(durl)
             #with open(u_path, 'w') as file:
             #    file.write(u_content)
+            self.fetch(durl)
             if max and max == cnt:
                 break
 
@@ -236,22 +245,19 @@ class Fetcher():
         # ------ actions
         print('        ACTIONS-----------')
 
-        if u.fcnfg['params']['enabled']:
-            wkfl = u.fcnfg['workflows']['w']
-            for action in wkfl:
+        if u.pcnfg['params']['enabled']:
+            for action_name, action in u.pcnfg['actions'].items():
                 u.actions.append([action,[]])
                 print("            ",action)
-                a = u.fcnfg['actions'][action]
-                for do in a['do']:
+                a = action
+                for do in a:
+                    u.actions[-1][0] = action_name
                     res = self.do_action(do,u)
                     u.actions[-1][1].append([do,res])
                     print("               ",res," ",do)
         # ------ url vars
         print('        VARS-----------')
         return r
-
-
-
 
 
     def do_action(self,do,u): 
@@ -262,7 +268,7 @@ class Fetcher():
         no_soup = False
         for arg in do:
             if arg[:2] == 'e_':
-                arg_ar = u.fcnfg['elements'][arg]
+                arg_ar = u.pcnfg['elements'][arg]
                 if not no_soup:
                     soup = BeautifulSoup(self.d.page_source,'html.parser')
                     retu, res, retu_type = self.eval_element(arg_ar,u,soup)
@@ -308,6 +314,199 @@ class Fetcher():
         return retu
 
 
+    def eval_element(self,arg_ar,u,given_soup):
+
+        retu, res, retu_type = [[],[], None]
+        tag, qtxt            = [None,None]
+        where                = False
+        tgts, tgt_params     = [[],[]]
+        query, setty         = [{},{}]
+        opts  = {
+            '_css':    {'enabled':False, 'val':None, 'used':False},
+            '_exists': {'enabled':False, 'val':None, 'used':False},
+            '_for':    {'enabled':False, 'val':None, 'used':False},
+            '_join':   {'enabled':False, 'val':None, 'used':False},
+            '_in':     {'enabled':False, 'val':None, 'used':False},
+            '_not':    {'enabled':False, 'val':None, 'used':False},
+            '_slice':  {'enabled':False, 'val':None, 'used':False},
+            '_hash':  {'enabled':False, 'val':None, 'used':False},
+        }
+        tgt_idx = -1
+
+        for item in arg_ar:
+
+            # arg_var tgt
+            if isinstance(item,list):
+                tgts.append(item)
+                tgt_params.append([])
+                tgt_idx+=1
+
+            #css
+            elif opts['_css']['enabled']:
+                where=True
+                tag=item
+                opts['_css']['val']     = tag
+                opts['_css']['enabled'] = False
+
+            # attribs ops 
+            elif '=' in item:
+                key, value = item.split('=',1)
+
+                # _var_=attr
+                if key[0] == '_':
+                    tgts.append(value)
+                    tgt_params.append([])
+                    tgt_idx+=1
+                    setty[key] = value
+
+                # attr=attr_value
+                else:
+                    if key == 'txt':
+                        qtxt=value
+                    else:
+                        query.update({key: value})
+            # ops
+            elif item[0] == '_':
+                if item == '_in':
+                    opts[item]['enabled'], opts[item]['used'] = True,True
+
+                elif item == '_for':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+
+                elif item == '_css':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+
+                elif item == '_hash':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+                    opts[item]['val']=[]
+
+                elif item == '_not':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+
+                elif item == '_exists':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+
+                elif item == '_split':
+                    opts[item]['enabled'], opts[item]['used']=True,True
+
+            # element
+            elif item[:2] == 'e_':
+                if opts['_in']['enabled']:
+                    where=True
+                    opts['_in']['val'] = item
+                    opts['_in']['enabled'] =False
+                else:
+                    sys.exit('ERROR: _in is not enabled for ', item, ' in ',arg_ar)
+            elif ':' in item:
+                tgt_params[tgt_idx].append(['slice',item])
+
+            # tag
+            elif not where:
+                tag = item
+                where = True
+
+            # tgt
+            else:
+                tgts.append(item)
+                tgt_idx+=1
+                tgt_params.append([])
+
+        #------ pre soup
+        # - _in
+        if opts['_in']['used']: 
+            ele_name = opts['_in']['val'] 
+            if ele_name not in u.soups:
+                ele = u.fcnfg['elements'][ele_name]
+                given_soup = self.eval_element(ele,u,given_soup)[0]
+                if not len(given_soup):
+                    print('                ...bad given_batch',ele)
+                    return [],[],None
+                if isinstance(given_soup[0],list):
+                    sys.exit("given_soup cant be list: ",ele_name)
+            else:
+                given_soup = u.soups[ele_name]
+
+
+        # ----- get soup
+        soup_batch = None
+        # - CSS
+        if opts['_css']['used']:
+            selector = opts['_css']['val']
+            soup_batch = given_soup.select(selector)
+            if not len(soup_batch):
+                print('                ...bad soup_batch',arg_ar)
+                return [],[],None
+        # - QUERY
+        elif not opts['_in']['used']:
+            if qtxt: 
+                soup_batch = given_soup.find_all(tag, attrs=query, string=qtxt) 
+                if not len(soup_batch):
+                    print('                ...bad soup_batch',arg_ar)
+                    return [],[],None
+            else:
+                soup_batch = given_soup.find_all(tag, attrs=query) 
+                if not len(soup_batch):
+                    print('                ...bad soup_batch',arg_ar)
+                    return [],[],None
+        else:
+            soup_batch = [given_soup[0]]
+
+        if not opts['_for']['used']:
+            retu_type = 'scalar'
+            soup_batch = [soup_batch[0]]
+        else:
+            retu_type = 'list'
+
+        if isinstance(soup_batch[0],list):
+            sys.exit("soup_batch items cant be list")
+
+        # ----- get tgt
+        for soup in soup_batch:
+            if not opts['_hash']['used']:
+                if not len(tgts):
+                    retu.append(soup)
+                else:
+                    tgt = tgts[0]
+                    if isinstance(tgt,list):
+                        child_soup, child_res, child_soup_type = self.eval_element(tgt,u,soup)
+
+                        if not len(child_soup):
+                            print('                ...bad child_batch',tgt)
+                            return [],[],None
+                        if child_soup_type == 'list':
+                            if isinstance(child_soup[0],list):
+                                sys.exit('child soup list items cant be list :'+str(tgt))
+                            if opts['_for']['used']:
+                                sys.exit('only 1 list')
+                            else:
+                                if len(soup_batch) > 1:
+                                    sys.exit('once again, only 1 list')
+                                retu=child_soup
+                                res=child_res
+                                retu_type = list
+                                break
+                        else:
+                            retu.append(child_soup[0])
+                            if len(child_res):
+                                res.append(child_res[0])
+                    else:
+                        tgt_param = tgt_params[0]
+                        if tgt in ['text','txt']:
+                            retu.append(soup)
+                            res.append(soup.text)
+                            for key in setty:
+                                u.vrs[key] = soup.text
+                        else:
+                            sys.exit('only text')
+            else:
+                sys.exit('no hash')
+
+
+        if len(retu):
+            if isinstance(retu[0],list):
+                print('tgts: '+str(tgts))
+                sys.exit('retu elements cant be list: '+str(arg_ar))
+        return retu, res, retu_type      
 
 
     def get_element_path(self, element):
@@ -515,9 +714,6 @@ class Fetcher():
         return retu, res, retu_type      
 
 
-
-
-
     def s_fs(self,url,post=False):
         r = None
         cmd     = "request.post" if post else "request.get"
@@ -537,9 +733,6 @@ class Fetcher():
         return r
 
 
-
-
-
     def get_payload (self,d_config, pwds, domain) :
         usr = d_config["usr"]
         pwd = d_config["pwd"]
@@ -552,14 +745,10 @@ class Fetcher():
         return payload
 
 
-
-
     def get_token (self,d_config, r):
         soup  = BeautifulSoup( r.content, 'html.parser' )
         token = soup.find('input', attrs={'name': d_config["token"]})
         return token
-
-
 
 
     def login (self, dc_data, pwds, header ) :
@@ -582,8 +771,6 @@ class Fetcher():
         return s
 
 
-
-
     def get_passwords(self, pwds_file):
         with open(pwds_file, mode='r', encoding='utf-8') as csv_file:
             csv_reader = csv.reader( csv_file, delimiter=' ')
@@ -599,13 +786,6 @@ class Fetcher():
                     usr = row[1]
                     pwd = row[2]
                     self.pwds[domain] = {'usr':usr, 'pwd':pwd}
-
-
-
-
-
-
-
 
 
     def check_urls(self, slds=[],max=1):

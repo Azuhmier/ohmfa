@@ -1,0 +1,6 @@
+node_type:
+  url_type:
+    domain_key: None
+    bps: []
+    #query: {}
+    context: {}

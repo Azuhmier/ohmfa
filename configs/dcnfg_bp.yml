@@ -1,0 +1,5 @@
+sld:
+  params: { enabled: True, login: False, content: True, crawl: False, redirect: False }
+  dmns: { domain_key: { hstns: [], hstn_var: null, tlds: [] }}
+  nodes: {} 
+  context: {}
