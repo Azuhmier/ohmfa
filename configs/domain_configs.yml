@@ -1,0 +1,540 @@
+archiveofourown:
+    dmns:
+        d:
+            hstns: ['', www]
+            hstn_var: null
+            tlds: [org]
+    nodes:
+        site:
+            login:
+                domain_type: d
+                bp_cnfg: [users, login]
+                elements: {}
+                payload: 
+                    user[login]: _usr_ 
+                    user[password]: _pwd_
+                    user[remeber_me]: 0 
+                    commit: "Log+in" 
+                    authenticity_token: g_token_value
+        user:
+            user:
+                domain_type: d
+                bp_cnfg: [users, _val(name)_, _try(pseuds;_psued()_|1|0)]
+            profile:
+                domain_type: d
+                bp_cnfg: [users, _val(name)_, profile]
+            work_listing:
+                domain_type: d
+                bp_cnfg: [users, _val(;name)_, _try(pseuds;_psued()_|1|0), works]
+                query:
+                    page: _val(page;;1)_
+                verify:
+                    title:
+                    - [ _in(ea_head), title, text==_regex(title) ]   
+                    - true 
+                    - [_regex, '^Works - [^,-]+ - \[Archive of Our Own\]$']
+            series_listing:
+                domain_type: d
+                bp_cnfg: [users, _name()_, _try(pseuds;_psued()_|1|0), series]
+                query:
+                    page: _val(page;;1)_
+                verify:
+                    - [_regex, '^(?:[^,-]+,? )+– Works \[Archive of Our Own\]$']
+                    - [_in(ea_head), title, text==_regex(title)]
+                    - TRUE 
+        bin:
+            bin:
+                domain_type: d
+                query:
+                    page: _val(page;;1)_
+                bp_cnfg: [series, _val()_]
+        work:
+            work:
+                domain_type: d
+                bp_cnfg: [works, _val()_]
+                query: 
+                    show_comments: true
+                    view_adult: true
+                    view_full_work: true
+                checks:
+                    title: 
+                    - [ _in(ea_head), title, text==_regex(title) ]
+                    - true
+                    not_series:
+                    - [ _css(“dl.series.meta.group”) ]
+                    - false
+        chapter:
+            chapter:
+                domain_type: d
+                bp_cnfg: [works, _val(work)_, chapters, _val()_]
+                query: 
+                    show_comments: true
+                    view_adult: true
+                checks:
+                    title:
+                        - [_in(ea_head), title, text==_regex(title)]
+                        - true
+sofurry:
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var: null
+            tlds: [com]
+        u:
+            hstns: []
+            hstn_var: _name(user)_
+            tlds: [com]
+    nodes:
+        user:
+            user:
+                domain_type: u
+                bp_cnfg: []
+            listings:
+                domain_type: d
+                bp_cnfg: [browse, user, stories]
+                query:
+                    stories-page: _val(page;;1)_
+        folder:
+            folder:
+                domain_type: d
+                bp_cnfg: [browse, folder, stories]
+                query:
+                    by: _site_uid(user)_
+                    folder: _site_uid()_
+        view:
+            view:
+                node: True
+                bp_cnfg: [view, _val()_]
+                domain_type: d
+itch:
+    dmns:
+        d:
+            hstns:    ['', www]
+            hstn_var: null
+            tlds:     [io]
+        u:
+            hstns:    []
+            hstn_var: _val(user|name)_
+            tlds:     [io]
+    nodes:
+        user:
+            user:       
+                bp_cnfg: []
+                domain_type: u
+        work:
+            work:      
+                bp_cnfg: [_val(name)_]
+                domain_type: u
+    elements:
+            e_head_title:     [[head, title], [_text_]]
+            e_dscr_raw:       [div,  class, formatted_description user_formatted]
+            e_dls_class:      [div,  class, uploads]
+            e_dl_class:       [div,  class, upload]
+            e_dl_info_class:  [div,  class, info_column]
+            e_dl_button:      [a,    class, button download_btn]
+            e_comments:       [div,  class, game_comments_widget base_widget]
+            e_csrf_token:     [meta, name,  csrf_token]
+            e_view_more:      [a,    class, action_btn view_more]
+            e_more_games:     [div,  class, game_grid_widget base_widget user_game_grid]
+            e_other_game:     [a,    class, title game_link]
+            e_dl_direct:      [a,    class, direct_download_btn]
+furaffinity:
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [net]
+    nodes:
+        user:
+            user:      
+                bp_cnfg: [user, _val()_]
+                domain_type: d
+            work_listing:      
+                bp_cnfg: [gallery, _val()_, _val(page;;1)_, '_try(?)_']
+                domain_type: d
+        view:
+            view:      
+                bp_cnfg: [view, _val()_]
+                domain_type: d
+    elements:
+        AUTHOR:          [e_author, {text}]
+        AUTHOR_STATS:    [e_joined, [where, [strong>, {text}]]]
+        TITLE:           [e_title, {text}]
+        TAGS:            [[and, e_tag_of, e_tag_ef], [for, e_tag, {text}]]
+        DSCR:            [e_content,e_dscr]
+        PDF:             [s_pdf]
+        TXT:             [e_content, e_txt, {text}]
+        CHRONO:          [e_chrons, [for, e_chrono, where, [strong>, {text}]]]
+        CHRONI:          [e_chrons, [for, e_chroni, where, [strong>, {text}]]]
+        STATS:           [e_stat_header, e_stats, [by, line, ['[7:],views[:3],faves[:1],comments[:1],vote[:1]']]]
+        IMAGE:           [in, s_art for, w_work, where, e_contentimage]
+        FOLDER_IMAGE:    [in s_art, in, e_folders for, e_folder_link]
+        TITLES:          [in, s_titles for, w_work, where, e_titles]
+        FOLDER_TITLES:   [in, s_titles, in, e_folders for, e_folder_link]
+        JOURNALS:        [in, s_journals, for w_work]
+        e_info: [div.info]
+        e_tag2: [div, class='section-ody info",[div,[strong],[span]]]
+        e_tag:  [section, class='tags-mobile',[span,  class='tags', [a]]]
+        e_tag3: [section, class="folders-moile",[div,[div,[a]]]]
+        e_joined: [span, class="hideonmoile" >registered<]
+        e_text:     [div, class="submission-content"]
+        e_title:    [.submission-title]
+        e_author:   [a]
+        e_views:    [div, class='views']
+        e_favs:     [div, class='favorites']
+        e_comments: [div, class='comments']
+        e_rating:   [div, class='rating']
+        e_date: [.popup_date]
+        e_stats: [div, class='table',[div, class='highlight']]
+        e_titles: [figcaption, [p ,[a]]]
+blokfort:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    nodes:
+        work:
+            work:      
+                bp_cnfg: [_val()_]
+                domain_type: d
+        user:
+            work_listing:     
+                bp_cnfg: [nsfw-comics]
+                domain_type: d
+catbox:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [moe]
+        f:
+            hstns: [files]
+            hstn_var:  null
+            tlds:      [moe]
+    nodes:
+        collection:
+            collection:
+                bp_cnfg: [c, _val()_]
+                domain_type: d
+        file:
+            file:      
+                bp_cnfg: [_val()_, _try(_val(fext)_)]
+                domain_type: f
+google:
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [com]
+        f:
+            hstns: [drive]
+            hstn_var:  null
+            tlds:      [com]
+        w:
+            hstns: [docs]
+            hstn_var:  null
+            tlds:      [com]
+    nodes:
+        file:
+            doc:       
+                bp_cnfg: [document, d, _val()_, _try(edit)]
+                domain_type: w
+            pub_doc:   
+                bp_cnfg: [document, d, e, _val()_, pub]
+                domain_type: w
+            drive_file: 
+                bp_cnfg: [file, d, _val()_, _try(view)]
+                domain_type: f
+fiction:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [live]
+    nodes:
+        user:
+            user:      
+                bp_cnfg: [user, _val()_]
+                domain_type: d
+        work:
+            work:     
+                bp_cnfg: [stories, _val(name)_, _val()_]
+                domain_type: d
+        part:
+            part:      
+                bp_cnfg: [stories, _val(work|name)_, _val(work)_, _val(name)_, _val()_]
+                domain_type: d
+ghostbin:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    nodes:
+        work:
+            work:     
+                bp_cnfg: [_try(_val(folder)_), _val_]
+                domain_type: d
+gitio:
+    dmns:
+        d:
+            hstns:     ['',www]
+            hstn_var:  null
+            tlds:      [io]
+            sld:       git
+
+    nodes:
+        _unkown:
+            redirect:     
+                bp_cnfg: ['_val(src|redirect;${dmns|sld})_']
+                domain_type: d
+hardbin:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    nodes:
+        work:
+            work:         
+                bp_cnfg: [ipfs, _val()_]
+                domain_type: d
+    fetch:
+        workflows:
+                w: [a_init, a_content]
+        actions:
+                a_init:
+                        url: [_url]
+                a_content:
+                        url: [IMAGES]
+literotica:
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [net,com]
+    nodes:
+        user:
+            user:     
+                bp_cnfg: [users, _val()_]
+                domain_type: d
+            work_listing:     
+                bp_cnfg: [_val(user)_, works, stories, all]
+                domain_type: d
+        work:
+            work:     
+                bp_cnfg: [s, _val()_]
+                domain_type: d
+                query: 
+                    page: _val(page;;1)_
+mcstories:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+
+    nodes:
+        site:
+            user_listing:
+                bp_cnfg: [users, [_delim(.), index,html]]
+                domain_type: d
+        user:
+            user:
+                bp_cnfg: [users, _val()_]
+                domain_type: d
+        work:
+            flash:
+                bp_cnfg: [_val()_, [_delim(.), index, html]]
+                domain_type: d
+            work:
+                node: True
+                bp_cnfg: [_val()_, [_delim(.), _val()_, _try(_val(fext)_]]
+                domain_type: d
+mega:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [nz]
+    nodes:
+        domain:
+            work_listing:
+                bp_cnfg: [_try(folder;_uid(folder)_)]
+                domain_type: d
+        work:
+            work:
+                bp_cnfg: [_try(folder;_val(folder)_, file, _val()_]
+                domain_type: d
+pastebin:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+    nodes:
+        user:
+            user:      
+                bp_cnfg: [u, _val()_]
+                domain_type: d
+        folder:
+            folder:      
+                bp_cnfg: [u, _val(user)_, '1' , _val()_]
+                domain_type: d
+        work:
+            work:      
+                bp_cnfg: [_val()_]
+                domain_type: d
+    elements:
+        e_w_dl:             [a, class=btn -small,txt=download]
+        e_content_txt_area: [div, class=source text, [ol, class=text]]
+        e_content_txt:      [_in, e_content_txt_area, [_for, li, txt]]
+
+        e_login_usr:        [_css, "#loginform-username"]
+        e_login_pwd:        [_css, "#loginform-password"]
+        e_login_btn_submit: [button, type=submit, class=btn-big]
+
+        e_csrf-param_name:  [meta, name=csrf-param, content]
+        e_csrf-param:       [meta, name:=g_csrf-param, content]
+pastefs:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+
+    nodes:
+        work:
+            work:      
+                bp_cnfg: [pid, _val()_]
+                domain_type: d
+psstaudio:
+    dmns:
+        d:
+            hstns:     ['',www]
+            hstn_var:  null
+            tlds:      [com]
+        p:
+            hstns:     [pastes]
+            hstn_var:  null
+            tlds:      [com]
+
+    nodes:
+        work:
+            work:
+                bp_cnfg: [post, _val()_]
+                domain_type: p
+poneb:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [in]
+    nodes:
+        user:
+            user:
+                bp_cnfg: [u, _val()_]
+                domain_type: d
+            paste_listing:
+                bp_cnfg: [u, _val()_, user]
+                domain_type: d
+        work:
+            work:
+                bp_cnfg: [_val_]
+                domain_type: d
+githubusercontent:
+    dmns:
+        d:
+            hstns:     ['',www]
+            hstn_var:  null
+            tlds:      [com]
+        f:
+            hstns:     [raw]
+            hstn_var:  null
+            tlds:      [com]
+    nodes: 
+        work:
+            work:       
+                bp_cnfg: [_val(user)_, _val(repo)_, _val(branch)_, _try(_val(folder)_), [_delim(.), _val()_, _try(_val(fext)_)]]
+                domain_type: f
+rentry:
+    dmns:
+        d:
+            hstns: ['', www]
+            hstn_var:  null
+            tlds:      [org, co]
+
+    nodes:
+        work:
+            work:
+                bp_cnfg: [_val()_]
+                domain_type: d
+snekguy:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [com]
+
+    nodes:
+        user:
+            work_listing:        
+                bp_cnfg: [stories]
+                domain_type: d
+        work:
+            work:
+                bp_cnfg: [stories, _try(_val(folder)_), _val()_, _try(_val(edition)_)]
+                domain_type: d
+snootgame:
+    dmns:
+        d:
+            hstns: ['',www]
+            hstn_var:  null
+            tlds:      [xyz]
+    nodes:
+        user:
+            user:     
+                bp_cnfg: []
+                domain_type: d
+            work_listing: 
+                bp_cnfg: [en, download.html]
+                domain_type: d
+        work:
+            work:      
+                bp_cnfg: [en, bin, [_delim(.), _val()_, zip]]
+                domain_type: d
+fanfiction:
+    dmns:
+        d:
+            hstns: [www,'']
+            hstn_var:  null
+            tlds:      [net]
+    nodes:
+        user:
+            user:
+                bp_cnfg:  [u, _val()_, _val(name)_]
+                domain_type: d
+        part:
+            part:
+                bp_cnfg:   [s, _val(work)_, _val()_, _val(work|name)_]
+                domain_type: d
+reddit:
+    dmns:
+        d:
+            hstns:        [www,'']
+            hstn_var:     null
+            tlds:         [com]
+    nodes:
+        user:
+            user:
+                bp_cnfg:     [user, _val()_]
+                domain_type: d
+        sub:
+            sub:
+                bp_cnfg:     [r, _val()_]
+                domain_type: d
+        post:
+            post:
+                bp_cnfg:     [r, _val(sub)_, comments, _val()_, _val(name)_]
+                domain_type: d

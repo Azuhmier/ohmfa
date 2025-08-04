@@ -1,3 +1,4 @@
+##MASTER
 """
 CAVEATS:
 - All Try block items are scalars
@@ -43,7 +44,6 @@ class PathResolver(Ohmfa):
 
 
     def _m(self, bp_in:list, ar_in:list, depth:int, ida:list, lvl:int, delims:list, vrs:list) -> list:
-
 
         # _logars() ##############################################
         def _logars(ind:int, border:str, header:str, bp:list, ar:list, ida:int, lvl:int, depth:int, retu:bool, r_ar:list,v_ard,v_bpd) -> None:
@@ -396,5 +396,5 @@ class PathResolver(Ohmfa):
                 items = c_ar[:]
                 c_ar[:] = [delims[lvl].join(items)]
 
-        print(vrs)
+        #print(vrs)
         return [retu, bp, ar, vrs, delims]

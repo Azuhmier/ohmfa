@@ -1,3 +1,4 @@
+##MASTER
 import sys
 
 def validate_item(item, desired_namestr, desired_item_type, err:bool=False,cnfg=None):
@@ -29,17 +30,25 @@ def validate_item(item, desired_namestr, desired_item_type, err:bool=False,cnfg=
 
 
 def process_item(item:str,cnfg=None,no_res=False):
+
+    #print(f"        Processing Item: {item} =======")
+
     nmstr     = item
     item_type = get_item_type(item)
     res       = None
 
+    #print(f"        ...Item type: {item_type}")
+
     # non-literal
-    if item_type != 'ltrl':
+    if item_type != 'ltrl' and item_type !='bool':
         nmstr, args = parse_item(item,item_type)
+        #print(f"        ...no_res: {no_res}")
         if not no_res:
             res = process_args(nmstr,item_type,args,cnfg)
         else:
             res = args
+
+    #print(f"        ...returning: nmstr:{nmstr} item_tpye:{item_type} res:{res}")
 
     return nmstr, item_type, res
 
@@ -47,6 +56,7 @@ def process_item(item:str,cnfg=None,no_res=False):
 def parse_item(item,item_type):
     """_summary_
     """
+    #print(f"            parsing item {item}")
     args   = None
     nmstr  = None
 
@@ -57,10 +67,15 @@ def parse_item(item,item_type):
         z = item.find('(')
         e = item.rfind(')')
         arg_str =  item[(z+1):e]
+        #print(f"            ...z {z}")
+        #print(f"            ...e {e}")
+        #print(f"            ...arg_str {arg_str}")
 
         args = arg_str.split('|')
         args = [arg.split(';') for arg in args]
         nmstr = item[1:z]
+        #print(f"            ...args {args}")
+        #print(f"            ...nmstr {nmstr}")
 
     return nmstr, args
 
@@ -70,7 +85,9 @@ def get_item_type(item):
     """
 
     item_type = None
-    if item[0] == '_':
+    if isinstance(item,bool):
+        item_type = 'bool'
+    elif item[0] == '_':
         if item[-1] == '_':
             item_type = 'vr'
         else:
@@ -86,17 +103,18 @@ def get_item_type(item):
 
 
 def process_args(nmstr:str,item_type:str,args:list,cnfg=None):
-
+    #print(f"            processing_args item: nmstr:{nmstr} item_type:{item_type} args:{args}")
     res = []
 
     if item_type == 'vr':
         for arg in args:
+            argname = ['varname', 'curr', 'set']
+            dres={}
             for ark in arg:
-                where = None
-                pl    = None
-                item = None
-            res.append([item,pl,where])
-            
+                key = argname.pop(0)
+                dres[key] = ark
+                #print(f"            ...found {key}:{ark}")
+            res.append(dres)
 
 
     elif item_type == 'op':

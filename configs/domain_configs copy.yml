@@ -15,446 +15,441 @@ archiveofourown:
         psued:   alias
     nodes:
         site:
-            urls:
-                site:
-                    bp_cnfg: [d, users, login]
-                    elements: {}
-                    payload: 
-                        user[login]: _usr_ 
-                        user[password]: _pwd_
-                        user[remeber_me]: 0 
-                        commit: "Log+in" 
-                        authenticity_token: g_token_value
-                login:
-                    bp_cnfg: [d, users, login]
-                    elements: {}
-                    payload: 
-                        user[login]: _usr_ 
-                        user[password]: _pwd_
-                        user[remeber_me]: 0 
-                        commit: "Log+in" 
-                        authenticity_token: g_token_value
+            site:
+                bp_cnfg: [d, users, login]
+                elements: {}
+                payload: 
+                    user[login]: _usr_ 
+                    user[password]: _pwd_
+                    user[remeber_me]: 0 
+                    commit: "Log+in" 
+                    authenticity_token: g_token_value
+            login:
+                bp_cnfg: [d, users, login]
+                elements: {}
+                payload: 
+                    user[login]: _usr_ 
+                    user[password]: _pwd_
+                    user[remeber_me]: 0 
+                    commit: "Log+in" 
+                    authenticity_token: g_token_value
         user:
-            urls:
-                user:
-                    node: True
-                    bp_cnfg: [users, _val(name)_, _try(pseuds;_psued()_|1|0)]
-                    query: {}
+            user:
+                node: True
+                bp_cnfg: [users, _val(name)_, _try(pseuds;_psued()_|1|0)]
+                query: {}
+                domain_type: d
+                alt_bp_cnfgs: {}
+                actions: 
+                    init:
+                        do:
+                        - [ a_init]
+                    content:
+                        do:
+                        - []
+                    crawl:
+                        - profile
+                        - series_listing
+                        - work_listing
+                elements: {}
+            profile:
+                node: False
+                bp_cnfg: [users, _val(name)_, profile]
+                query: {}
+                domain_type: d
+                alt_bp_cnfgs: {}
+                actions:
+                    init:
+                        do:
+                        - [ a_init]
+                    content:
+                        do:
+                        - []
+                    crawl: null
+                elements: 
+                    e_pseudes: [_css(".meta"),      [_css("dd.pseuds"),       [_for(), a,                        _db(pseuds)_       =text]]]
+                    e_joined:  [_css(".meta"),      [_css("dd:nth-child(4)"),                                    _db(stat|joined)_  =text]]
+                    e_uid:     [_css(".meta"),      [_css("dd:nth-child(6)"),                                    _db(;uid)_         =text]]
+                    e_works:   [_css("#dashboard"), [_css("ul.navigation"),   [        _css("nth-child(1)"),[a, _db(stat|works)_    =text)]]]]
+                    e_series:  [_css("#dashboard"), [_css("ul.navigation"),   [        _css("nth-child(1)"),[a, _db(stat|series)_   =text)]]]]
+                    e_faves:   [_css("#dashboard"), [_css("ul.navigation"),   [        _css("nth-child(1)"),[a, _db(stat|faves)_    =text)]]]]
+            work_listing:
+                bps:
+                - 
+                    bp: [users, _db(;name)_, _try(pseuds;_psued()_|1|0), works]
                     domain_type: d
-                    alt_bp_cnfgs: {}
-                    actions: 
-                        init:
-                            do:
-                            - [ a_init]
-                        content:
-                            do:
-                            - []
-                        crawl:
-                            - profile
-                            - series_listing
-                            - work_listing
-                    elements: {}
-                profile:
-                    node: False
-                    bp_cnfg: [users, _val(name)_, profile]
-                    query: {}
-                    domain_type: d
-                    alt_bp_cnfgs: {}
-                    actions:
-                        init:
-                            do:
-                            - [ a_init]
-                        content:
-                            do:
-                            - []
-                        crawl: null
-                    elements: 
-                        e_pseudes: [_css(".meta"),      [_css("dd.pseuds"),       [_for(), a,                        _db(pseuds)_       =text]]]
-                        e_joined:  [_css(".meta"),      [_css("dd:nth-child(4)"),                                    _db(stat|joined)_  =text]]
-                        e_uid:     [_css(".meta"),      [_css("dd:nth-child(6)"),                                    _db(;uid)_         =text]]
-                        e_works:   [_css("#dashboard"), [_css("ul.navigation"),   [        _css("nth-child(1)"),[a, _db(stat|works)_    =text)]]]]
-                        e_series:  [_css("#dashboard"), [_css("ul.navigation"),   [        _css("nth-child(1)"),[a, _db(stat|series)_   =text)]]]]
-                        e_faves:   [_css("#dashboard"), [_css("ul.navigation"),   [        _css("nth-child(1)"),[a, _db(stat|faves)_    =text)]]]]
-                work_listing:
-                    bps:
-                    - 
-                        bp: [users, _db(;name)_, _try(pseuds;_psued()_|1|0), works]
+                    main: true
+                    query:
+                        page: _db(page;;1)_
+                    frags: {}
+                formats: {}
+                regex: {}
+                title: “^Works - [^,-]+ - \[Archive of Our Own\]$”
+                actions: 
+                    checks:
+                        title:
+                        - [ _in(ea_head), title, text==_regex(title) ]   
+                        - true 
+                    data:
+                        self:
+                            prsv: null
+                            area: {}
+                            data:
+                                NAME: [ _css(“h2.heading”), db(;name)=text, _sfind(“by “;>) ]
+                                WORK:
+                                    prsv: "|work"
+                                    area:
+                                        listing: [ _css(“ol.work.index.group”), [ _for(),li ]]
+                                        listing_head: [ _in(listing), _css(”h4.heading”) ]
+                                    data:
+                                        uid:  [ _in(listing_head), _for(0), a, _db(|w)=href, _upath(-1) ]
+                                        name: [ _in(listing_head), _for(0), a, _db(|w;name)=text ]
+                                        dscp: [ _css(“bockquote.userstuff.summary”), _db(|work|dscp)=text, _format(dscp) ]
+                                        stats:
+                                            prsv: "|stats"
+                                            area: {}
+                                            data:
+                                                most:
+                                                    ref:  "work.work.stats"
+                                                    filter: [_not(), published, updated]
+                                                    subs: null
+                                                published:    [ _css(“p.datetime”), _db(|work|stats:published)=text, _format(datetime,”dd mmm yyyy”) ]
+                                                complete: [ _css(“ul.required-tags”), [ _for(-1),  span, class!=”text”, _db(|w|stats:complete)=class, _wfind(“-“;>,1), _format(bool,”yes”,”no”) ]]
+                                        tag:
+                                            prsv: null
+                                            area: {}
+                                            data:
+                                                TAG_LANG:
+                                                    ref: work.work.tag.tag.tag_lang 
+                                                    filter: null
+                                                    subs: null
+                                                tag:          [ _css(ul.tags.commas), [ _for(), dd, class==_substr(“tags”), _db(work|*tag|group)=class, _sfind(“ tags”,<), [ _for(), a, class==”tag”, _db(work|tag)=text, _format(tag) ]]]
+                                                tag_fandom:   [ _css(“h5.fandom.heading”), [ _for(),  a, _db(|work|*tag|group)=”fandom”, _db(|work|tag)=text ]]
+                                                tag_req:      [ _css(“ul.required-tags”), [ _for(:-1), span, class!=”text”, _db(|w|*t|g)=class, _sfind(“-“;<,1), [ span, _db(|w|@t)_=text, _split(“,”,def) ]]]
+                                        USER:
+                                            prsv: "@user"
+                                            area: {}
+                                            data:
+                                                uid:   [ _in(listing), _db(|work|@user)=class, '_wfind(“user-“,>)' ]
+                                                name:  [ _in(listing_head), _for(1:), a, _db(|work|user;name)=href, _upath(1) ]
+                                                alias: [ _in(listing_head), _for(1:), a, _db(|work|user;%alias)=text, ifind(“(“,”)”), _else(), _dbcv(|work|user;name) ]
+                                        bin:
+                                            prsv: "|work|bin"
+                                            area:
+                                                series: [ _css(“ul.series”), [ _for(), li ]]
+                                            data:
+                                                uid:  [ _in(series), a, _db(|work|bin)=href, _upath(-1) ]
+                                                name: [ _in(series), a, _db(|work|bin;name)=text ]
+                                                idx:  [ _in(series), strong, _db(|work;idx)=text ]
+                                                user:
+                                                    ref: work.work.bin.user
+                                                    filter: null
+                                                    subs: null
+                    content:
+                    crawl:
+            series_listing:
+                bps:
+                    -
+                        bp_cnfg: [users, _name()_, _try(pseuds;_psued()_|1|0), series]
                         domain_type: d
                         main: true
                         query:
-                            page: _db(page;;1)_
+                            page: _val(page;;1)_
                         frags: {}
-                    formats: {}
-                    regex: {}
-                        title: “^Works - [^,-]+ - \[Archive of Our Own\]$”
-                    actions: 
-                        checks:
-                            title:
-                            - [ _in(ea_head), title, text==_regex(title) ]   
-                            - true 
-                        data:
-                            self:
-                                prsv: null
-                                area: {}
-                                data:
-                                    NAME: [ _css(“h2.heading”), db(;name)=text, _sfind(“by “;>) ]
-                                    WORK:
-                                        prsv: "|work"
-                                        area:
-                                            listing: [ _css(“ol.work.index.group”), [ _for(),li ]]
-                                            listing_head: [ _in(listing), _css(”h4.heading”) ]
-                                        data:
-                                            uid:  [ _in(listing_head), _for(0), a, _db(|w)=href, _upath(-1) ]
-                                            name: [ _in(listing_head), _for(0), a, _db(|w;name)=text ]
-                                            dscp: [ _css(“bockquote.userstuff.summary”), _db(|work|dscp)=text, _format(dscp) ]
-                                            stats:
-                                                prsv: "|stats"
-                                                area: {}
-                                                data:
-                                                    most:
-                                                        ref:  "work.work.stats"
-                                                        filter: [_not(), published, updated]
-                                                        subs: null
-                                                    published:    [ _css(“p.datetime”), _db(|work|stats:published)=text, _format(datetime,”dd mmm yyyy”) ]
-                                                    complete: [ _css(“ul.required-tags”), [ _for(-1),  span, class!=”text”, _db(|w|stats:complete)=class, _wfind(“-“;>,1), _format(bool,”yes”,”no”) ]]
-                                            tag:
-                                                prsv: null
-                                                area: {}
-                                                data:
-                                                    TAG_LANG:
-                                                        ref: work.work.tag.tag.tag_lang 
-                                                        filter: null
-                                                        subs: null
-                                                    tag:          [ _css(ul.tags.commas), [ _for(), dd, class==_substr(“tags”), _db(work|*tag|group)=class, _sfind(“ tags”,<), [ _for(), a, class==”tag”, _db(work|tag)=text, _format(tag) ]]]
-                                                    tag_fandom:   [ _css(“h5.fandom.heading”), [ _for(),  a, _db(|work|*tag|group)=”fandom”, _db(|work|tag)=text ]]
-                                                    tag_req:      [ _css(“ul.required-tags”), [ _for(:-1), span, class!=”text”, _db(|w|*t|g)=class, _sfind(“-“;<,1), [ span, _db(|w|@t)_=text, _split(“,”,def) ]]]
-                                            USER:
-                                                prsv: "@user"
-                                                area: {}
-                                                data:
-                                                    uid:   [ _in(listing), _db(|work|@user)=class, _wfind(“user-“,>) ]
-                                                    name:  [ _in(listing_head), _for(1:), a, _db(|work|user;name)=href, _upath(1) ]
-                                                    alias: [ _in(listing_head), _for(1:), a, _db(|work|user;%alias)=text, ifind(“(“,”)”), _else(), _dbcv(|work|user;name) ]
-                                            bin:
-                                                prsv: "|work|bin"
-                                                area:
-                                                    series: [ _css(“ul.series”), [ _for(), li ]]
-                                                data:
-                                                    uid:  [ _in(series), a, _db(|work|bin)=href, _upath(-1) ]
-                                                    name: [ _in(series), a, _db(|work|bin;name)=text ]
-                                                    idx:  [ _in(series), strong, _db(|work;idx)=text ]
-                                                    user:
-                                                        ref: work.work.bin.user
-                                                        filter: null
-                                                        subs: null
-                        content:
-                        crawl:
-                series_listing:
+                formats: {}
+                regex:
+                    title: '^(?:[^,-]+,? )+– Works \[Archive of Our Own\]$'
+                actions: 
+                    checks:
+                        title:
+                            - [_in(ea_head), title, text==_regex(title)]
+                            - TRUE 
+                    data:
+                        self:
+                            prsv: null
+                            area: {}
+                            data:
+                                name: [_css(“h2.heading”), db(;name)=text,'_sfind(“by “,>)']
+                                bin:
+                                    prsv: "|bin"
+                                    area:
+                                        listing: [_css(“ul.seriew.index.group”), [_for(), li]]
+                                        listing_head: 
+                                            ref: user.work_listing.work.area.listing.head
+                                            fitler: []
+                                            subs: []
+                                    data:
+                                        uid:
+                                            ref: user.work_listing.work.uid(work=bin)
+                                            fitler: []
+                                            subs:
+                                                - [work,bin]
+                                        name:
+                                            ref: user.work_listing.work.name(work=bin)
+                                            filter: []
+                                            subs:
+                                                - [work,bin]
+                                        stats: 
+                                            ref: user.work_list.work.stats[bookmarks,words,complete,published](work=bin)
+                                            filter: [bookmarks, words, complete, published]
+                                            subs:
+                                                - [work,bin]
+                                        tag:
+                                            ref: user.work_listing.work.tag(work=bin)
+                                            filter: []
+                                            subs:
+                                                - [work,bin]
+                                        dscp:
+                                            ref: user.work_listing.work.dscp(work=bin)
+                                            filter: []
+                                            subs:
+                                                - [work,bin]
+                                        user: 
+                                            ref: user.work_listing.work.user(work=bin)
+                                            filter: []
+                                            subs:
+                                                - [work,bin]
+
+
+                    content:
+                    crawl:
+                elements: 
+                    e_listing: [ul, class=series index group, [_for(|series), li]]
+            bin:
+                bin:
                     bps:
                         -
-                            bp_cnfg: [users, _name()_, _try(pseuds;_psued()_|1|0), series]
+                            bp: [series, _val()_]
+                            main: True
                             domain_type: d
-                            main: true
                             query:
                                 page: _val(page;;1)_
                             frags: {}
                     formats: {}
                     regex:
-                        title: "^(?:[^,-]+,? )+– Works \[Archive of Our Own\]$"
-                    actions: 
-                        checks:
+                        title: “^[^,-]+- (?:[^,-]+,? )+- (?:[^,-]+,? )+\[Archive of Our Own\]$”
+                    actions:
+                        check:
                             title:
-                                - [_in(ea_head), title, text==_regex(title)]
-                                - TRUE 
+                                - [_in(ea_head), title, text==_regex(“”)]
+                                - true
+                            series:
+                                - [_css(“dl.series.meta.group”)]
+                                - true
                         data:
-                            self:
-                                prsv: null
-                                area: {}
-                                data:
-                                    name: [_css(“h2.heading”), db(;name)=text,_sfind(“by “,>)]
-                                    bin:
-                                        prsv: "|bin"
-                                        area:
-                                            listing: [_css(“ul.seriew.index.group”), [_for(), li]]
-                                            listing_head: 
-                                                ref: user.work_listing.work.area.listing.head
-                                                fitler: []
-                                                subs: []
-                                        data:
-                                            uid:
-                                                ref: user.work_listing.work.uid(work=bin)
-                                                fitler: []
-                                                subs:
-                                                    - [work,bin]
-                                            name:
-                                                ref: user.work_listing.work.name(work=bin)
-                                                filter: []
-                                                subs:
-                                                    - [work,bin]
-                                            stats: 
-                                                ref: user.work_list.work.stats[bookmarks,words,complete,published](work=bin)
-                                                filter: [bookmarks, words, complete, published]
-                                                subs:
-                                                    - [work,bin]
-                                            tag:
-                                                ref: user.work_listing.work.tag(work=bin)
-                                                filter: []
-                                                subs:
-                                                    - [work,bin]
-                                            dscp:
-                                                ref: user.work_listing.work.dscp(work=bin)
-                                                filter: []
-                                                subs:
-                                                    - [work,bin]
-                                            user: 
-                                                ref: user.work_listing.work.user(work=bin)
-                                                filter: []
-                                                subs:
-                                                    - [work,bin]
+                        self:
+                            prsv: null
+                            area: {}
+                            data:
+                                NAME: [_css(“h2.heading”), db(;name)=text]
+                                STATS:
+                                    prsv: "|stats"
+                                    area: null
+                                    data:
+                                        most: 
+                                            ref: USER.WORK_LIST.WORK.STATS
+                                            filter: [bookmarks, workds, complete]
+                                            subs: 
+                                                - [work,bin]
+                                        PUBLISHED: [_css(“dl.series.meta.group”),[_for(1), dd, _db(|stat:published)=text, _format(datetime,(yyyy-mm,dd”)]]
+                                        UPDATED: [_css(“dl.series.meta.group”),[_for(2), dd, _db(|stat:updated)=text, _format(datetime,(yyyy-mm,dd”)]]
+                                USER:
+                                    prsv: null
+                                    area: {}
+                                    data:
+                                        NAME: [_css(“dl.series.meta.group”),[_for(0), dd, [_for(), a _db(|user;name)=href, _upath(1)]]]
+                                        ALIAS: [_css(“dl.series.meta.group”),[_for(0), dd, [_for(), a _db(|user;%alias)=href, _upath(-1)]]]
+                                WORK:
+                                    prsv: "|work"
+                                    AREA:
+                                        Listing: [_css(“ul.series.work.index.group”), [_for(), li]]
+                                        Listing_head:
+                                            ref: USER.WORK_LISTING.WORK.AREA.LISTING.HEAD
+                                            filter: []
+                                            subs: []
+                                    data:
 
+                                UID: 
+                                    ref: USER.WORK_LISTING.WORK.UID
+                                    filter: []
+                                    subs: []
+                                NAME2:
+                                    ref: USER.WORK_LISTING.WORK.NAME
+                                    filter: []
+                                    subs: []
+                                STATS2: 
+                                    ref: USER.WORK_LISTING.WORK.STATS
+                                    filter: []
+                                    subs: []
+                                DSCP:
+                                    ref: USER.WORK_LISTING.WORK.DSCP
+                                    filter: []
+                                    subs: []
+                                TAG :
+                                    ref: USER.WORK_LISTING.WORK.TAG
+                                    filter: []
+                                    subs: []
+                                USER3:
+                                    ref: USER.WORK_LISTING.WORK.USER
+                                    filter: []
+                                    subs: []
+                                BIN:
+                                    ref: USER.WORK_LISTING.WORK.BIN
+                                    filter: []
+                                    subs: []
 
                         content:
                         crawl:
                     elements: 
-                        e_listing: [ul, class=series index group, [_for(|series), li]]
-            bin:
-                urls:
-                    bin:
-                        bps:
-                            -
-                                bp: [series, _val()_]
-                                main: True
-                                domain_type: d
-                                query:
-                                    page: _val(page;;1)_
-                                frags: {}
-                        formats: {}
-                        regex:
-                            title: “^[^,-]+- (?:[^,-]+,? )+- (?:[^,-]+,? )+\[Archive of Our Own\]$”
-                        actions:
-                            check:
-                                title:
-                                    - [_in(ea_head), title, text==_regex(“”)]
-                                    - true
-                                series:
-                                    - [_css(“dl.series.meta.group”)]
-                                    - true
-                            data:
-                            self:
+                        e_user:                   [_css("dl.series > dd:nth-child(2)"),             [_for(), a, _db(|user;name)_     =hreff, _upath(1)]]
+                        e_stat_created:           [_css("dl.series > dd:nth-child(4)"),                         _db(|stat:created)_  =text]
+                        e_stat_updated:           [_css("dl.series > dd:nth-child(6)"),                         _db(|stat:updated)_  =text]
+                        e_stat_words:             [_css("dd.words"),                                            _db(|stat:words)_    =text]
+                        e_stat_works:             [_css("dd.works"),                                            _db(|stat:works)_    =text]
+                        e_stat_complete:          [_css("dl.stats:nth-child(1) > dd:nth-child(6)"),             _db(|stat:complete)_ =text]
+                        e_stat_faves:             [_css("dd.bookmarks"),                                        _db(|stat:faves)_    =text]
+                        e_listing:                [ul, class==series work index group, [_for(|work), li]]
+        work:
+            work:
+                bps:
+                - 
+                    bp: [works, _db()]
+                    domain_type: d
+                    main: True
+                    query: 
+                        show_comments: true
+                        view_adult: true
+                        view_full_work: true
+                    frags: {}
+                formats:
+                    dscp:
+                regex:
+                    title: '^[^,-]+- (?:[^,-]+,? )+- (?:[^,-]+,? )+\[Archive of Our Own\]$'
+                actions:
+                    checks:
+                        title: 
+                        - [ _in(ea_head), title, text==_regex(title) ]
+                        - true
+                        not_series:
+                        - [ _css(“dl.series.meta.group”) ]
+                        - false
+                    data:
+                        self:
+                            params:
                                 prsv: null
                                 area: {}
-                                data:
-                                    NAME: [_css(“h2.heading”), db(;name)=text]]
-                                    STATS:
+                            data:
+                                uid:  [ _css(“li.chapter.bychapter”), [ a, _db()=href, _upath(1) ]]
+                                name: [ _css(“h2.title.heading”), _db(;name)=text ]
+                                dscp: [ _css(“div.summary.module”), [ blockquote, _db(;dscp)=text, _format(dscp) ]]
+                                stats:
+                                    params:
                                         prsv: "|stats"
-                                        area: null
-                                        data:
-                                            most: 
-                                                ref: USER.WORK_LIST.WORK.STATS
-                                                filter: [bookmarks, workds, complete]
-                                                subs: 
-                                                    - [work,bin]
-                                            PUBLISHED: [_css(“dl.series.meta.group”),[_for(1), dd, _db(|stat:published)=text, _format(datetime,(yyyy-mm,dd”)]]
-                                            UPDATED: [_css(“dl.series.meta.group”),[_for(2), dd, _db(|stat:updated)=text, _format(datetime,(yyyy-mm,dd”)]]
-                                    USER:
+                                    data:
+                                        published: [ _css(“dd.published”), _db(;stat:published)=text, _format(datetime|”yyyy-mm-dd”) ]
+                                        updated:   [ _css(“dd.updated”), _db(;stat:updated)=text, _format(datetime|”yyyy-mm-dd”) ]
+                                        words:     [ _css(“dd.words”), _db(;stat:words)=text, _format(int|”,”) ]
+                                        faves:     [ _css(“dd.bookmarks”), _db(;stat:faves)=text, _format(int|”,”) ]
+                                        likes:     [ _css(“dd.kudos”), _db(;stat:likes)=text, _format(int|”,”) ]
+                                        views:     [ _css(“dd.hits”) , _db(;stat:faves)=text, _format(int|”,”) ]
+                                        comments:  [ _css(”dd.comments”) , _db(;stat:faves)=text, _format(int|”,”) ]
+                                        complete:  [ _css(“dd.chapters”), _db(;stat:completed)=text, _esplit(“/”;0;1) ]
+                                tag:
+                                    params:
                                         prsv: null
+                                    data:
+                                        tag:      [ _css(dl.work.meta.group), [ _for(), dd, class==_substr(“tags”), _db(|*tag|group)=class, _sfind(“ tags”,<), [ _for(), a, class==”tag”, _db(|tag)=text, _format(tag) ]]]
+                                        tag_lang: [ _prsv(|tag), _css(“dd.language”), _db(|tag;alias)=lang, _db(|tag)=text]
+                                user:
+                                    params:
+                                        prsv: null
+                                    data:
+                                        name: [ _css(“h3.byline”), [ _for(), a, _db(|user;name)=href, _upath(1) ]] 
+                                bin: 
+                                    params:
+                                        prsv: "|bin"
+                                    area:
+                                        series: [ _css(“dd.series”), [ _for(), span ]]
+                                    data:
+                                        uid:  [ _in(series), _css(“span.position”), [ a, _db(|bin)=href, _upath(-1), _db(|bin;name)=text ]]
+                                        name: [ _in(series), _css(“span.position”), [ a,_db(|bin;name)=text ]]
+                                        idx:  [ _in(series), _css(“span.position”), _db(;idx)=nrtext, _ifind("Part ";" of") ]
+                                user2: 
+                                    params:
+                                        prsv: "|bin"
+                                    area: {}
+                                    data:
+                                        name: [_eval(), _db(|bin|@user)=_dbc(|@user)]
+                                part:
+                                    prsv: "|part"
+                                    area:
+                                        chapters: [ _css(“div#chapters”), [ _for(), div, class==”chapter”]]
+                                    data:
+                                        uid: [ _in(chapters), _css(“h3.title”), [ a, _db(|part)=href, _upath(-1) ]]
+                                        val: [ _in(chapters), _css(“h3.title”), _db(|part;name)=nrtext, '_sfind(“: “, >)' ]
+                                        idx: [ _in(chapters), _css(“h3.title”), [ a, _db(|part;idx)=text, _sfind(“Chapter “;>) ]]
+                                    user:
+                                        prsv: "|part|@user"
                                         area: {}
                                         data:
-                                            NAME: [_css(“dl.series.meta.group”),[_for(0), dd, [_for(), a _db(|user;name)=href, _upath(1)]]]
-                                            ALIAS: [_css(“dl.series.meta.group”),[_for(0), dd, [_for(), a _db(|user;%alias)=href, _upath(-1)]]]
-                                    WORK:
-                                        prsv: "|work"
-                                        AREA:
-                                            Listing: [_css(“ul.series.work.index.group”), [_for(), li]]
-                                            Listing_head:
-                                                ref: USER.WORK_LISTING.WORK.AREA.LISTING.HEAD
-                                                filter: []
-                                                subs: []
-                                        data:
+                                            name:  [ _css(“h4.heading.byline), [ _for(), a, _db(|part|user;name)=href, _upath(1) ]]
+                                            alias: [ _css(“h4.heading.byline), [ _for(), a, _db(|part|user;%alias)=href, _upath(-1) ]]
+                                            else:  [ _db(|bin|@user%)=_db(|@user%) ]
 
-                                    UID: 
-                                        ref: USER.WORK_LISTING.WORK.UID
-                                        filter: []
-                                        subs: []
-                                    NAME:
-                                        ref: USER.WORK_LISTING.WORK.NAME
-                                        filter: []
-                                        subs: []
-                                    STATS: 
-                                        ref: USER.WORK_LISTING.WORK.STATS
-                                        filter: []
-                                        subs: []
-                                    DSCP:
-                                        ref: USER.WORK_LISTING.WORK.DSCP
-                                        filter: []
-                                        subs: []
-                                    TAG :
-                                        ref: USER.WORK_LISTING.WORK.TAG
-                                        filter: []
-                                        subs: []
-                                    USER :
-                                        ref: USER.WORK_LISTING.WORK.USER
-                                        filter: []
-                                        subs: []
-                                    BIN:
-                                        ref: USER.WORK_LISTING.WORK.BIN
-                                        filter: []
-                                        subs: []
 
-                            content:
-                            crawl:
-                        elements: 
-                            e_user:                   [_css("dl.series > dd:nth-child(2)"),             [_for(), a, _db(|user;name)_     =hreff, _upath(1)]]
-                            e_stat_created:           [_css("dl.series > dd:nth-child(4)"),                         _db(|stat:created)_  =text]
-                            e_stat_updated:           [_css("dl.series > dd:nth-child(6)"),                         _db(|stat:updated)_  =text]
-                            e_stat_words:             [_css("dd.words"),                                            _db(|stat:words)_    =text]
-                            e_stat_works:             [_css("dd.works"),                                            _db(|stat:works)_    =text]
-                            e_stat_complete:          [_css("dl.stats:nth-child(1) > dd:nth-child(6)"),             _db(|stat:complete)_ =text]
-                            e_stat_faves:             [_css("dd.bookmarks"),                                        _db(|stat:faves)_    =text]
-                            e_listing:                [ul, class==series work index group, [_for(|work), li]]
-        work:
-            urls:
-                work:
-                    bps:
-                    - 
-                        bp: [works, _db()]
+
+                content:
+                    a: [_css("div.userstuff"), _db()=text]
+                    b: [_css("div.userstuff.module"), _db()=text]
+                crawl:
+        chapter:
+            chapter:
+                bps:
+                    -
+                        bp_cnfg: [works, _val(work)_, chapters, _val()_]
                         domain_type: d
-                        main: True
+                        main: true
                         query: 
                             show_comments: true
                             view_adult: true
-                            view_full_work: true
                         frags: {}
-                    formats:
-                        dscp:
-                    regex:
-                        title: "^[^,-]+- (?:[^,-]+,? )+- (?:[^,-]+,? )+\[Archive of Our Own\]$"
-                    actions:
-                        checks:
-                            title: 
-                            - [ _in(ea_head), title, text==_regex(title) ]
+                regex:
+                    title: '^[^,-]+  -  Chapter [^,-]+ - (?:[^,-]+,? )+ - (?:[^,-]+,? )+\[Archive of Our Own\]$'
+                actions:
+                    checks:
+                        title:
+                            - [_in(ea_head), title, text==_regex(title)]
                             - true
-                            not_series:
-                            - [ _css(“dl.series.meta.group”) ]
-                            - false
-                        data:
-                            self:
-                                params:
-                                    prsv: null
+                    data:
+                        self:
+                            params:
+                                prsv: null
+                                area: 
+                                    chapters: [ _css(“#chapters”), [ _for(), div, class==”chapter”]]
+                            data:
+                                most: 
+                                    ref: work.work.chapter
+                                    fitler: []
+                                    subs: []
+
+                                work: 
+                                    prsv: "|work"
                                     area: {}
-                                data:
-                                    uid:  [ _css(“li.chapter.bychapter”), [ a, _db()=href, _upath(1) ]]
-                                    name: [ _css(“h2.title.heading”), _db(;name)=text ]
-                                    dscp: [ _css(“div.summary.module”), [ blockquote, _db(;dscp)=text, _format(dscp) ]]
-                                    stats:
-                                        params:
-                                            prsv: "|stats"
-                                        data:
-                                            published: [ _css(“dd.published”), _db(;stat:published)=text, _format(datetime|”yyyy-mm-dd”) ]
-                                            updated:   [ _css(“dd.updated”), _db(;stat:updated)=text, _format(datetime|”yyyy-mm-dd”) ]
-                                            words:     [ _css(“dd.words”), _db(;stat:words)=text, _format(int|”,”) ]
-                                            faves:     [ _css(“dd.bookmarks”), _db(;stat:faves)=text, _format(int|”,”) ]
-                                            likes:     [ _css(“dd.kudos”), _db(;stat:likes)=text, _format(int|”,”) ]
-                                            views:     [ _css(“dd.hits”) , _db(;stat:faves)=text, _format(int|”,”) ]
-                                            comments:  [ _css(”dd.comments”) , _db(;stat:faves)=text, _format(int|”,”) ]
-                                            complete:  [ _css(“dd.chapters”), _db(;stat:completed)=text, _esplit(“/”;0;1) ]
-                                    tag:
-                                        params:
-                                            prsv: null
-                                        data:
-                                            tag:      [ _css(dl.work.meta.group), [ _for(), dd, class==_substr(“tags”), _db(|*tag|group)=class, _sfind(“ tags”,<), [ _for(), a, class==”tag”, _db(|tag)=text, _format(tag) ]]]
-                                            tag_lang: [ _prsv(|tag), _css(“dd.language”), _db(|tag;alias)=lang, _db(|tag)=text]
-                                    user:
-                                        params:
-                                            prsv: null
-                                        data:
-                                            name: [ _css(“h3.byline”), [ _for(), a, _db(|user;name)=href, _upath(1) ]] 
-                                    bin: 
-                                        params:
-                                            prsv: "|bin"
-                                        area:
-                                            series: [ _css(“dd.series”), [ _for(), span ]]
-                                        data:
-                                            uid:  [ _in(series), _css(“span.position”), [ a, _db(|bin)=href, _upath(-1), _db(|bin;name)=text ]]
-                                            name: [ _in(series), _css(“span.position”), [ a,_db(|bin;name)=text ]]
-                                            idx:  [ _in(series), _css(“span.position”), _db(;idx)=nrtext, _ifind("Part ";" of") ]
-                                    user: 
-                                        params:
-                                            prsv: "|bin"
-                                        area: {}
-                                        data:
-                                            name: [_eval(), _db(|bin|@user)=_dbc(|@user)]
-                                    part:
-                                        prsv: "|part"
-                                        area:
-                                            chapters: [ _css(“div#chapters”), [ _for(), div, class==”chapter”]]
-                                        data:
-                                            uid: [ _in(chapters), _css(“h3.title”), [ a, _db(|part)=href, _upath(-1) ]]
-                                            val: [ _in(chapters), _css(“h3.title”), _db(|part;name)=nrtext, _sfind(“: “, >) ]
-                                            idx: [ _in(chapters), _css(“h3.title”), [ a, _db(|part;idx)=text, _sfind(“Chapter “;>) ]]
-                                        user:
-                                            prsv: "|part|@user"
-                                            area: {}
+                                    data:
+                                        most:
+                                            ref: work.work
+                                            filter: []
+                                            subs: []
+                                        parts:
+                                            prsv: "|work|part"
+                                            area:
+                                                chapters: [_css("li.chapter"), [_css("select#selected_id"), [_for(), option, _noexists("selected")]]]
                                             data:
-                                                name:  [ _css(“h4.heading.byline), [ _for(), a, _db(|part|user;name)=href, _upath(1) ]]
-                                                alias: [ _css(“h4.heading.byline), [ _for(), a, _db(|part|user;%alias)=href, _upath(-1) ]]
-                                                else:  [ _db(|bin|@user%)=_db(|@user%) ]
-
-
-
+                                                uid: [_in(chapters), _db(|work|part)=value]
+                                                idx: [_in(chapters), _db(|work|part;name)=text, _sfind(". ";>)]
+                                                idx2: [_in(chapters), _db(|work|part;idx)=text, _sfind(".";<)]
                     content:
-                        [_css("div.userstuff"), _db()=text]
-                        [_css("div.userstuff.module"), _db()=text]
-                    crawl
-        chapter:
-            urls:
-                chapter:
-                    bps:
-                        -
-                            bp_cnfg: [works, _val(work)_, chapters, _val()_]
-                            domain_type: d
-                            main: true
-                            query: 
-                                show_comments: true
-                                view_adult: true
-                            frags: {}
-                    regex:
-                        title: "^[^,-]+  -  Chapter [^,-]+ - (?:[^,-]+,? )+ - (?:[^,-]+,? )+\[Archive of Our Own\]$"
-                    actions:
-                        checks:
-                            title:
-                                - [_in(ea_head), title, text==_regex(title)]
-                                - true
-                        data:
-                            self:
-                                params:
-                                    prsv: null
-                                    area: 
-                                        chapters: [ _css(“#chapters”), [ _for(), div, class==”chapter”]]
-                                data:
-                                    most: 
-                                        ref: work.work.chapter
-                                        fitler: []
-                                        subs: []
-
-                                    work: 
-                                        prsv: "|work"
-                                        area: {}
-                                        data:
-                                            most:
-                                                ref: work.work
-                                                filter: []
-                                                subs: []
-                                            parts:
-                                                prsv: "|work|part"
-                                                area:
-                                                    chapters: [_css("li.chapter"), [_css("select#selected_id"), [_for(), option, _noexists("selected")]]]
-                                                data:
-                                                    uid: [_in(chapters), _db(|work|part)=value]
-                                                    idx: [_in(chapters), _db(|work|part;name)=text, _sfind(". ";>)]
-                                                    idx: [_in(chapters), _db(|work|part;idx)=text, _sfind(".";<)]
-                        content:
-                        crawl:
+                    crawl:
     actions:
         init:
         - [ _name(tos), e_tos, _exists]
@@ -552,26 +547,26 @@ archiveofourown:
 
         # ------------- tags
         ea_tags3: [_in(ea_listing), ul, class =="tag commas"]
-        e_tags3:  [_in(ea_tags3), _for(), li, _db(|tag|group)_ =class, [a, _db(|tag)_ =text, _sfind(" -","<")]]
+        e_tags3:  [_in(ea_tags3), _for(), li, _db(|tag|group)_ =class, [a, _db(|tag)_ =text, '_sfind(" -","<")']]
 
         # ------------- dscp
         e_dscp:          [_in(ea_listing), [blockquote, [_for(), p, _db(|dscp;val)_ +=text, _list()]]]
 
         # ------------- *series
-        ea_series:      [_in(ea_listing), ul, class =="series", [li]]
-        e_idx:          [_in(ea_series), strong, _db(;idx)=1]
-        e_series_uname: [_in(ea_series), a, _db(|series;uid)=href, _upath(-1), _db(|series;name)_=text]
+        ea_series_listing:      [_in(ea_listing), ul, class =="series", [li]]
+        e_idx:                  [_in(ea_series), strong, _db(;idx)=1]
+        e_series_uname_listing: [_in(ea_series), a, _db(|series;uid)=href, _upath(-1), _db(|series;name)_=text]
 
         # ------------- stats
-        ea_stats:        [_in(ea_listing), dl]
-        e_stat_words:    [_in(ea_stats) [_css("dd.words"),     _db(stat:words)_    =text]]
-        e_stat_works:    [_in(ea_stats) [_css("dd.works"),     _db(stat:works)_    =text]]
-        e_stat_faves:    [_in(ea_stats) [_css("dd.bookmarks"), _db(stat:faves)_    =text]]
-        e_stat_hits:     [_in(ea_stats) [_css("dd.hits"),      _db(stat:views)_    =text]]
-        e_stat_language: [_in(ea_stats) [_css("dd.language"),  _db(stat:lang)_     =text]]
-        e_chapters:      [_in(ea_stats) [_css("dd.chapters"),  _db(stat:lang)_     =text]]
-        e_comments:      [_in(ea_stats) [_css("dd.comments"),  _db(stat:comments)_ =text]]
-        e_kudos:         [_in(ea_stats) [_css("dd.kudos"),     _db(stat:likes)_    =text]]
+        ea_stats:           [_in(ea_listing), dl]
+        e_stat_words:       [_in(ea_stats), [_css("dd.words"),     _db(stat:words)_    =text]]
+        e_stat_works:       [_in(ea_stats), [_css("dd.works"),     _db(stat:works)_    =text]]
+        e_stat_faves:       [_in(ea_stats), [_css("dd.bookmarks"), _db(stat:faves)_    =text]]
+        e_stat_hits:        [_in(ea_stats), [_css("dd.hits"),      _db(stat:views)_    =text]]
+        e_stat_language:    [_in(ea_stats), [_css("dd.language"),  _db(stat:lang)_     =text]]
+        e_chapters_listing: [_in(ea_stats), [_css("dd.chapters"),  _db(stat:lang)_     =text]]
+        e_comments_listing: [_in(ea_stats), [_css("dd.comments"),  _db(stat:comments)_ =text]]
+        e_kudos_listing:    [_in(ea_stats), [_css("dd.kudos"),     _db(stat:likes)_    =text]]
 
         # ------------- iter
         ec_next: [ol.pagination, [li, class=next, [a]]]
@@ -610,7 +605,7 @@ sofurry:
             hstns:               []
             hstn_var:            _name(user)_
             tlds:                [com]
-    urls:
+    nodes:
         user:
             user:
                 node: True
@@ -705,7 +700,7 @@ sofurry:
                     crawl:
                         do:
                         - []
-                elements: {}
+                elements2: {}
     login:
         bp_cnfg: [d, user, login]
         pwd: LoginForm[sfLoginPassword]
@@ -739,7 +734,7 @@ itch:
             hstns:    []
             hstn_var: _val(user|name)_
             tlds:     [io]
-    urls:
+    nodes:
         user:
             user:       
                 node: True
@@ -800,7 +795,7 @@ furaffinity:
             superclass: node
             class: tgt
             subclass: work
-    urls:
+    nodes:
         user:
             user:      
                 node: True
@@ -816,7 +811,7 @@ furaffinity:
                 elements: {}
             work_listing:      
                 node: False
-                bp_cnfg: [gallery, _val()_, _val(page;;1)_, _try(?)_]
+                bp_cnfg: [gallery, _val()_, _val(page;;1)_, '_try(?)_']
                 domain_type: d
                 query: {}
                 alt_bp_configs: {}
@@ -862,7 +857,7 @@ furaffinity:
         e_info: [div.info]
         e_tag2: [div, class='section-ody info",[div,[strong],[span]]]
         e_tag:  [section, class='tags-mobile',[span,  class='tags', [a]]]
-        e_tag2: [section, class="folders-moile",[div,[div,[a]]]]
+        e_tag3: [section, class="folders-moile",[div,[div,[a]]]]
         e_joined: [span, class="hideonmoile" >registered<]
         e_text:     [div, class="submission-content"]
         e_title:    [.submission-title]
@@ -892,7 +887,7 @@ blokfort:
             class: tgt
             subclass: work
             val: blokfort
-    urls:
+    nodes:
         work:
             work:      
                 node: True
@@ -953,7 +948,7 @@ catbox:
             superclass: node
             class: tgt
             subclass: work
-    urls:
+    nodes:
         collection:
             collection:
                 node: True
@@ -1010,7 +1005,7 @@ google:
             superclass: node
             class: tgt
             subclass: work
-    urls:
+    nodes:
         file:
             doc:       
                 node: True
@@ -1068,7 +1063,7 @@ fiction:
             hstns: ['',www]
             hstn_var:  null
             tlds:      [live]
-    urls:
+    nodes:
         user:
             user:      
                 node: True
@@ -1141,7 +1136,7 @@ ghostbin:
                     uscope:    null
                     uuniq:     _mi(0;1)
                     type:      _type(str)
-    urls:
+    nodes:
         work:
             work:     
                 node: True
@@ -1170,11 +1165,11 @@ gitio:
             sld:       git
 
     site_defs: {}
-    urls:
+    nodes:
         _unkown:
             redirect:     
                 core: False
-                bp_cnfg: [_val(src|redirect;${dmns|sld})_]
+                bp_cnfg: ['_val(src|redirect;${dmns|sld})_']
                 domain_type: d
                 query: {}
                 alt_bp_configs: {}
@@ -1191,7 +1186,7 @@ hardbin:
             hstn_var:  null
             tlds:      [com]
     site_defs: {}
-    urls:
+    nodes:
         work:
             work:         
                 node: True
@@ -1229,7 +1224,7 @@ literotica:
             hstn_var:  null
             tlds:      [net,com]
     site_defs: {}
-    urls:
+    nodes:
         user:
             user:     
                 node: True
@@ -1290,7 +1285,7 @@ mcstories:
             tlds:      [com]
 
     site_defs: {}
-    urls:
+    nodes:
         site:
             user_listing:
                 node: False
@@ -1377,7 +1372,7 @@ mega:
                 uscope:    null
                 uuniq:     _mi(0;1)
                 type:      _type(str)
-    urls:
+    nodes:
         domain:
             work_listing:
                 node: false
@@ -1435,7 +1430,7 @@ pastebin:
                 uscope:    null
                 uuniq:     _mi(0;1)
                 type:      _type(str)
-    urls:
+    nodes:
         user:
             user:      
                 node: True
@@ -1506,7 +1501,7 @@ pastefs:
             tlds:      [com]
 
     site_defs: {}
-    urls:
+    nodes:
         work:
             work:      
                 node: True
@@ -1541,7 +1536,7 @@ psstaudio:
             tlds:      [com]
 
     site_defs: {}
-    urls:
+    nodes:
         work:
             work:
                 node: True
@@ -1572,7 +1567,7 @@ poneb:
             tlds:      [in]
 
     site_defs: {}
-    urls:
+    nodes:
         user:
             user:
                 node: True
@@ -1673,7 +1668,7 @@ githubusercontent:
                 uscope:    null
                 uuniq:     _mi(0;1)
                 type:      str
-    urls: 
+    nodes: 
         work:
             work:       
                 node: True
@@ -1704,7 +1699,7 @@ rentry:
             tlds:      [org, co]
 
     site_defs: {}
-    urls:
+    nodes:
         work:
             work:
                 node: True
@@ -1765,7 +1760,7 @@ snekguy:
                 uscope:    null
                 uuniq:     _mi(0;1)
                 type:      _type(str)
-    urls:
+    nodes:
         user:
             work_listing:        
                 node: False
@@ -1815,7 +1810,7 @@ snootgame:
             class:          tgt
             subclass:       user
             val:            caveman_anon
-    urls:
+    nodes:
         user:
             user:     
                 node: true
@@ -1866,15 +1861,15 @@ fanfiction:
     params:
         enabled: False
         login: False
-                query: {}
-                alt_bp_configs: {}
+        query: {}
+        alt_bp_configs: {}
     dmns:
         d:
             hstns: [www,'']
             hstn_var:  null
             tlds:      [net]
     site_def: {}
-    urls:
+    nodes:
         user:
             user:
                 node: True
@@ -1937,7 +1932,7 @@ reddit:
         work:
             subclass:       work
             shared_child:   True
-    urls:
+    nodes:
         user:
             user:
                 node: True

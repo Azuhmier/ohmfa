@@ -5,7 +5,7 @@ import json
 import time
 import yaml
 
-from ohmfa.ohmfa_url import Node
+#from ohmfa.ohmfa_url import Node
 from bs4 import BeautifulSoup
 
 # ------- requests
@@ -30,48 +30,39 @@ from selenium.common.exceptions import (WebDriverException,NoSuchWindowException
 from seleniumbase import Driver
 
 class Fetcher():
-    s            = None
-    s_url        = None
+    s = None
+    s_url = None
     s_fs_timeout = None
-    def __init__(self, config_file, d_page_wait=20,):
-
-        self.durls       = {}
-        self.pwds        = {}
-        self.fs_domains  = []
-        self.cookie_jar  = {}
-        self.crawl_db    = {}
-        self.db_url      = {
-            'tree': {},
-            'values':{},
-        }
-        self.db_fetch    = {
-            'tree': {},
-            'values':{},
-        }
+    def __init__(self, dcnfg, archive_path=None, d_page_wait=20,):
+        self.durls = {}
+        self.pwds = {}
+        self.fs_domains = []
+        self.cookie_jar = {}
+        self.crawl_db = {}
+        self.db_url = { 'tree': {}, 'values':{}, }
+        self.db_fetch = { 'tree': {}, 'values':{}, }
         self.d_page_wait = d_page_wait
-
-        with open(config_file, mode='r',encoding='utf-8' ) as infile:
-            self.dspt = yaml.safe_load(infile)
+        self.dspt = dcnfg
+        self.archive_path = archive_path
 
 
     def start_session(self):
 
         # --------- request
-        self.s            = requests.session()
-        self.s_url        = "http://localhost:8191/v1"
+        self.s = requests.session()
+        self.s_url = "http://localhost:8191/v1"
         self.s_fs_timeout = 6000
 
         # --------- fs
-        cmd     = "sessions.create"
+        cmd = "sessions.create"
         headers = {"Content-Type": "application/json"}
         fs_data = { "cmd": cmd}
         r=self.s.post(self.s_url, headers=headers, json=fs_data)
-        response_data    = json.loads(r.content)
-        status           = response_data["status"]
-
+        response_data = json.loads(r.content)
+        status = response_data["status"]
         r = self.s_fs('https://www.google.com')
-        response_data    = json.loads(r.content)
-        user_agent       = response_data["solution"]["userAgent"]
+        response_data = json.loads(r.content)
+        user_agent = response_data["solution"]["userAgent"]
 
         # --------- driver
         self.d = Driver(
@@ -106,9 +97,24 @@ class Fetcher():
             r = self.s.post(self.s_url, headers=headers, json=fs_data)
             fs_r_json     = json.loads(r.content)
             status = fs_r_json['status']
-            print(status)
+            print(f"delete all sessions: {status}")
 
 
+    def fetch_all(self, start=0, max=0):
+        for cnt,durl in enumerate(self.durls):
+            u = durl.url.geturl()
+            u_dname = u.replace("/","_")
+            u_dir = os.path.join(self.archive_path,u_dname)
+            os.makedirs(u_dir, exist_ok=True)
+            u_fname = str(int(time.time()))
+            u_path = os.path.join(u_dir,u_fname)
+
+            print(f"{cnt}: {u}")
+            self.fetch(durl)
+            #with open(u_path, 'w') as file:
+            #    file.write(u_content)
+            if max and max == cnt:
+                break
 
 
     def fetch(self,u):
@@ -599,37 +605,7 @@ class Fetcher():
 
 
 
-    def load_urls(self, urls, slds=[],verbose=0, mx=1,prnt=False):
-        #cnt = 0
-        #mx_cnt = 0
-        qc_batch = []
-        for url in urls:
-            u = Node(url,self.dspt,verbose,prnt)
-            if len(slds) and not u.sld in slds:
-                del u
-                continue
-            u.process()
-            if u.sld not in self.durls:
-                self.durls[u.sld]={}
-            if u.node_type not in self.durls[u.sld]:
-                self.durls[u.sld][u.node_type]={}
-            if u.path_type not in self.durls[u.sld][u.node_type]:
-                self.durls[u.sld][u.node_type][u.path_type]=[]
-            self.durls[u.sld][u.node_type][u.path_type].append(u)
-            if len(self.durls[u.sld][u.node_type][u.path_type]) < mx:
-                qc_batch.append(u)
-            #cnt += u.uproc.cnt
-            #if u.uproc.cnt > mx_cnt:
-                #mx_cnt = u.uproc.cnt
-        for u in qc_batch:
-            for line in u.log:
-                print(line)
-        #print("################################################################################")
-        #print(f"Total Urls:                {len(urls)}")
-        #print(f"average:                   {cnt/len(urls)}")
-        #print(f"Max Count:                 {mx_cnt}")
-        #print(f"Total Iteration Count:     {cnt}")
-        #print(f"Max Total Iteration Count: {mx_cnt*len(urls)}")
+
 
 
 

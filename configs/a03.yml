@@ -11,23 +11,22 @@ site_defs:
     psued:   alias
 nodes:
     site:
-        urls:
-            login:
-                bps: 
-                    main:
-                        bp: [d, users, login]
-                        main: True
-                        domain_type: d
-                        query: {}
-                        frags: {}
-                formats: {}
-                regex: {}
-                payload: 
-                    user[login]: _usr_ 
-                    user[password]: _pwd_
-                    user[remeber_me]: 0 
-                    commit: "Log+in" 
-                    authenticity_token: g_token_value
+        login:
+            bps: 
+                main:
+                    bp: [d, users, login]
+                    main: True
+                    domain_type: d
+                    query: {}
+                    frags: {}
+            formats: {}
+            regex: {}
+            payload: 
+                user[login]: _usr_ 
+                user[password]: _pwd_
+                user[remeber_me]: 0 
+                commit: "Log+in" 
+                authenticity_token: g_token_value
     user:
         urls:
             user:

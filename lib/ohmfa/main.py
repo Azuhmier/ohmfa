@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 from ohmfa.ohmfa_url import OhmfaUrl
 from ohmfa.ohmfa import Ohmfa
+from ohmfa.fetcher import Fetcher
 
 REL_DCNFG_PATH = '../../configs/domain_configs.yml'
 file_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
@@ -24,22 +25,34 @@ class Main(Ohmfa):
     def __init__(self,*args,**kwargs):
         super().__init__()
         with open(dcnfg_path, mode='r',encoding='utf-8' ) as infile:
-            data = (yaml.safe_load(infile))
-            self.dcnfg.update(data)
-        print(f"dcnfg loaded from '{dcnfg_path}'")
+            self.dcnfg.update(yaml.safe_load(infile))
+        #print(f"Initing main.Main")
+        #print(f"...dcnfg loaded from '{dcnfg_path}'")
 
     def load_urls(self, urls_file_path=None, lst=False):
         urls = None
         if not lst:
+            #print(f"...lst is {lst}")
+            #print(f"...loading urls from '{urls_file_path}")
             infile =  open(urls_file_path,'r', encoding='utf-8')
             urls = infile.readlines()
             infile.close()
         else:
             urls = urls_file_path
+        #print(f"...computing {len(urls)} urls")
         for url in urls:
-            self.durls.append(OhmfaUrl(url))
+            #print("===============================================")
+            #print(url)
+            durl = OhmfaUrl(url,prnt=0,verbose=0)
+            self.durls.append(durl)
+            #print(f"{durl.url.geturl()}")
 
-        print(f"urls loaded from '{urls_file_path}'")
+        #print(f"urls loaded from '{urls_file_path}'")
+    
+
+    def create_fetcher(self, archive_path=None):
+        self.fetcher = Fetcher(self.dcnfg, archive_path)
+        self.fetcher.durls = self.durls
 
     def ohm(self, cmd, odir):
         odir  =Path(odir)

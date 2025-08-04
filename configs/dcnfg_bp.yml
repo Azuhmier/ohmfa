@@ -11,14 +11,13 @@ site_uid:
         node_name:
             urls:
                 url_name:
-                    bps: {
+                    bps: 
                         main:
-                          bp: []
-                          main: True
-                          domain_type: None
-                          query: {} 
-                          frags: {}
-                    }
+                            bp: []
+                            main: True
+                            domain_type: null
+                            query: {} 
+                            frags: {}
                     formats: {}
                     regex: {}
                     actions:
