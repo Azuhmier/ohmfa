@@ -10,7 +10,7 @@ import copy
 import sys
 import urllib
 from urllib.parse import urlparse, parse_qs
-from ohmfa.config_parser import (validate_item, process_item)
+from ohmfa.config_parser import (process_item)
 from ohmfa.ohmfa import Ohmfa
 from ohmfa.path_resolver import PathResolver
 
@@ -40,7 +40,7 @@ class OhmfaUrl(Ohmfa):
         self.url       = urlparse(url)
         self.pr = PathResolver(verbose=verbose,prnt=prnt)
         self.ws = {}
-        self.actions=[[]]
+        self.actions=[]
 
         # Determine sld
         dmn_frags = self.url.netloc.split('.')

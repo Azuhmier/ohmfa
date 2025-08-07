@@ -16,7 +16,7 @@ MODEL CHARACTERISTICS:
 """
 import copy
 import sys
-from ohmfa.config_parser import (validate_item, process_item)
+from ohmfa.config_parser import (is_desired_item, process_item)
 from ohmfa.ohmfa import Ohmfa
 
 class PathResolver(Ohmfa):
@@ -211,7 +211,7 @@ class PathResolver(Ohmfa):
 
         elif not len(c_ar): 
             if lvl == 0:
-                if validate_item(c_bp[0],'try','op')[0]:
+                if is_desired_item(c_bp[0],'try','op')[0]:
                     return [True, bp, ar, vrs, delims]
                 else:
                     return [False, bp, ar, vrs, delims]

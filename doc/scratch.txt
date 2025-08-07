@@ -1,0 +1,49 @@
+item processing
+item type
+    boolean
+    variable
+    operator
+    arrray
+    literal
+name string
+args
+
+item_type:
+    <ar>        istype
+    <bool>      istype
+    _<vr>()_    index
+    _<op>()     index
+    <ltrl>      else
+
+
+# handlers ###############
+fetch
+    selenium
+    driver
+    flaresolver
+config
+    regex
+    csv
+    json
+    yaml
+    file
+Main
+    job
+    shell
+    file
+
+db
+
+
+# ###############
+css
+exists
+for
+join
+in
+not
+slice
+hash
+
+
+_css(args)

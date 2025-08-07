@@ -6,45 +6,15 @@ archiveofourown:
         e_tos_accept:             [_css, '#accept_tos']
         e_tos_agree:              [_css, '#tos_agree']
         e_tos_agree2:             [_css, '#data_processing_agree']
-        e_w_dl:                   [_css, '#main > ul.work.navigation.actions > li.download > a']
-        e_w_dl2:                  [_css, '#main > ul.work.navigation.actions > li.download > ul > li:nth-child(4) > a']
-
-        e_user:                   [_css, '#user_login']
-        e_remeber_me:             [_css, '#user_remeber_me']
-        e_password:               [_css, '#user_password']
-        e_submit:                 [_css, '#input.submit']
-        e_token:                  [input, name='authenticity_token']
+        e_w_dl:                   [_css, 'a.collapsed']
+        e_w_dl2:                  [_css, '.expandable > li:nth-child(4) > a:nth-child(1)']
         e_csrf:                   [meta, meta, name=csrf-token, content]
-        #--------work
-        # = meta
-        e_meta:                   [div, class=wrapper,[dl, class=work meta group]]
-        ev_tags:                  [_in, e_meta, dd, class="freeform tags", [ul,[_for, li, [ a,.txt]]]]
-        ev_stats:                 [_in, e_meta, dd, class="stats", [dl, [_for, [_hash,[ dt,.txt], [dd, [_exists, a, .txt]]]]]]
-        # - preface
-        e_preface:                [div, class='preface_group']
-        ev_author:                [_in, e_preface, h3, class='byline heading',[a,.txt]]
-        ev_title:                 [_in, e_preface, h2, class='title heading', .txt]
-        ev_dscp:                   [_in, e_preface, div, class="summary module", [blockquote  .txt]]
-        # - workskin
-        e_workskin:               [div, id='workskin']
-        e_chapters:               [_in, e_workskin, div, id=chapters, role=article]
-        e_chapter:                [_in, e_chapters, div, class="chapter"]
-        e_chapter_preface:        [_in, e_chapter, div, class="chapter preface group"]
-        ev_chroni:                [_in, e_chapter_preface, h3, [a, .txt]]
-        ev_chrono:                [_in, e_chapter_preface, h3, [_not, a, .txt, '2:']]
-        ev_txt:                   [_in, e_chapter, div, class="userstuff module", [h3, id="work", .txt]]
-        #titles
-        e_splash_titles:        [ol, class="work index group"]
-        evv_splash_serie:       [_in, e_splash_tites,li, [div, [h4,[a,.href]]]]
-        ev_splash_title_tags:   [_in, e_splash_tites,ul, class="tags comma", [_for, li, [a,.txt]]]
-        #series
-        e_splash_series:        [ul, class="series index group"]
-        evv_splash_series:      [_in, e_splash_series, li, [div, [h4,[a,.href]]]]
-        ev_splash_series_tags:  [_in, e_splash_series, ul, class="tags comma",[_for, li, [a,.txt]]]
-        #Profile
-        e_profile:              [div, class="user home profile"]
-        ev_stats2:               [_in, e_profile, dl, [_for, [_hash, [dt,.txt], [dd,[_exists, a, .txt]]]]]
-        ev_bio:                 [_in, e_profile, div, class='bio module',[blockquote, .txt]]
+        e_author:                 [body, [div, class=preface group, [h3, class=byline heading,[a]]]]
+        e_title:                  [body, [div, class=preface group,[h2, class=title heading]]]
+        e_page_title:             [head, [title]]
+        e_splash_titles:          [ol, class="work index group"]
+        e_splash_series:          [ul, class="series index group"]
+        e_profile:                [div, class="user home profile"]
     actions:
         a_init:
             - [ e_tos, _exists]
@@ -52,9 +22,13 @@ archiveofourown:
             - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
             - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
             - [_wait(2), e_w_dl, _exists]
+            - [e_page_title, _exists]
+            - [e_title, _exists]
+            - [e_author, _exists]
         a_content:
-            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(1), _wait(1)]
-            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(1), _wait(1)]
+            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(5), _wait(5)]
+            - [_wait(2), e_w_dl2, _exists]
+            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(5), _wait(5)]
     dmns:
         d:
             hstns: ['', www]
