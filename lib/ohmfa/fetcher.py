@@ -6,6 +6,7 @@ import json
 import time
 import yaml
 import pprint
+import shutil
 
 from bs4 import BeautifulSoup
 import requests
@@ -23,8 +24,10 @@ class Fetcher():
         self.pwds = {}
         self.fs_domains = []
         self.cookie_jar = {}
+        self.d_page_wait = 20
         self.dspt = dcnfg
         self.archive_path = archive_path
+        self.dl_path = "/home/azuhmier/progs/ohmfa/dl"  # Specify your desired path
 
 
     def start_session(self):
@@ -44,40 +47,28 @@ class Fetcher():
         response_data = json.loads(r.content)
         user_agent = response_data["solution"]["userAgent"]
 
+        download_folder = '/home/azuhmier/progs/ohmfa/dl'
         # --------- driver
-        self.d = SB(
+        self.d = Driver(
+            agent=user_agent,
+            browser="chrome",
+            #devtools=True,
+            do_not_track=True,
+            headless=True,
+            no_sandbox=True,
             uc=True,
             uc_cdp_events=True,
-            agent=user_agent,
-            headless=True,
-            browser="chrome",
-            #do_not_track=True,
-            #undetectable=True,
+            undetectable=True,
+            #uc_subprocess=True,
+            #version_main = 130,
             )
-        downloads_folder = "/home/azuhmier/progs/ohmfa/dl"  # Specify your desired path
-
-
-    def delete_all_sessions(self):
-        self.d.quit()
-        cmd     = "sessions.list"
-        headers = {"Content-Type": "application/json"}
-        fs_data = { "cmd": cmd}
-        r = self.s.post(self.s_url, headers=headers, json=fs_data)
-        fs_r_json     = json.loads(r.content)
-        session_list = fs_r_json['sessions']
-        for session_id in session_list:
-            cmd     = "sessions.destroy"
-            headers = {"Content-Type": "application/json"}
-            fs_data = { "cmd": cmd,"session":session_id}
-            r = self.s.post(self.s_url, headers=headers, json=fs_data)
-            fs_r_json     = json.loads(r.content)
-            status = fs_r_json['status']
-            print(f"delete all sessions: {status}")
+        self.d.set_page_load_timeout(self.d_page_wait)
+        self.d.execute_cdp_cmd("Page.setDownloadBehavior", {"behavior": "allow", "downloadPath": self.dl_path})
 
 
     def fetch_all(self, start=0, max=0):
 
-        for cnt,durl in enumerate(self.durls):
+        for cnt, durl in enumerate(self.durls):
 
             if durl.sld != 'archiveofourown':
                 max = max + 1
@@ -121,10 +112,18 @@ class Fetcher():
 
             # - update driver
             fs_cookies = sorted(fs_cookies, key=lambda d: d['name'])
+            #---------------------------
             self.d.execute_cdp_cmd('Network.enable',{})
+            #---------------------------
             for fs_cookie in fs_cookies:
                 fs_cookie.update({'domain': u.dmn})
                 res = self.d.execute_cdp_cmd('Network.setCookie', fs_cookie)
+                #---------------------------
+                self.d.execute_cdp_cmd('Network.disable', {})
+                #---------------------------
+            #---------------------------
+            self.d.execute_cdp_cmd('Network.disable', {})
+            #---------------------------
             self.d.execute_cdp_cmd('Network.disable', {})
 
             # - page title check
@@ -306,6 +305,52 @@ class Fetcher():
         return r
 
         
+    def delete_all_sessions(self):
+        self.cleanup()
+        self.d.quit()
+        cmd     = "sessions.list"
+        headers = {"Content-Type": "application/json"}
+        fs_data = { "cmd": cmd}
+        r = self.s.post(self.s_url, headers=headers, json=fs_data)
+        fs_r_json     = json.loads(r.content)
+        session_list = fs_r_json['sessions']
+        for session_id in session_list:
+            cmd     = "sessions.destroy"
+            headers = {"Content-Type": "application/json"}
+            fs_data = { "cmd": cmd,"session":session_id}
+            r = self.s.post(self.s_url, headers=headers, json=fs_data)
+            fs_r_json     = json.loads(r.content)
+            status = fs_r_json['status']
+            print(f"delete all sessions: {status}")
+
+
+    def cleanup(self):
+        """
+        Removes all files within a specified directory,
+        leaving subdirectories and the directory itself intact.
+        """
+
+        # clean download folder
+        for filename in os.listdir(self.dl_path):
+            file_path = os.path.join(self.dl_path, filename)
+            if os.path.isfile(file_path):
+                try:
+                    os.remove(file_path)
+                    print(f"Removed: {file_path}")
+                except OSError as e:
+                    print(f"Error removing {file_path}: {e}")
+
+        directory_to_delete = "/home/azuhmier/progs/ohmfa/downloaded_files"  # Replace with the actual path
+
+        if os.path.exists(directory_to_delete) and os.path.isdir(directory_to_delete):
+            try:
+                shutil.rmtree(directory_to_delete)
+                print(f"Directory '{directory_to_delete}' and its contents have been deleted.")
+            except OSError as e:
+                print(f"Error deleting directory '{directory_to_delete}': {e}")
+        else:
+            print(f"Directory '{directory_to_delete}' does not exist or is not a directory.")
+
         
         #download controller
         #checker
