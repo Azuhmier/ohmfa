@@ -35,15 +35,48 @@ Main
 db
 
 
-# ###############
-css
-exists
-for
-join
-in
-not
-slice
-hash
+# fetch ###############
+-- fetch actions --
+init
+verify
+content
+*compute
+crawl
 
 
-_css(args)
+
+
+regex [r_]
+element [e_]
+    _css()
+    attr=<val>
+action [a_]
+    e_()
+        *text
+        attr
+    _skipif(<bool><action number><do number>)
+    _exists()
+    _wait(time)
+    _no_soup()
+    _click(time)
+    _regex(pattern)
+    _split(delimiter, idx)
+    _file(path, action)
+    _db(db_name, db_path)
+        db_name
+            ohmfa
+                archive_path
+                config_path
+                runtime_path
+                downloads_path
+            db
+                archive
+                db
+            dmn
+            fetch
+                page
+        db_path
+
+
+
+

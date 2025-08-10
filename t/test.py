@@ -9,6 +9,7 @@ o.create_fetcher('/home/azuhmier/hmofa/archive')
 o.fetcher.start_session()
 o.fetcher.fetch_all(max=1)
 o.fetcher.delete_all_sessions()
+o.fetcher.d.quit()
 #f = Fetcher('/home/azuhmier/progs/ohmfa/t/scratch/lib/frameworks/domains_config.yml')
 #o.urls = test_urls + o.urls
 #o.urls = test_urls

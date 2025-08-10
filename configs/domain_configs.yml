@@ -1,34 +1,44 @@
 archiveofourown:
     params: { enabled: True, login: False, content: True, crawl: False, redirect: False }
-    cookies :        [__cf_bm, _cfuvid, _otwarchive_session, view_adult,cf_clearance]
+    regex: 
+        r_ww_PageTitle: '^.+ - [^-]+ - [^-]+ \[Archive of Our Own\]$'
     elements:
-        e_tos :                   [body, [div, id=tos_prompt]]
-        e_tos_accept:             [_css, '#accept_tos']
-        e_tos_agree:              [_css, '#tos_agree']
-        e_tos_agree2:             [_css, '#data_processing_agree']
-        e_w_dl:                   [_css, 'a.collapsed']
-        e_w_dl2:                  [_css, '.expandable > li:nth-child(4) > a:nth-child(1)']
-        e_csrf:                   [meta, meta, name=csrf-token, content]
-        e_author:                 [body, [div, class=preface group, [h3, class=byline heading,[a]]]]
-        e_title:                  [body, [div, class=preface group,[h2, class=title heading]]]
-        e_page_title:             [head, [title]]
-        e_splash_titles:          [ol, class="work index group"]
-        e_splash_series:          [ul, class="series index group"]
-        e_profile:                [div, class="user home profile"]
+        e_pp_btn_WorkView:        [_css, li.chapter.entire]
+        e_ww_btn_PartView:        [_css, li.chapter.bychapter]
+        e_us_MetaGroup:           [ _css, dl.series.meta.group]
+        e_PageTitle:              [head, [title]]
+        e_ww_btn_Share:           [ _css, li.share, [a]]
+        e_Tos :                   [body, [div, id=tos_prompt]]
+        e_btn_TosAccept:          [_css, '#accept_tos']
+        e_btn_TosAgree:           [_css, '#tos_agree']
+        e_btn_TosAgree2:          [_css, '#data_processing_agree']
+        e_ww_DL:                  [_css, 'a.collapsed']
+        e_ww_DL2:                 [_css, '.expandable > li:nth-child(4) > a:nth-child(1)']
+        e_ww_Author:              [body, [div, class=preface group, [h3, class=byline heading,[a]]]]
+        e_ww_Title:               [body, [div, class=preface group,[h2, class=title heading]]]
     actions:
         a_init:
-            - [ e_tos, _exists]
-            - [ _no_soup,_skipif(!0), e_tos_agree, _click(1)]
-            - [ _no_soup,_skipif(!0), e_tos_agree2, _click(1)]
-            - [ _no_soup,_skipif(!0), e_tos_accept, _click(1)]
-            - [_wait(2), e_w_dl, _exists]
-            - [e_page_title, _exists]
-            - [e_title, _exists]
-            - [e_author, _exists]
+            - [ e_Tos, _exists]
+            - [ _no_soup, _skipif(!0), e_btn_TosAgree, _click(1), _exists]
+            - [ _no_soup, _skipif(!0), e_btn_TosAgree2, _click(1), _exists]
+            - [ _no_soup, _skipif(!0), e_btn_TosAccept, _click(1), _exists]
+        a_verify:
+            - [ e_PageTitle, _exists]
+            - ['_skipif(!1,0)', e_ww_Title, _exists]
+            - ['_skipif(!1,0)', e_ww_Author, _exists]
+            - ['_skipif(!1,0)', e_ww_btn_PartView, _!exists]
+            - ['_skipif(!1,0)', e_PageTitle(text), _regex(r_ww_PageTitle), _exists]
+            - ['_skipif(!1,0)', e_us_MetaGroup, _!exists ]
+            - ['_skipif(!1,0)', e_ww_btn_Share, _exists]
+            - ['_skipif(!1,0)', e_ww_btn_Share(href), _split(/;2),'_db(u;uid)', _exists]
         a_content:
-            - [_no_soup, '_skipif(!0,4)', e_w_dl, _click(5), _wait(5)]
-            - [_wait(2), e_w_dl2, _exists]
-            - [_no_soup, '_skipif(!0,4)', e_w_dl2, _click(5), _wait(5)]
+            - [_wait(2), '_skipif(!1,0)', e_ww_DL, _exists]
+            - [_no_soup, '_skipif(!2,0)', e_ww_DL, _click(1), _wait(1), _exists]
+            - [_wait(2), '_skipif(!2,0)', e_ww_DL2, _exists]
+            - ['_skipif(!2,2)', e_ww_DL2(href), '_split(/;3|?;0)', _db(u;title), _exists]
+            #- [_no_soup, '_skipif(!2,2)', e_ww_DL2, _click(1), _wait(1), _file(dl), _exists, _till(30)]
+            - [_no_soup, '_skipif(!2,2)', e_ww_DL2, _click(1), _wait(1)]
+            - [_no_soup, '_skipif(!2,2)', _file(dl), _exists, _till(30)]
     dmns:
         d:
             hstns: ['', www]
@@ -59,20 +69,11 @@ archiveofourown:
                 bp_cnfg: [users, _val(;name)_, _try(pseuds;_psued()_|1|0), works]
                 query:
                     page: _val(page;;1)_
-                verify:
-                    title:
-                    - [ _in(ea_head), title, text==_regex(title) ]   
-                    - true 
-                    - [_regex, '^Works - [^,-]+ - \[Archive of Our Own\]$']
             series_listing:
                 domain_type: d
                 bp_cnfg: [users, _name()_, _try(pseuds;_psued()_|1|0), series]
                 query:
                     page: _val(page;;1)_
-                verify:
-                    - [_regex, '^(?:[^,-]+,? )+– Works \[Archive of Our Own\]$']
-                    - [_in(ea_head), title, text==_regex(title)]
-                    - TRUE 
         bin:
             bin:
                 domain_type: d
@@ -87,13 +88,6 @@ archiveofourown:
                     show_comments: true
                     view_adult: true
                     view_full_work: true
-                checks:
-                    title: 
-                    - [ _in(ea_head), title, text==_regex(title) ]
-                    - true
-                    not_series:
-                    - [ _css(“dl.series.meta.group”) ]
-                    - false
         chapter:
             chapter:
                 domain_type: d

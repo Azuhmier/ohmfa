@@ -42,9 +42,12 @@ def is_desired_item(
     return retu, res
 
 
-def process_item(item:str, no_res:bool=False):
+def process_item(item:str, no_res:bool=False, parse_only:bool=False):
     nmstr = None
-    item_type = get_item_type(item)
+    if parse_only:
+        item_type='op'
+    else:
+        item_type = get_item_type(item)
     res = None
 
     # non-literal
@@ -53,7 +56,10 @@ def process_item(item:str, no_res:bool=False):
         if no_res:
             res = args
         else:
-            res = process_args(nmstr,item_type,args)
+            if not parse_only:
+                res = process_args(nmstr,item_type,args)
+            else: 
+                res = args
     else:
         nmstr = item
     return nmstr, item_type, res
@@ -68,12 +74,19 @@ def parse_item(item, item_type):
         args = item 
 
     else:
-        z = item.find('(')
-        e = item.rfind(')')
-        arg_str =  item[(z+1):e]
-        args = arg_str.split('|')
-        args = [arg.split(';') for arg in args]
-        nmstr = item[1:z]
+        if '(' not in item:
+            nmstr = item
+            args = [[]]
+        else:
+            z = item.find('(')
+            e = item.rfind(')')
+            arg_str =  item[(z+1):e]
+            args = arg_str.split('|')
+            args = [arg.split(';') for arg in args]
+            if item[0] == '_':
+                nmstr = item[1:z]
+            else: 
+                nmstr = item[:z]
 
     return nmstr, args
 
@@ -108,12 +121,6 @@ def process_args(nmstr:str,item_type:str,args:list):
             res.append(dres)
     elif item_type == 'op':
         if nmstr == 'in':
-            res = args
-        elif nmstr == 'for':
-            res = args
-        elif nmstr == 'css':
-            res = args
-        elif nmstr == 'text':
             res = args
         elif nmstr == 'delim':
             res = args

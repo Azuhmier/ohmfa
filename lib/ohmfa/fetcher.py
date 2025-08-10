@@ -7,14 +7,14 @@ import time
 import yaml
 import pprint
 import shutil
+import re
 
 from bs4 import BeautifulSoup
 import requests
-from seleniumbase import SB
 from seleniumbase import Driver
+from ohmfa.config_parser import process_item
 
 class Fetcher():
-
 
     s = None
     s_url = None
@@ -27,7 +27,8 @@ class Fetcher():
         self.d_page_wait = 20
         self.dspt = dcnfg
         self.archive_path = archive_path
-        self.dl_path = "/home/azuhmier/progs/ohmfa/dl"  # Specify your desired path
+        #self.dl_path = "/home/azuhmier/progs/ohmfa/dl"  # Specify your desired path
+        self.dl_path = "/home/azuhmier/progs/ohmfa/downloaded_files"  # Specify your desired path
 
 
     def start_session(self):
@@ -47,26 +48,29 @@ class Fetcher():
         response_data = json.loads(r.content)
         user_agent = response_data["solution"]["userAgent"]
 
-        download_folder = '/home/azuhmier/progs/ohmfa/dl'
         # --------- driver
+        print('dafda')
         self.d = Driver(
             agent=user_agent,
             browser="chrome",
             #devtools=True,
+            #log_cdp_events=True,
             do_not_track=True,
             headless=True,
             no_sandbox=True,
             uc=True,
+            #external_pdf=True,
             uc_cdp_events=True,
             undetectable=True,
             #uc_subprocess=True,
             #version_main = 130,
             )
+        self.d.delete_all_cookies()
         self.d.set_page_load_timeout(self.d_page_wait)
-        self.d.execute_cdp_cmd("Page.setDownloadBehavior", {"behavior": "allow", "downloadPath": self.dl_path})
-
+        #self.d.execute_cdp_cmd("Page.setDownloadBehavior", {"behavior": "allow", "downloadPath": self.dl_path})
 
     def fetch_all(self, start=0, max=0):
+        self.cleanup()
 
         for cnt, durl in enumerate(self.durls):
 
@@ -78,16 +82,51 @@ class Fetcher():
                 continue
 
             u = durl.url.geturl()
-            u_dname = u.replace("/","_")
-            u_dir = os.path.join(self.archive_path,u_dname)
-            os.makedirs(u_dir, exist_ok=True)
-            u_fname = str(int(time.time()))
-            u_path = os.path.join(u_dir,u_fname)
-
             print(f"{cnt}: {u}")
-            #with open(u_path, 'w') as file:
-            #    file.write(u_content)
-            self.fetch(durl)
+
+            #u directory
+            u_fname = u.replace("/","_")
+            u_dir = os.path.join(self.archive_path,u_fname)
+            os.makedirs(u_dir, exist_ok=True)
+            f_fname = str(int(time.time()))
+            #f directory
+            f_dir = os.path.join(u_dir,f_fname)
+            f_dl_dir = os.path.join(f_dir,"dl")
+            #f_dl directory
+            os.makedirs(f_dl_dir, exist_ok=True)
+            f_html_path = os.path.join(f_dir,f_fname+".html")
+            f_meta_path = os.path.join(f_dir,f_fname+".info")
+            f_log_path = os.path.join(f_dir,f_fname+".log")
+
+            r = self.fetch(durl)
+
+            #fetch file
+            with open(f_html_path, 'w') as file:
+                file.write(self.d.page_source)
+            #fetch info
+            with open(f_meta_path, 'w') as file:
+                file.write(self.d.page_source)
+            logs = {}
+            logs["browser"] = self.d.get_log('browser')
+            with open(f_log_path, 'w') as file:
+                json.dump(logs,file,indent=4)
+            
+            for filename in os.listdir(self.dl_path):
+                file_path = os.path.join(self.dl_path, filename)
+                source_file = self.dl_path
+                destination_directory = os.path.join(f_dl_dir,filename)
+
+                try:
+                    shutil.copy2(file_path, destination_directory)
+                    os.remove(file_path)
+                    print(f"File '{source_file}' copied to '{destination_directory}' with metadata successfully.")
+                except FileNotFoundError:
+                    print(f"Error: Source file '{source_file}' not found.")
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+            
+
+
             if max and max == cnt:
                 break
 
@@ -112,6 +151,8 @@ class Fetcher():
 
             # - update driver
             fs_cookies = sorted(fs_cookies, key=lambda d: d['name'])
+            print('a')
+            time.sleep(2)
             #---------------------------
             self.d.execute_cdp_cmd('Network.enable',{})
             #---------------------------
@@ -139,9 +180,14 @@ class Fetcher():
                 print('        fs_Title: ', fs_page_title)
 
         # -------- Driver
+        print('b')
+        time.sleep(2)
         self.d.get(u.url.geturl())
+        print('c')
         time.sleep(5)
         cookies = self.d.get_cookies()
+        print('d')
+        time.sleep(2)
         cookies = sorted(cookies, key=lambda d: d['name'])
         # page title check
         try :
@@ -167,6 +213,7 @@ class Fetcher():
                     res = self.do_action(do,u)
                     u.actions[-1][1].append([do,res])
                     print("    ",res," ",do)
+            print(u.ws)
         return r
 
 
@@ -175,12 +222,33 @@ class Fetcher():
         res = None
         arg_ar = None
         no_soup = False
-        for arg in do:
+        start_time = 0
+        till = start_time
+        ii=0
+        odo = do
+        while ii < len(do):
+            arg = do[ii]
+            nmstr, item_type, args = process_item(arg,parse_only=True)
             if arg[:2] == 'e_':
-                arg_ar = u.pcnfg['elements'][arg]
+                ee_retu = None
+                pproc = args[0]
+                arg_ar = u.pcnfg['elements'][nmstr]
+                
+                    
                 if not no_soup:
                     soup = BeautifulSoup(self.d.page_source,'html.parser')
                     ee_retu, res = self.eval_element(arg_ar,soup)
+            
+                if pproc and res:
+                    for proc in pproc:
+                        if proc == 'text':
+                            ee_retu = ee_retu.get_text()
+                        else:
+                            ee_retu = ee_retu[proc]
+                        
+                    
+
+                        
             if arg[0] == '_':
                 if arg[:6] == '_click':
                     if not no_soup:
@@ -193,12 +261,58 @@ class Fetcher():
                     self.d.click(selector, by="css selector")
                 if arg == '_exists':
                     retu = res
+                if arg == '_!exists':
+                    retu = not res
                 if arg[:5] == '_wait':
                     wait_time = arg[6:-1]
                     if wait_time:
                         time.sleep(int(wait_time))
                 if arg == '_no_soup':
                     no_soup=True
+                if nmstr == 'split':
+                    for i in args:
+                        delim = i[0]
+                        idx = int(i[1])
+                        ee_retu = ee_retu.split(delim)
+                        ee_retu = ee_retu[idx]
+                if nmstr =='db':
+                    db_name = args[0][0]
+                    db_path = args[0][1]
+                    if db_name == 'u':
+                        u.ws[db_path] = ee_retu
+                if nmstr == 'file':
+                    fpath = args[0][0]
+                    if fpath == 'dl':
+                        res = os.path.exists('/home/azuhmier/progs/ohmfa/dl/'+u.ws['title'])
+                if nmstr == 'till':
+                    if not res:
+                        if start_time == 0:
+                            max_wait_time = int(args[0][0])
+                            start_time = time.time()  # Record the starting time
+                            end_time = start_time + max_wait_time  # Calculate the target end time (10 seconds from start)
+                        if time.time() < end_time:
+                            do = do + odo
+                            print(f"    ...waiting: {end_time - time.time()}")
+                            time.sleep(5)
+                            print(len(do))
+                            retu = None
+                            res = None
+                            arg_ar = None
+                            no_soup = False
+
+
+                if nmstr == 'regex':
+                    rgx = None
+                    r_pat_name = arg[7:-1]
+                    if not 'compiled_regex' in u.pcnfg.keys():
+                        u.pcnfg['compiled_regex'] = {}
+                    if r_pat_name in u.pcnfg['compiled_regex'].keys():
+                        rgx = u.pcnfg['compiled_regex'][r_pat_name]
+                    else:
+                        r_pat = u.pcnfg['regex'][r_pat_name]
+                        rgx = re.compile(r_pat)
+                        u.pcnfg['compiled_regex'][r_pat_name] = rgx
+                    res = bool(rgx.match(ee_retu))
                 if arg[:7] == '_skipif':
                     act = -1
                     nop=True
@@ -211,7 +325,9 @@ class Fetcher():
                     cond = u.actions[int(act)][1][int(ele)][1]
                     if not ( nop ^ cond ):
                         retu='skipped!'
+                        break
                         return retu
+            ii=ii+1
         return retu
 
 
@@ -306,8 +422,6 @@ class Fetcher():
 
         
     def delete_all_sessions(self):
-        self.cleanup()
-        self.d.quit()
         cmd     = "sessions.list"
         headers = {"Content-Type": "application/json"}
         fs_data = { "cmd": cmd}
@@ -336,7 +450,7 @@ class Fetcher():
             if os.path.isfile(file_path):
                 try:
                     os.remove(file_path)
-                    print(f"Removed: {file_path}")
+                    #print(f"Removed: {file_path}")
                 except OSError as e:
                     print(f"Error removing {file_path}: {e}")
 
@@ -345,12 +459,28 @@ class Fetcher():
         if os.path.exists(directory_to_delete) and os.path.isdir(directory_to_delete):
             try:
                 shutil.rmtree(directory_to_delete)
-                print(f"Directory '{directory_to_delete}' and its contents have been deleted.")
+                #print(f"Directory '{directory_to_delete}' and its contents have been deleted.")
             except OSError as e:
                 print(f"Error deleting directory '{directory_to_delete}': {e}")
         else:
             print(f"Directory '{directory_to_delete}' does not exist or is not a directory.")
-
         
+        # Define the path to the directory you want to clear
+        target_directory = "/home/azuhmier/hmofa/archive" 
+
+        # Iterate through all items (files and directories) in the target directory
+        for item in os.listdir(target_directory):
+            item_path = os.path.join(target_directory, item)
+
+            # Check if the item is a directory
+            if os.path.isdir(item_path):
+                try:
+                    # Recursively remove the subdirectory and its contents
+                    shutil.rmtree(item_path)
+                    #print(f"Removed subdirectory: {item_path}")
+                except OSError as e:
+                    print(f"Error removing {item_path}: {e}")
+
+                
         #download controller
         #checker
