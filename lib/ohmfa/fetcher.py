@@ -1,11 +1,8 @@
 ### MASTER
 import os
-import csv
 import sys
 import json
 import time
-import yaml
-import pprint
 import shutil
 import re
 
@@ -28,7 +25,7 @@ class Fetcher():
         self.dspt = dcnfg
         self.archive_path = archive_path
         #self.dl_path = "/home/azuhmier/progs/ohmfa/dl"  # Specify your desired path
-        self.dl_path = "/home/azuhmier/progs/ohmfa/downloaded_files"  # Specify your desired path
+        self.dl_path = "/home/azuhmier/snap/chromium/3217/Downloads/"  # Specify your desired path
 
 
     def start_session(self):
@@ -49,7 +46,6 @@ class Fetcher():
         user_agent = response_data["solution"]["userAgent"]
 
         # --------- driver
-        print('dafda')
         self.d = Driver(
             agent=user_agent,
             browser="chrome",
@@ -151,7 +147,6 @@ class Fetcher():
 
             # - update driver
             fs_cookies = sorted(fs_cookies, key=lambda d: d['name'])
-            print('a')
             time.sleep(2)
             #---------------------------
             self.d.execute_cdp_cmd('Network.enable',{})
@@ -180,13 +175,10 @@ class Fetcher():
                 print('        fs_Title: ', fs_page_title)
 
         # -------- Driver
-        print('b')
         time.sleep(2)
         self.d.get(u.url.geturl())
-        print('c')
         time.sleep(5)
         cookies = self.d.get_cookies()
-        print('d')
         time.sleep(2)
         cookies = sorted(cookies, key=lambda d: d['name'])
         # page title check
@@ -283,7 +275,7 @@ class Fetcher():
                 if nmstr == 'file':
                     fpath = args[0][0]
                     if fpath == 'dl':
-                        res = os.path.exists('/home/azuhmier/progs/ohmfa/dl/'+u.ws['title'])
+                        res = os.path.exists(self.dl_path+u.ws['title'])
                 if nmstr == 'till':
                     if not res:
                         if start_time == 0:
@@ -439,11 +431,6 @@ class Fetcher():
 
 
     def cleanup(self):
-        """
-        Removes all files within a specified directory,
-        leaving subdirectories and the directory itself intact.
-        """
-
         # clean download folder
         for filename in os.listdir(self.dl_path):
             file_path = os.path.join(self.dl_path, filename)
@@ -480,7 +467,3 @@ class Fetcher():
                     #print(f"Removed subdirectory: {item_path}")
                 except OSError as e:
                     print(f"Error removing {item_path}: {e}")
-
-                
-        #download controller
-        #checker

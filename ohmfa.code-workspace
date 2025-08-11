@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../../hmofa/archive"
+		},
+		{
+			"path": "../../snap/chromium/3217"
 		}
 	],
 	"settings": {}
