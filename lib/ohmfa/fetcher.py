@@ -24,7 +24,6 @@ class Fetcher():
         self.d_page_wait = 20
         self.dspt = dcnfg
         self.archive_path = archive_path
-        #self.dl_path = "/home/azuhmier/progs/ohmfa/dl"  # Specify your desired path
         self.dl_path = "/home/azuhmier/snap/chromium/3217/Downloads/"  # Specify your desired path
 
 

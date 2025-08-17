@@ -1,19 +1,4 @@
 ##MASTER
-"""
-CAVEATS:
-- All Try block items are scalars
-- Default lvl 0 delim is '/'
-- Default lvl 1 delim is '.'
-- Non Default Delim strs must be indicated at beginning of array via "_delim({delim_str})"
-- '_try' ops can not be consecutive
-- all bp arrays with lvls greater that 0, must contain 2 or more items
-
-MODEL CHARACTERISTICS:
-- all 'r' values are stored and are unique to each recursion or depth as arrays to account for 
-  multiple try blocks
-- [x, "x", [x, "x"]] == [x, x, [x, "x"]]
-
-"""
 import copy
 import sys
 from ohmfa.config_parser import (is_desired_item, process_item)
@@ -21,62 +6,29 @@ from ohmfa.ohmfa import Ohmfa
 
 class PathResolver(Ohmfa):
 
-    final = False
-    gen_from_vars = False
-    def __init__(self,verbose=0,prnt=0):
-        super().__init__(verbose,prnt)
+    def __init__(self):
+        super().__init__()
+        self.logger.debug(f"PathResolver.__init__()")
 
 
-    def start_recursion(self, bp:list, ar:list, vrs:list =None,gen_from_vars:bool=False ):  
+    def start_recursion(self, bp:list, ar:list):  
+        self.logger.debug(f"PathResolver.start_recursion()")
         self.final = False
-        if vrs is None:
-            vrs = []
         depth = 0
         lvl   = 0
         ida   = []
         delims = []
-        if gen_from_vars:
-            self.gen_from_vars = True
-            ar = bp
-        retu, bp, ar, vrs, delims = self._m(bp,ar,depth,ida,lvl,delims,vrs)
-        self.gen_from_vars = False
-        return [retu,bp,ar, vrs]
+        retu, bp, ar, delims = self._m(bp,ar,depth,ida,lvl,delims)
+        return [retu,bp,ar]
 
 
-    def _m(self, bp_in:list, ar_in:list, depth:int, ida:list, lvl:int, delims:list, vrs:list) -> list:
-
-        # _logars() ##############################################
-        def _logars(ind:int, border:str, header:str, bp:list, ar:list, ida:int, lvl:int, depth:int, retu:bool, r_ar:list,v_ard,v_bpd) -> None:
-            ind = 24
-            r_e = None
-            if len(r_ar):
-                r_e = r_ar[-1]['e']
-            bp = copy.deepcopy(bp)
-            ar = copy.deepcopy(ar)
-            c_bp, c_ar = get_cur(ida,lvl,[bp,ar])
-
-            if ida[lvl] < len(c_bp):
-                c_bp[ida[lvl]] = "<<" + str(c_bp[ida[lvl]]) + ">>"
-            elif len(c_bp):
-                c_bp[-1] = "((" + str(c_bp[-1]) + "))"
-
-            if ida[lvl] < len(c_ar):
-                c_ar[ida[lvl]] = "<<" + str(c_ar[ida[lvl]]) + ">>"
-            elif len(c_ar):
-                c_ar[-1] = "((" + str(c_ar[-1]) + "))"
-
-            self.logthis(4,f"{'':>{ind}}{border*40}")
-            self.logthis(4,f"{'':>{ind}}{header}")
-            self.logthis(4,f"{'':>{ind+4}}DPTH: {depth} LVL: {lvl} orlo: {ida[lvl]+1-len(c_ar)} bporlo: {ida[lvl]+1-len(c_bp)} r_e: {r_e} retu: {retu}")
-            self.logthis(4,f"{'':>{ind+4}}ar_z: {v_ard['z']} ar_e: {v_ard['e']}")
-            self.logthis(4,f"{'':>{ind+4}}bp_z: {v_bpd['z']} bp_e: {v_bpd['e']}")
-            self.logthis(4,f"{'':>{ind+4}}IDX:      {ida}")
-            self.logthis(4,f"{'':>{ind+4}}ar:       {ar}")
-            self.logthis(4,f"{'':>{ind+4}}bp:       {bp}")
+    def _m(self, bp_in:list, ar_in:list, depth:int, ida:list, lvl:int, delims:list) -> list:
+        self.logger.debug(f"PathResolver._m()")
 
 
         # _r() ##############################################
         def _r(c_bp,idx,r_ar,v_bpd) -> list:
+            self.logger.debug(f"PathResolver._m()_r()")
             retu=False
             while(len(r_ar)):
                 r = r_ar[-1] 
@@ -98,12 +50,14 @@ class PathResolver(Ohmfa):
 
         # get_cur() ##############################################
         def get_cur(ida,lvl,args) ->list:
+            self.logger.debug(f"PathResolver.get_cur()")
             for n in range(0,lvl,1):
                 args = [arg[ida[n]] for arg in args]
             return args
 
         # get_virtual() ##############################################
         def get_virtual(c,idx,v_d=None):
+            self.logger.debug(f"PathResolver.get_virtual()")
             if not v_d:
                 v_d = {}
                 v_d['start_idx'] = idx
@@ -119,26 +73,11 @@ class PathResolver(Ohmfa):
         # PRE LOOP #########################################################
 
         # - IDA ---------------------------------------------------------
-        # The index array (idx_ar) is a nested array index; whose items
-        # correspond to a specfic array idx at a specfic level in the nesting
-        # hiearchy. The top array (ar) has a level of zero, so its current idx
-        # would be idx_ar[0]
-        #
-        #       idx_ar = [idx_0,idx_1 ... idx_n-1, idx_n]
-        #       c_ar   = ar[idx_0][idx_1]...[idx_n-1][idx_n]
-        #
-        # When an array in "descended" in to for the first time, the idx_ar will
-        # not have indice for its index, so we must append an inital idx value
-        # for that array to idx_ar.
 
         if len(ida)-1 < (lvl):
             ida.append(-1)
 
         # - GET CURRENT ARRAYS ---------------------------------------------------------
-        # in order to get the current array we need only to to index the top
-        # array (ar) for all the levels above the current level, unless the
-        # current level. If the current level is 0, then the the current array
-        # is simply the top array (ar)
 
         bp  = copy.deepcopy(bp_in)
         ar  = copy.deepcopy(ar_in)
@@ -201,20 +140,20 @@ class PathResolver(Ohmfa):
         # - CHECK FOR EMPTY CURRENT ARRAYS ---------------------------------------------------------
         if not len(c_bp) and not len(c_ar): 
             if lvl == 0:
-                return [True, bp, ar, vrs, delims]
+                return [True, bp, ar, delims]
             sys.exit('ERROR: subarrays cannot be empty')
 
         elif not len(c_bp):
             if lvl == 0:
-                return [False, bp, ar, vrs, delims]
+                return [False, bp, ar, delims]
             sys.exit('ERROR: subarrays cannot be empty')
 
         elif not len(c_ar): 
             if lvl == 0:
                 if is_desired_item(c_bp[0],'try','op')[0]:
-                    return [True, bp, ar, vrs, delims]
+                    return [True, bp, ar, delims]
                 else:
-                    return [False, bp, ar, vrs, delims]
+                    return [False, bp, ar, delims]
             sys.exit('ERROR: subarrays cannot be empty')
 
         # - CHECK INVALID CURRENT ARRAYS ---------------------------------------------------------
@@ -243,22 +182,9 @@ class PathResolver(Ohmfa):
             ida[lvl] += 1
 
 
-            # - LOGGING ---------------------------------------------------------
-            if ida[lvl] == v_ard['start_idx'] + 1:
-                _logars(4,'-','START',bp,ar,ida,lvl,depth,retu,r_ar,v_ard,v_bpd)
-            else:
-                _logars(4,'-','NEXT',bp,ar,ida,lvl,depth,retu,r_ar,v_ard,v_bpd)
 
 
             # # CHECKS #########################################################
-            # Checks: an item must exists at the current idx for both the bp
-            # array and the given array. If the previous statment is not
-            # satisfied, 'r' methods will be used and if unsusseful, then the
-            # loop must break
-            # - AR EXHAUSTION ---------------------------------------------------------
-            # check if the current idex is out of range of 'ar'. When the ar is
-            # exhausted it will always be at it's end so the real bp_len can be
-            # used, instead of the virtual one
             if(ida[lvl] >= v_ard['e']):
 
                 # c_bp was not long enouph
@@ -325,12 +251,11 @@ class PathResolver(Ohmfa):
                 if not isinstance(item,list):
                     c_ar_copy = get_cur(ida,lvl,[ar_copy])[0]
                     c_ar_copy[ida[lvl]] = [item]
-                retu, new_bp, new_ar, nvrs, ndelims = self._m(bp,ar_copy,depth,copy.deepcopy(ida),lvl+1,copy.deepcopy(delims),copy.deepcopy(vrs))
+                retu, new_bp, new_ar, ndelims = self._m(bp,ar_copy,depth,copy.deepcopy(ida),lvl+1,copy.deepcopy(delims))
                 if retu:
                     bp[:] = new_bp
                     ar[:] = new_ar
                     v_ard = get_virtual(c_ar,ida[lvl],v_ard)
-                    vrs = nvrs
                     delims = ndelims
                 else:
                     r_res, ida[lvl], r_ar, v_bpd = _r(c_bp, ida[lvl], r_ar, v_bpd)
@@ -356,12 +281,6 @@ class PathResolver(Ohmfa):
             # MATCHING #########################################################
             # - VAR ---------------------------------------------------------
             elif item_type == 'vr' and not isinstance(item,list):
-                if self.gen_from_vars:
-                    vrs2 = [vr for vr in vrs if vr[0] == nmstr ]
-                    val = [vr[2] for vr in vrs2 if vr[1] == args[0][0] ][0]
-
-                    c_ar[ida[lvl]] = val
-                vrs.append([bp_item,item])
                 retu=True
 
             # - LITERAL ---------------------------------------------------------
@@ -378,14 +297,12 @@ class PathResolver(Ohmfa):
         if lvl > 0 and ida[lvl] == len(c_ar) and retu:
             nidx = copy.deepcopy(ida) 
             nidx.pop(-1)
-            retu, new_bp, new_ar, nvrs, ndelims = self._m(bp,ar,depth,nidx,lvl-1,copy.deepcopy(delims),copy.deepcopy(vrs))
+            retu, new_bp, new_ar, ndelims = self._m(bp,ar,depth,nidx,lvl-1,copy.deepcopy(delims))
             if retu:
                 bp[:] = new_bp
                 ar[:] = new_ar
-                vrs = nvrs
 
         # FINAL ----------
-        _logars(4,'-','FINAL',bp,ar,ida,lvl,depth,retu,r_ar,v_ard,v_bpd)
         if retu and (self.final or (lvl== 0 and ida[lvl] == len(c_bp))):
             self.final = True
             if len(c_ar) > v_ard['e']:
@@ -396,5 +313,4 @@ class PathResolver(Ohmfa):
                 items = c_ar[:]
                 c_ar[:] = [delims[lvl].join(items)]
 
-        #print(vrs)
-        return [retu, bp, ar, vrs, delims]
+        return [retu, bp, ar, delims]

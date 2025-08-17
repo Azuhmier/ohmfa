@@ -1,9 +1,6 @@
 ## MASTER
 import os
-import sys
 import yaml
-from pathlib import Path
-from urllib.parse import urlparse
 from ohmfa.ohmfa_url import OhmfaUrl
 from ohmfa.ohmfa import Ohmfa
 from ohmfa.fetcher import Fetcher
@@ -22,133 +19,26 @@ class Main(Ohmfa):
     durls      = []
 
 
-    def __init__(self,*args,**kwargs):
-        super().__init__()
+    def __init__(self,log_level=0):
+        super().__init__(log_level=log_level)
+        self.logger.debug(f"Main.__init__()")
+        self.logger.debug(f"...Logger has been set with log level of {log_level}")
         with open(dcnfg_path, mode='r',encoding='utf-8' ) as infile:
             self.dcnfg.update(yaml.safe_load(infile))
-        #print(f"Initing main.Main")
-        #print(f"...dcnfg loaded from '{dcnfg_path}'")
 
     def load_urls(self, urls_file_path=None, lst=False):
         urls = None
         if not lst:
-            #print(f"...lst is {lst}")
-            #print(f"...loading urls from '{urls_file_path}")
             infile =  open(urls_file_path,'r', encoding='utf-8')
             urls = infile.readlines()
             infile.close()
         else:
             urls = urls_file_path
-        #print(f"...computing {len(urls)} urls")
         for url in urls:
-            #print("===============================================")
-            #print(url)
-            durl = OhmfaUrl(url,prnt=0,verbose=0)
+            durl = OhmfaUrl(url)
             self.durls.append(durl)
-            #print(f"{durl.url.geturl()}")
-
-        #print(f"urls loaded from '{urls_file_path}'")
-    
 
     def create_fetcher(self, archive_path=None):
         self.fetcher = Fetcher(self.dcnfg, archive_path)
         self.fetcher.durls = self.durls
-
-    def ohm(self, cmd, odir):
-        odir  =Path(odir)
-        oddir = odir.joinpath('.ohm')
-        if cmd == 'create':
-            if not oddir.exists() :
-                odir.mkdir(exist_ok=True)
-                oddir.mkdir(exist_ok=True)
-                print(f"ohm '{odir}' created")
-            else: 
-                print(f"ohm '{odir}' already exists")
-        elif cmd == 'select':
-            if (self.oddir is not None
-                and
-                self.oddir.absolute() == oddir.absolute()
-            ):
-                print(f"ohm '{self.odir}' is already selected")
-            elif oddir.exists() :
-                self.odir = odir
-                self.oddir = oddir
-                print(f"ohm '{self.odir}' selected")
-            elif odir.exists() :
-                print(f"'{odir}' is not an ohm dir")
-            else:
-                print(f"'{odir}' does not exists")
-        elif cmd == 'rm':
-            if oddir.exists() :
-                for root, dirs, files in os.walk(odir, topdown=False):
-                    for name in files:
-                        os.remove(os.path.join(root, name))
-                    for name in dirs:
-                        os.rmdir(os.path.join(root, name))
-                os.rmdir(odir)
-                print(f"ohm '{odir}' removed")
-                if (self.oddir is not None
-                    and
-                    self.oddir.absolute() == oddir.absolute()
-                ):
-                    self.odir       = None
-                    self.oddir      = None
-                    self.general    = None
-                    self.gdir       = None
-                    self.sdir       = None
-                    self.tdir       = None
-            else:
-                print(f"'{odir}' is not an ohm dir")
-        else:
-            sys.exit("ERROR")
-
-    def gohm(self,cmd,general):
-        if self.odir is not None:
-            gdir = self.odir.joinpath(general)
-            if cmd == "create":
-                if not gdir.exists() :
-                    gdir.mkdir(exist_ok=True)
-
-                    sdir = gdir.joinpath("scrapes")
-                    sdir.mkdir(exist_ok=True)
-
-                    tdir = gdir.joinpath("threads")
-                    tdir.mkdir(exist_ok=True)
-                    print(f"gohm '{gdir}' created")
-                else:
-                    print(f"gohm '{gdir}' already exists")
-            elif cmd == "select":
-                if (self.gdir is not None
-                    and
-                    self.gdir.absolute() == gdir.absolute()
-                ):
-                    print(f"gohm '{self.gdir}' already selected")
-                elif gdir.exists() :
-                    self.gdir = gdir
-                    self.sdir = self.gdir.joinpath("scrapes")
-                    self.tdir = self.gdir.joinpath("threads")
-                    print(f"gohm dir '{self.gdir}' selected")
-                else:
-                    print(f"gohm '{gdir}' does not exists")
-
-            elif cmd == "rm":
-                for root, dirs, files in os.walk(self.gdir, topdown=False):
-                    for name in files:
-                        os.remove(os.path.join(root, name))
-                    for name in dirs:
-                        os.rmdir(os.path.join(root, name))
-                os.rmdir(gdir)
-                print(f"gohm dir '{gdir}' removed")
-                if (self.gdir is not None
-                    and
-                    self.gdir.absolute() == gdir.absolute()
-                ):
-                    self.general    = None
-                    self.gdir       = None
-                    self.sdir       = None
-                    self.tdir       = None
-            else:
-                sys.exit("ERROR")
-        else:
-                print(f"ohm not selected!")
 

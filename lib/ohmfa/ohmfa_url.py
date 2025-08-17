@@ -1,4 +1,3 @@
-##MASTER
 """_summary_
 TODO
 - only verbose on every uniq url structure like queries
@@ -7,12 +6,12 @@ TODO
 
 """
 import copy
-import sys
 import urllib
 from urllib.parse import urlparse, parse_qs
 from ohmfa.config_parser import (process_item)
 from ohmfa.ohmfa import Ohmfa
 from ohmfa.path_resolver import PathResolver
+from ohmfa.path_resolver2 import PathResolver2
 
 
 
@@ -29,16 +28,18 @@ class OhmfaUrl(Ohmfa):
     bp          = None
     ar          = None
     vrs         = None
-
     node_type  = None
     url_type   = None
     bp_type    = None
 
 
-    def __init__(self, url, verbose=0,prnt=1):
-        super().__init__(verbose,prnt)
+    def __init__(self, url):
+        super().__init__()
+        self.logger.debug(f"OhmfaUrl.__init__()")
+        self.logger.debug(f"...url = {url}")
+
         self.url       = urlparse(url)
-        self.pr = PathResolver(verbose=verbose,prnt=prnt)
+        self.pr = PathResolver2()
         self.ws = {}
         self.actions=[]
 
@@ -62,6 +63,7 @@ class OhmfaUrl(Ohmfa):
             self.pcnfg = self.dcnfg[self.sld]
 
     def resl_dmn(self, dmn_frags, dmn_cnfgs):
+        self.logger.debug(f"OhmfaUrl.resl_dmn()")
         hstn, sld, tld   = None,None,None
         dmn_type         = None
 
@@ -102,6 +104,7 @@ class OhmfaUrl(Ohmfa):
 
 
     def resl_path(self): 
+        self.logger.debug(f"OhmfaUrl.resl_path()")
         for node_type, node_cnfg in self.cnfg['nodes'].items():
             for url_type, url_cnfg in node_cnfg.items():
                 bp_dmn_type = url_cnfg['domain_type']
@@ -126,16 +129,13 @@ class OhmfaUrl(Ohmfa):
                 #print(f"    ...url_type: {url_type}")
                 #print(f"    ...ar: {ar}")
                 #print(f"    ...bp_cnfg: {bp}")
-                res, bp, nar, nvrs = self.pr.start_recursion(bp,ar)
+                res, bp, nar = self.pr.start_recursion(bp,ar)
                 if res:
                     self.fcnfg = url_cnfg 
-                    self.vrs = nvrs
                     self.node_type  = node_type
                     self.url_type = url_type
-                    #self.bp_type = bp_type
                     self.bp  = bp
                     self.ar  = ar
-                    self.vrs = nvrs
                     break
             else:
                 continue
@@ -145,17 +145,18 @@ class OhmfaUrl(Ohmfa):
         return True
 
     def uid(self):
-
         a = self.cnfg["site_key"]
         #print(f"{a}.{self.node_type}.{self.url_type}.{self.bp_type}")
 
     def update_url(self):
+        self.logger.debug(f"OhmfaUrl.update_url()")
         newquery = urllib.parse.urlencode(self.query,doseq=True)
         self.url = self.url._replace(query=newquery)
         self.url = self.url._replace(netloc=self.dmn)
 
 
     def resl_query(self):
+        self.logger.debug(f"OhmfaUrl.resl_query()")
         #print(f"    resolving query")
         ccfg = self.cnfg['nodes'][self.node_type][self.url_type]
         #print(f"    ...query exists?: {'query' in ccfg}")

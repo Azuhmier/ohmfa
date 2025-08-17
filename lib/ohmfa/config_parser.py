@@ -122,7 +122,7 @@ def process_args(nmstr:str,item_type:str,args:list):
     elif item_type == 'op':
         if nmstr == 'in':
             res = args
-        elif nmstr == 'delim':
+        elif nmstr == 'delims':
             res = args
         elif nmstr == 'try':
             if len(args):

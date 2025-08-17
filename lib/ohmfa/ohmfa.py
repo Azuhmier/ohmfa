@@ -1,23 +1,11 @@
-##MASTER
+from ohmfa.config import (setup_logger)
 class Ohmfa:
-    verbose = False
-    prnt =    False
     dcnfg = {}
+    logger=None
 
-
-    def __init__(self,verbose=0,prnt=0):
-        self.log=[]
-        self.verbose=verbose
-        self.prnt=prnt
-
-
-    def logthis(self, lvl, string):
-        if self.verbose >= lvl:
-            self.log.append(string)
-            if self.prnt :
-                print(string)
-
-
-    def dump(self):
-        for line in self.log:
-            print(line)
+    def __init__(self, log_level=0):
+        if Ohmfa.logger is None:
+            logger = setup_logger(log_level=log_level)
+            Ohmfa.logger = logger
+        self.logger = Ohmfa.logger
+            
