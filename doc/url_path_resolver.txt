@@ -1,0 +1,68 @@
+C_AR = (C_AR_1,...,C_AR_n) E {u,v}^n
+
+i      = { -1, 0:len(C_AR), len(C_AR) }
+z      = {     0:len(C_AR), len(C_AR) }
+e      = {     z:len(C_AR), len(C_AR) }
+
+i-z >= -1 | i >= z-1
+e-i >= 0  | i <= e
+
+z-1 <= i <= e
+
+
+
+C_BP [A, <<B>>, C]
+    A = C_BP[:z]  = (..., v)      | Null
+    B = C_BP[z:e] = (u_1,...,u_n) | Null
+    C = C_BP[e:]  = (v, ...)      | Null    
+
+    (P)RE:       i = z-1
+    (I)NDEXING:  z <= i < e
+    (E)XHAUTION: i = e
+
+
+C_AR [X, <<Y>>, Z]
+    X = C_AR[:z]  = (..., v)      | Null
+    Y = C_AR[g:]  = (u, ...)      | Null    
+    Z = C_AR[z:g] = (u_1,...,u_n) | Null
+    g == len(C_AR) < e | len(C_AR) == g == e | len(C_AR) > e == g
+
+    (P)RE:       i = z-1
+    (I)NDEXING:  z <= i < g
+    (E)XHAUTION: i = g
+
+GENERAL
+    P != Z
+    1) P,I,E
+    2) P,E
+
+    GOALS:
+    - g == e
+
+
+END, DESCEND, R
+    if) C_AR
+        i == g == len(C_AR)
+            g <= e
+    elif) C_BP
+        i == e
+            e <= len(C_BP)
+                e == len(C_BP)
+                    g != e
+
+                e < len(C_BP)
+                    g == e
+
+
+
+
+
+
+
+        
+
+
+
+
+
+

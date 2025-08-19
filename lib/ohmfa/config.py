@@ -11,7 +11,7 @@ class IndentFormatter(logging.Formatter):
            stack_depth = len(inspect.stack()) - 1 # Adjust for this function's frame
 
            # Create indentation string
-           indentation = "|" * (stack_depth-9)
+           indentation = "||" * (stack_depth-9)
 
            # Prepend indentation to the message
            record.msg = indentation + str(record.msg)
