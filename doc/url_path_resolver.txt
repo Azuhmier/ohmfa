@@ -1,8 +1,25 @@
-C_AR = (C_AR_1,...,C_AR_n) E {u,v}^n
+c_bp = (c_bp_1,...,c_bp_n) E {u,v,w}^n
+    n = e-1
+    e E {  z:(len(c_bp) + 1) }
+    z E {  0:(e + 1) }
+    i E { -1:(e+ 1) }
 
-i      = { -1, 0:len(C_AR), len(C_AR) }
-z      = {     0:len(C_AR), len(C_AR) }
-e      = {     z:len(C_AR), len(C_AR) }
+c_ar = (c_ar_1,...,c_ar_n) E {u,w}^n
+    n = g-1
+    g E {  z:(len(c_ar) + 1) }
+    z E {  0:(g + 1) }
+    i E { -1:(g + 1) }
+    
+###
+z,e = F(c_bp, {i, where i - z == -1} ):
+    z = 1 + i
+    e = c_bp[z:][e] is v | len(c_bp)
+    
+###
+plvl > lvl  ], *
+    c_ida[-1] - 1 == p_ida[-2]
+plvl < lvl  *, [
+    c_ida[-2] - 1 == p_ida[-1]
 
 i-z >= -1 | i >= z-1
 e-i >= 0  | i <= e
@@ -11,21 +28,22 @@ z-1 <= i <= e
 
 
 
-C_BP [A, <<B>>, C]
-    A = C_BP[:z]  = (..., v)      | Null
-    B = C_BP[z:e] = (u_1,...,u_n) | Null
-    C = C_BP[e:]  = (v, ...)      | Null    
+
+c_bp [A, <<B>>, C]
+    A = c_bp[:z]  = (..., v)      | Null
+    B = c_bp[z:e] = (u_1,...,u_n) | Null
+    C = c_bp[e:]  = (v, ...)      | Null    
 
     (P)RE:       i = z-1
     (I)NDEXING:  z <= i < e
     (E)XHAUTION: i = e
 
 
-C_AR [X, <<Y>>, Z]
-    X = C_AR[:z]  = (..., v)      | Null
-    Y = C_AR[g:]  = (u, ...)      | Null    
-    Z = C_AR[z:g] = (u_1,...,u_n) | Null
-    g == len(C_AR) < e | len(C_AR) == g == e | len(C_AR) > e == g
+c_ar [X, <<Y>>, Z]
+    X = c_ar[:z]  = (..., v)      | Null
+    Y = c_ar[g:]  = (u, ...)      | Null    
+    Z = c_ar[z:g] = (u_1,...,u_n) | Null
+    g == len(c_ar) < e | len(c_ar) == g == e | len(c_ar) > e == g
 
     (P)RE:       i = z-1
     (I)NDEXING:  z <= i < g
@@ -42,27 +60,115 @@ GENERAL
 
 END, DESCEND, R
     if) C_AR
-        i == g == len(C_AR)
+        i == g == len(c_ar)
             g <= e
     elif) C_BP
         i == e
-            e <= len(C_BP)
-                e == len(C_BP)
+            e <= len(c_bp)
+                e == len(c_bp)
                     g != e
 
-                e < len(C_BP)
+                e < len(c_bp)
                     g == e
 
+*_*
+     v I E
+   c
+   I   1 1
+   E   0 1
+
+c_*@P => *_*@P
+v_*@P => v_*@P
 
 
 
+[c_ar@E] [v_bp@I, c_bp@I] 0 => r-
+[c_ar@E] [v_bp@E, c_bp@I] 0 => r-
+[c_ar@E] [v_bp@E, c_bp@E] 1
+
+[c_ar@I] [v_bp@E, c_bp@E] 0 => r+
+[c_ar@I] [v_bp@E, c_bp@I] 1
+
+
+${False}
+lvl > -1
+    ${False}
+    c_idx < e
+        ${false}
+        c_ar@E
+            v_bp@I
+                !r or #break
+            v_bp@E
+                c_bp@I
+                    !r or #break
+                c_bp@E
+                    backtrack
+                        !r or #break
+                    ...
+                        $true and #break
+        v_bp@E and c_ar@I
+            c_bp@E
+                !r or #break
+            c_bp@I
+                backtrack
+                    !r or #break
+                ...
+                    $true and #break
+        var
+            $true
+        !match
+            !r
+                #break
+        ...
+            $true
+
+    retu
+        c_idx >= len(c_bp)
+            @ascend
+        isinstnce(bp_item,list)
+            @descend
+    ...
+        !backtrackk
+            #break
+${?}
+
+
+-1
+[?]
+[?a]
+
+0
+[!]
+[{a}]
+
+[!]      [a00,b00,c00]
+[{c}]    [a00,b00,c01]
+
+-1
+[?c]
+[?a]
+
+0
+[{c}]
+[{a}]
+
+[{a}] [a00,b00,c01]
+[!]   [a00,b00,c00]
+[{c}] [a00,b01,c00]
+
+-1
+[?b]
+[?a]
+
+0
+[{b}]
+[{a}]
+
+[{a}] [a00,b01,c00]
+[!]   [a00,b00,c00]
+[{c}] [a01,b00,c00]
 
 
 
-        
-
-
-
-
-
-
+y, a
+y, ta, tb

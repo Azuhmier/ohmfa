@@ -6,65 +6,259 @@ from ohmfa.ohmfa import Ohmfa
 
 class PathResolver2(Ohmfa):
 
-
-
     def __init__(self,debug=False):
         super().__init__()
         self.debug=True
-
-
 
     def start_recursion(self, bp:list, ar:list):  
         self.o = None
         return self._m(bp, ar)
 
+## UTILITES ##########################################################
 
+    def _get_curr_idx(self):
+        return self.o['ida'][-1]
 
     def _get_lvl(self):
         return (len(self.o['ida'])-1)
 
+    def _get_prev_ida(self):
+        if not self._get_lvl():
+            sys.exit()
+        p_ida = copy.deepcopy(self.o['ida'])
+        if self.o['ws'][-2]['lvl'] > self._get_lvl():
+            p_ida[-1] -= 1
+            p_ida.append(self.o['ws'][-2]['idx'])
+            return p_ida
+        elif self.o['ws'][-2]['lvl'] < self._get_lvl():
+            p_ida.pop(-1)
+            p_ida[-1] -= 1
+            return p_ida
 
+    def _get_parent_array(self,key):
+        if self._get_lvl() == 0:
+            sys.exit()
+        parent_array = self.o[key]
+        for n in range(0,self._get_lvl() - 1, 1 ):
+            parent_array = parent_array[self.o['ida'][n]]
+        return parent_array
 
-    def _get_wsk(self,key):
-        wsk = self.o['ws'][-1]
-        return wsk[key]
+## SETTERS ##########################################################
 
+    def _get_cur(self):
+        args = [self.o['a'], self.o['b']]
+        for n in range(0,self._get_lvl(),1):
+            args = [arg[self.o['ida'][n]] for arg in args]
+        self.o['ws'][-1]['a'] = args[0]
+        self.o['ws'][-1]['b'] = args[1]
 
+    def _get_delims(self):
+        if len(self.o['ws'][-1]['b']):
+            #get delims
+            nmstr, item_type, args = process_item( copy.deepcopy(self.o['ws'][-1]['b'][0]) )
+            if item_type == 'op' and nmstr == 'delims':
+                self.o['ws'][-1]['delims'] = args[0][0]
+                self.o['ws'][-1]['b'].pop(0)
+            elif self._get_lvl() == 0:
+                self.o['ws'][-1]['delims'] = '/'
+            else:
+                sys.exit('Error: missing delims')
+            #apply delims
+            if not isinstance(self.o['ws'][-1]['a'],list):
+                if self._get_lvl() > 0:
+                    arg = self.o['a']
+                    parent_array = self._get_parent_array('a')
+                    parent_array[self.o['ida'][-2]] =self.o['ws'][-1]['a'].split(self.o['ws'][-1]['delims'])
+                    self.o['ws'][-1]['a'] = parent_array[self.o['ida'][-2]]
+                else:
+                    self.o['a'] = self.o['ws'][-1]['a'].split(self.o['ws'][-1]['delims'])
+                    self.o['ws'][-1]['a'] = self.o['a']
 
-    def _get_curr_idx(self):
-        ida = self.o['ida']
-        lvl = self._get_lvl()
-        i = ida[lvl]
-        return i
+    def _gen_ze(self):
+        if self.o['ws'][-1]['z'] is not None:
+            sys.exit()
+        if self._get_lvl():
+            p_ida = self._get_prev_ida()
+            if self.o['ws'][-2]['lvl'] > self._get_lvl():
+                if self.o['ida'][-1]  -1 != p_ida[-2]:
+                    sys.exit()
+            elif self.o['ws'][-2]['lvl'] < self._get_lvl():
+                if self.o['ida'][-2] -1 != p_ida[-1]:
+                    sys.exit()
+        self.o['ws'][-1]['z']=self.o['ida'][-1]+1 if not self.o['ws'][-1]['z'] else self.o['ws'][-1]['z']
+        self.o['ws'][-1]['e']=next((n+self.o['ws'][-1]['z'] for n,bp_item in enumerate(iter(self.o['ws'][-1]['b'][self.o['ws'][-1]['z']:])) if isinstance(bp_item,list)),len(self.o['ws'][-1]['b']))
 
+    def _set_r(self):
+        i = self.o['ws'][-1]['z']
+        while (i < self.o['ws'][-1]['e']):
+            nmstr, item_type, args = process_item(copy.deepcopy(self.o['ws'][-1]['b'][i]))
+            if item_type == 'op' and nmstr == 'try':
+                r = {'e':i,'z0':i,'val':args[0],'ph':self.o['ws'][-1]['b'][i]}
+                self.o['ws'][-1]['e'] -= 1
+                self.o['ws'][-1]['r_ar'].append(r)
+                self.o['ws'][-1]['b'].pop(i)
+            else:
+                i += 1
+
+    def _check_empty(self) :
+        if not len(self.o['ws'][-1]['b']) and not len(self.o['ws'][-1]['a']): 
+            return True
+        elif not len(self.o['ws'][-1]['a']): 
+            return False
+        else:
+            return None
+
+## MISC ##########################################################
+
+    def _descend(self):
+        retu = None
+        self.o['k'] += 1
+        self.o['ida'].append(-1)
+        self.o['ws'].append({'delims':None,'e':None,'z':None,'a':None,'b':None,'r_ar':[],'lvl':self._get_lvl(),'idx':None,})
+        self._get_cur()
+        self._get_delims()
+        self._gen_ze()
+        self._set_r()
+        retu = self._check_empty()
+        if self.o['k'] == 0:
+            if retu is not None:
+                return retu
+        return retu
+
+    def _r(self) -> bool:
+        retu=False
+        for n,r in enumerate(self.o['ws'][-1]['r_ar'][::-1]):
+            if  r['e'] <= self.o['ida'][-1]:
+                self.o['ws'][-1]['b'][r['e']:r['e']] = r['val']
+                self.o['ida'][self._get_lvl()] = r['e'] -1
+                r['e'] += len(r['val'])
+                self.o['ws'][-1]['e'] += len(r['val'])
+                retu = True
+                break
+            else:
+                if r['z0'] != r['e']:
+                    self.o['ws'][-1]['e'] -= (r['e'] - r['z0'])
+                    if not (len(self.o['ws'][-1]['r_ar']) > n+1 and self.o['ws'][-1]['r_ar'][::-1][n+1]['z0'] ==  r['z0']):
+                        self.o['ida'][-1] = r['z0']-1 
+                    del self.o['ws'][-1]['b'][r['z0']:r['e']]
+                    r['e'] = r['z0']
+        if retu:
+            self.o['backtrack'] = False
+        return retu
+
+    def _ascend(self):
+        self.o['k'] += 1
+        self.o['ws'][-1]['idx'] = self.o['ida'][-1]
+
+        if 0:
+            if self._get_lvl() >= 0:
+                if self._get_lvl() > 0:
+                    if len(self.o['ws'][-1]['a']) > 1:
+                        self._get_parent_array('a')[self.o['ida'][-2]] = self.o['ws'][-1]['delims'].join(self.o['ws'][-1]['a'])
+                    else:
+                        self._get_parent_array('a')[self.o['ida'][-2]] = self.o['ws'][-1]['a'][0]
+                else:
+                    if len(self.o['ws'][-1]['a']) > 1:
+                        self.o['a'] = self.o['ws'][-1]['delims'].join(self.o['ws'][-1]['a'])
+                        self.o['ws'][-1]['a']= self.o['a']
+                    else:
+                        self.o['a'] = self.o['ws'][-1]['a'][0]
+                        self.o['ws'][-1]['a'] = self.o['a']
+
+        self.o['ida'].pop(-1)
+        if self._get_lvl() >= 0:
+            self.o['ws'].append({'a':None,'b':None,'e':None,'z':None,'r_ar':[],'lvl':self._get_lvl(),'delims':self.o['ws'][-2]['delims']})
+            self._get_cur()
+            self._gen_ze()
+            self._set_r()
+
+    def _backtrack(self):
+        self.o['backtrack'] = True
+        if self.o['k'] != 0:
+            if self.o['ws'][-2]['lvl'] > self._get_lvl():
+                self.o['ida'][-1] -= 1
+                self.o['ws'].pop(-1)
+                self.o['ws'][-1]['idx'] -= 1
+                self.o['ida'].append(self.o['ws'][-1]['idx'])
+            elif self.o['ws'][-2]['lvl'] < self._get_lvl():
+                for r in self.o['ws'][-1]['r_ar']: 
+                    self.o['ida'][-1] = r['z0']-1 
+                    del self.o['ws'][-1]['b'][r['z0']:r['e']]
+                    self.o['ws'][-1]['b'][r['z0']:r['z0']] = [r['ph']]
+                    self.o['ws'][-1]['r_ar'].pop(-1)
+                self.o['ws'][-1]['b'].insert(0,f"_delims({self.o['ws'][-1]['delims']})")
+                if len(self.o['ws'][-1]['a']) > 1:
+                    self.o['ws'][-2]['a'][self.o['ida'][-2]] = self.o['ws'][-1]['delims'].join(self.o['ws'][-1]['a'])
+                else:
+                    self.o['ws'][-2]['a'][self.o['ida'][-2]] = self.o['ws'][-1]['a'][0]
+                self.o['ida'].pop(-1)
+                self.o['ida'][-1] -= 1
+                self.o['ws'].pop(-1)
+        else:
+            self.o['ida'] = []
+        self.o['k'] -= 1
+
+## MAIN ##########################################################
+    def _m(self,b,a) -> bool:
+        self.o={'k':-1,'a':a,'b':b,'ida':[],'ws':[],'backtrack':False}
+        dres = self._descend()
+        if dres is not None:
+            self.logger.debug(f"{dres}")
+            return dres
+        while(self._get_lvl() > -1):
+            self.logger.debug(f"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            self._logthis()
+            while( self.o['ida'] and self.o['ida'][-1] < self.o['ws'][-1]['e']):
+                #c_idx < e
+                self.o['ida'][-1] += 1
+                self.logger.debug(f"=========")
+                self._logthis()
+                if self.o['ida'][-1] == len(self.o['ws'][-1]['a']):
+                    #c_idx == len(c_ar)
+                    if len(self.o['ws'][-1]['b']) > self.o['ida'][-1]:
+                        #len(c_bp) > c_idx
+                        if not self._r():
+                            self._backtrack()
+                    elif self.o['backtrack']:
+                        if not self._r():
+                            self._backtrack()
+                    else:
+                        self._ascend()
+                elif self.o['ida'][-1] == self.o['ws'][-1]['e']: 
+                    #c_idx == e
+                    if self.o['ws'][-1]['e'] == len(self.o['ws'][-1]['b']):
+                        #len(c_bp) == e
+                        if not self._r():
+                            self._backtrack()
+                    elif self.o['backtrack']:
+                        if not self._r():
+                            self._backtrack()
+                    else:
+                        self._descend()
+                else:
+                    nmstr,item_type,args = process_item(copy.deepcopy(self.o['ws'][-1]['b'][self.o['ida'][-1]]))
+                    if item_type == 'vr':
+                        retu=True
+                    elif self.o['ws'][-1]['a'][self.o['ida'][-1]] != self.o['ws'][-1]['b'][self.o['ida'][-1]]:
+                        if not self._r():
+                            self._backtrack()
+        if self.o['k'] >= 0:
+            return True
+        else:
+            return False
+
+## VERBOSE ##########################################################
 
     def print_nested_list(self, nested_list):
         output = []
         for item in nested_list:
             if isinstance(item, list):
-                # If it's a nested list, recursively call the function
                 output.append(self.print_nested_list(item))
             elif isinstance(item, str):
-                # If it's a string, remove quotes and append
                 output.append(item.replace("'", "").replace('"', ''))
             else:
-                # For other data types, convert to string and append
                 output.append(str(item))
-        # Join the elements with a comma and space, and enclose in brackets
         return '[' + ', '.join(output) + ']'
-
-
-
-    def _get_cur(self) ->list:
-        ida = self.o['ida'] 
-        wsk = self.o['ws'][-1]
-        args = [self.o['a'], self.o['b']]
-        for n in range(0,len(ida)-1,1):
-            args = [arg[ida[n]] for arg in args]
-        wsk['a'] = args[0]
-        wsk['b'] = args[1]
-
-
 
     def _logthis(self):
         if self.debug:
@@ -179,337 +373,7 @@ class PathResolver2(Ohmfa):
             self.logger.debug(f"~ AR: {self.print_nested_list(o['a'])}")
             self.logger.debug(f"~ BP: {self.print_nested_list(o['b'])}")
 
-
-
-    def _r(self) -> bool:
-        retu=False
-        r_ar = self._get_wsk('r_ar')
-        c_bp = self._get_wsk('b')
-        lvl  = self._get_lvl()
-        ida  = self.o['ida']
-        wsk  = self.o['ws'][-1]
-        for r in r_ar[::-1]:
-            if  r['e'] <= self._get_curr_idx():
-                c_bp[r['e']:r['e']] = r['val']
-                new_idx = r['e'] -1
-                r['e'] += len(r['val'])
-                self.o['ws'][-1]['e'] += len(r['val'])
-                ida[lvl] = new_idx
-                retu = True
-                break
-            else:
-                if r['z0'] != r['e']:
-                    span = (r['e'] - r['z0'])
-                    self.o['ws'][-1]['e'] -= span
-                    #self.o['ws'][-1]['e'] += 1
-                    self.o['ida'][-1] = r['z0']-1 
-                    del c_bp[r['z0']:r['e']]
-        if retu:
-            self.o['backtrack'] = False
-        return retu
-        
-
-
-    def _get_delims(self):
-        lvl  = self._get_lvl()
-        wsk  = self.o['ws'][-1]
-        c_bp = wsk['b']
-        c_ar = wsk['a']
-        ida  = self.o['ida'] 
-        if len(c_bp):
-            nmstr, item_type, args = process_item( copy.deepcopy(c_bp[0]) )
-            if item_type == 'op' and nmstr == 'delims':
-                wsk['delims'] = args[0][0]
-                c_bp.pop(0)
-            elif lvl == 0:
-                wsk['delims'] = '/'
-            else:
-                sys.exit('Error: missing delims')
-            if not isinstance(c_ar,list):
-                delims = wsk['delims']
-                new_wsk_a = c_ar.split(delims)
-                if len(ida) == 1:
-                    self.o['a'] = new_wsk_a
-                    wsk['a'] = self.o['a']
-                else:
-                    arg = self.o['a']
-                    for n in range(0,len(ida)-1,1):
-                        if n == len(ida)-2:
-                            arg[ida[n]] = new_wsk_a
-                            wsk['a'] = arg[ida[n]]
-                        else:
-                            arg = arg[ida[n]]
-
-
-
-    def _check_empty(self) :
-        wsk = self.o['ws'][self.o['k']]
-        c_bp = wsk['b']
-        c_ar = wsk['a']
-        lvl = self._get_lvl()
-        retu = None
-        if not len(c_bp) and not len(c_ar): 
-            retu=True
-        elif not len(c_ar): 
-            retu=False
-        return retu
-
-
-
-    def _get_virtual(self):
-        wsk = self.o['ws'][-1]
-        i   = self._get_curr_idx()
-        z   = self._get_wsk('z')
-        # Determin z if not defined
-        if z is None:
-            wsk['z'] = i + 1
-            z        = self._get_wsk('z')
-        # Determin e of BP sliced at "z:""
-        e = z
-        if wsk['b']:
-            bp_slice = wsk['b'][z:]
-            for bp_item in bp_slice:
-                if isinstance(bp_item, list):
-                    break
-                else:
-                    e += 1
-        wsk['e'] = e
-        # Sanity Checks
-        if e < z:
-            sys.exit(f"ERROR: z({z}) exceeds e({e})!")
-
-
-    def _backtrack(self):
-        self.o['backtrack'] = True
-        retu = False
-        if self.o['k'] != 0:
-            retu = True
-            ida = self.o['ida']
-            # current
-            wsk    = self.o['ws'][-1]
-            delims = wsk['delims']
-            lvl    = self._get_lvl()
-            c_bp   = wsk['b']
-            c_ar   = wsk['a']
-            # new
-            new_wsk  = self.o['ws'][-2]
-            nlvl     = new_wsk['l']
-            new_c_ar = new_wsk['a']
-            if nlvl > lvl:
-                # current
-                ida[-1] -= 1
-                self.o['ws'].pop(-1)
-                # new
-                new_wsk['i'] -= 1
-                new_i = new_wsk['i']
-                ida.append(new_i)
-            elif nlvl < lvl:
-                # restor _r
-                r_ar = wsk['r_ar']
-                for r in r_ar: 
-                    span = (r['e'] - r['z0'])
-                    self.o['ida'][-1] = r['z0']-1 
-                    del c_bp[r['z0']:r['e']]
-                    c_bp[r['z0']:r['z0']] = [r['ph']]
-                    r_ar.pop(-1)
-                # restor delims
-                c_bp.insert(0,f"_delims({delims})")
-                j = self.o['ida'][nlvl]
-                if len(c_ar) > 1:
-                    new_item = delims.join(c_ar)
-                else:
-                    new_item = c_ar[0]
-                new_c_ar[j] = new_item
-                # finalize
-                ida.pop(-1)
-                ida[-1] -= 1
-                self.o['ws'].pop(-1)
-            self.o['k'] -= 1
-        return retu
-
-
-
-    def _ascend(self):
-        self.o['k'] += 1
-        i = self._get_curr_idx()
-        wsk = self.o['ws'][-1]
-        wsk['i'] = i
-        ida = self.o['ida']
-        ida.pop(-1)
-        lvl = self._get_lvl()
-        if lvl >= 0:
-            prev_wsk = self.o['ws'][-2]
-            delims = prev_wsk['delims'],
-            self.o['ws'].append({
-                    'delims': delims,
-                    'a': None,
-                    'b': None,
-                    'e' : None,
-                    'z' : None,
-                    'r_ar': [],
-                    'l': lvl
-                })
-            self._get_cur()
-            self._get_virtual()
-            self._set_r()
-
-
-
-    def _descend(self):
-        retu = None
-        self.o['k'] += 1
-        ida = self.o['ida']
-        ida.append(-1)
-        lvl = self._get_lvl()
-        self.o['ws'].append({
-                'delims': None,
-                'e' : None,
-                'z' : None,
-                'a': None,
-                'b': None,
-                'r_ar': [],
-                'l' : lvl,
-            })
-        self._get_cur()
-        self._get_delims()
-        self._get_virtual()
-        self._set_r()
-        retu = self._check_empty()
-        if self.o['k'] == 0:
-            if retu is not None:
-                return retu
-        return retu
-
-
-
-    def _set_r(self):
-        wsk = self.o['ws'][-1]
-        c_bp = wsk['b']
-        ida = self.o['ida']
-        e = wsk['e']
-        z = wsk['z']
-        c_bp_slice = c_bp[e:]
-
-        i = z
-        while (i < e):
-            bp_item = c_bp[i]
-            nmstr, item_type, args = process_item(copy.deepcopy(bp_item))
-            if item_type == 'op' and nmstr == 'try':
-                r_val = args[0]
-                r = {
-                    'e':   i,
-                    'z0':  i,
-                    'val': r_val,
-                    'ph':  bp_item
-                }
-                wsk['e'] -= 1
-                e = wsk['e']
-                wsk['r_ar'].append(r)
-                c_bp.pop(i)
-            else:
-                i += 1
-
-
-
-    def _m(self,b,a) -> bool:
-        self.o = {
-            'k': -1,
-            'a': a,
-            'b': b,
-            'ida': [],
-            'ws': [],
-            'backtrack': False
-        }
-        dres = self._descend()
-        if dres is not None:
-            self.logger.debug(f"{dres}")
-            return dres
-
-        while(self._get_lvl() > -1):
-            retu = False
-            self.logger.debug(f"%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-            self._logthis()
-            i = self._get_curr_idx()
-            e = self._get_wsk('e')
-
-            while( self._get_curr_idx() < e):
-                self.logger.debug(f"=========")
-                retu=False
-                ida  = self.o['ida']
-                wsk  = self.o['ws'][-1]
-                e    = wsk['e']
-                C_AR = wsk['a']
-                C_BP = wsk['b']
-                ida[-1] += 1
-                i    = self._get_curr_idx()
-                self._logthis()
-
-
-                if i == len(C_AR):
-                    g = i
-                    if g < e:
-                        if not self._r():
-                            break
-                        continue
-                    elif g == e:
-                        if len(C_BP) > e:
-                            if not self._r():
-                                break
-                            continue
-                        elif self.o['backtrack']:
-                            if not self._r():
-                                break
-                            continue
-                        else:
-                            retu = True
-                            break
-                    else:
-                        sys.exit(f"ERROR ar")
-
-                elif i == e: 
-                    if e == len(C_BP):
-                        if not self._r():
-                            break
-                        continue
-                    elif e < len(C_BP):
-                        if self.o['backtrack']:
-                            if not self._r():
-                                break
-                            continue
-                        else:
-                            retu = True
-                            break
-                    else:
-                        sys.exit('ERROR bp')
-
-                bp_item = C_BP[i]
-                item    = C_AR[i]
-                nmstr,item_type,args = process_item(copy.deepcopy(bp_item))
-                if item_type == 'vr':
-                    retu=True
-                    continue
-                if item != bp_item:
-                    if not self._r():
-                        break
-                    continue
-                else:
-                    retu = True
-
-            if retu:
-                if i >= len(C_BP):
-                    self._ascend()
-                elif isinstance(C_BP[i],list):
-                    self._descend()
-                else:
-                    sys.exit('Error end')
-            else:
-                if not self._backtrack():
-                    break
-
-        self.logger.debug(f"{retu}")
-        return retu
-
-
+## TESTS ##########################################################
 
 if __name__ == "__main__":
     from ohmfa.main import Main
@@ -536,7 +400,7 @@ if __name__ == "__main__":
             [ 'b', '_try(_val()_)', 'c', '_try(f)', 'd', [ '_delims(uu)', 'i', [ '_delims(.)', 'a', 'b', '_try(b)', ], ], [ '_delims(.)', '_val()_', '_try(_val()_)', ], 'c', ],
             True,
         ],
-        [['b', 'c', 'c', 'd', 'iuua.b.b', 'e', 'c'], [ 'b', '_try(_val()_)', 'c', '_try(f)', 'd', [ '_delims(uu)', 'i', [ '_delims(.)', 'a', 'b', '_try(b)', ], ], [ '_delims(.)', '_val()_', '_try(_val()_)', ], 'd', ], False, ],
+        [['b', 'c', 'c', 'd', 'iuua.b.b', 'e', 'c'], [ 'b', '_try(_val()_)', 'c', '_try(c)','_try(f)', 'd', [ '_delims(uu)', 'i', [ '_delims(.)', 'a', 'b', '_try(b)', ], ], [ '_delims(.)', '_val()_', '_try(_val()_)', ], 'd', ], False, ],
         [['a', 'b.c'],['a', ['_delims(.)', 'b', 'c']],True],
         [['a', 'b.c'],[['_delims(.)', 'b', 'c']],False],
         [['b.c','a'],[['_delims(.)', 'b', 'c']],False],
@@ -544,16 +408,23 @@ if __name__ == "__main__":
         [['folder1','folder2','folder3','fname'],['_try(_val()_)',['_delims(.)','_val(a)_','_try(_val(b)_)']],True],
         [['folder1','folder2','folder3','fname'],['_try(_val()_)',['_delims(,)','_val(a)_','_try(_val(b)_)']],True],
         [['folder1','folder2','folder3','fname.html'],['_try(_val()_)',['_delims(,)','_val(a)_','_try(_val(b)_)']],True],
-        [['folder1','folder2','folder3','fname.html'],['_try(_val()_)',['_delims(.)','_val(a)_']],False],
+        [['folder1','folder2','folder3','fname.html'],['_try(_val()_)','_try(_val()_)',['_delims(.)','_val(a)_']],False],
         [['folder1','folder2','folder3','fname.html'],['_try(_val()_)',['_delims(.)','_try(_val(a)_)']],True],
         [['folder1','folder2','folder3','fname.html'],['_try(_val()_)','_try(_val()_)',['_delims(.)','_try(_val(a)_)']],True],
         [['a','b','c'],['a','_try(b;c)'],True],
         [['a','b','c'],['a','_try(b;d)'],False],
         [['a','b','c'],['a','_try(b;d)'],False],
-        [[],[],True],
+        [['b'],['_try(a)','b','_try(c)'],True],
+        [['a'],['_try(a)','_try(b)'],True],
+        [['a'],['_try(a)','_try(b)','_try(c)'],True],
+        [['a'],['_try(a)','_try(b)','_try(c)', '_try(d)'],True],
+        [['y','a'],['y','_try(a)','_try(b)'],True],
+        [['y','a'],['y','_try(a)','_try(b)','_try(c)'],True],
+        [['y','a'],['_try(a)','_try(b)','_try(c)','y','_try(a)','_try(b)','_try(c)'],True],
     ]
     args2 = copy.deepcopy(args)
     r = []
+    v = []
     for arg in args:
         ar = arg[0]
         bp = arg[1]
@@ -567,11 +438,23 @@ if __name__ == "__main__":
         print(f"bp({bp})")
         retu = pr.start_recursion(bp,ar)
         r.append(retu)
+        v.append(pr.o['a'])
 
+    res = []
     for i,arg in enumerate(args2):
         ar = arg[0]
         bp = arg[1]
         if r[i]==arg[2]:
-            print(f"Pass {ar} || {bp}")
+            res.append(1)
+            print(f"    Pass {ar} || {bp}")
         else:
-            print(f"Fail {ar} || {bp}")
+            print(f"    Fail {ar} || {bp}")
+            res.append(0)
+        print(f"    {v[i]}")
+        print("")
+    if 0 in res:
+        print(f"FAIL")
+    else:
+        print(f"PASS")
+
+
